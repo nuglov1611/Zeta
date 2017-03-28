@@ -1,11 +1,10 @@
 package views.grid.filter;
 
+import org.apache.log4j.Logger;
+import views.grid.GridColumn;
+
 import java.util.Comparator;
 import java.util.Date;
-
-import org.apache.log4j.Logger;
-
-import views.grid.GridColumn;
 
 public class GridComparator implements Comparator {
 

@@ -7,13 +7,13 @@ import core.rml.dbi.DSCollection;
 /**
  */
 public class DSCOLLECTION extends DSCollection {
-	
-	public DSCOLLECTION(){
-		super();
-	}
-	
+
+    public DSCOLLECTION() {
+        super();
+    }
+
     public DSCOLLECTION(Document doc) {
-		super(doc);
-	}
+        super(doc);
+    }
 
 }

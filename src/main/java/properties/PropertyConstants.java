@@ -100,6 +100,6 @@ public final class PropertyConstants {
     public static final String DEFAULT_TEXT = "";
 
     public static final String RML_AUTO_DOWNLOAD = "rmlAutoDownload";
-    
+
     public static final String DEFAULT_LOGIN_SESSION = "loginAutoSession";
 }

@@ -11,9 +11,9 @@ package action.calc;
 import java.util.Hashtable;
 
 public interface __calc__ {
-    public Object eval(Hashtable<String, Object> aliases) throws Exception;
+    Object eval(Hashtable<String, Object> aliases) throws Exception;
 
-    public String[] getAliases() throws Exception;
+    String[] getAliases() throws Exception;
 
-    public void initExpr(String expr) throws Exception;
+    void initExpr(String expr) throws Exception;
 }

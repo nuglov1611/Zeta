@@ -13,7 +13,7 @@ package action.calc;
 
 public class ResonException extends Exception {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 

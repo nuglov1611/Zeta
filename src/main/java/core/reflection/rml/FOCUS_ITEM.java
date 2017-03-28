@@ -1,6 +1,3 @@
-/**
- * 
- */
 package core.reflection.rml;
 
 import views.focuser.FocusItem;

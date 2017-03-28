@@ -6,7 +6,7 @@ class ShortcutInfo {
 
     int modifiers = 0;
 
-    int key       = 0;
+    int key = 0;
 
     ShortcutInfo() {
     }

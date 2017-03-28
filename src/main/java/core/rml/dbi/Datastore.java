@@ -1,23 +1,7 @@
 package core.rml.dbi;
 
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import publicapi.DatastoreAPI;
 import action.api.RTException;
 import action.api.ScriptApi;
-import action.calc.OP;
 import action.calc.Quoted;
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
@@ -26,6 +10,14 @@ import core.parser.Proper;
 import core.rml.Container;
 import core.rml.RmlObject;
 import core.rml.dbi.exception.UpdateException;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import publicapi.DatastoreAPI;
+
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.*;
 
 
 /**
@@ -39,8 +31,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     /**
      * @internal
      */
-    private Container container = new Container(this); 
-    
+    private Container container = new Container(this);
+
     /**
      * @internal
      */
@@ -49,30 +41,26 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     /**
      * @internal
      */
-    Vector<Compute> computeColumn = new Vector<Compute>();;
+    Vector<Compute> computeColumn = new Vector<Compute>();
 
     /**
-     * @internal
-     * признак обновляемости данного обьекта
+     * @internal признак обновляемости данного обьекта
      */
     boolean readOnly = true;
 
     /**
-     * @internal
-     * исходный обьект
+     * @internal исходный обьект
      */
     Datastore parent = null;
 
     /**
-     * @internal
-     * текущая строка
+     * @internal текущая строка
      */
     int currentRow;
 
 
     /**
-     * @internal
-     * массивы, определяющий сортировку поле
+     * @internal массивы, определяющий сортировку поле
      */
 
     int[] sortcolumn = null;
@@ -83,26 +71,22 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     int[] direction = null;
 
     /**
-     * @internal
-     * таблицы, к которым относятся столбцы
+     * @internal таблицы, к которым относятся столбцы
      */
     Hashtable<String, Vector<String>> tables = new Hashtable<String, Vector<String>>();
 
     /**
-     * @internal
-     * индексы полей, которые можно изменят
+     * @internal индексы полей, которые можно изменят
      */
     int[] updColumns = null;
 
     /**
-     * @internal
-     * Массив описании actions
+     * @internal Массив описании actions
      */
     String[] actions;
 
     /**
-     * @internal
-     * связи с родительскими обьекта
+     * @internal связи с родительскими обьекта
      */
     Hashtable<Integer, Integer> links;
 
@@ -179,12 +163,10 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     private boolean filtered = false;
 
     /**
-     * @internal
-     * конструкто
-     * 
+     * @internal конструкто
      */
     public Datastore(Datastore parent) {
-    	this();
+        this();
         if (ZetaProperties.dstore_debug > 1) {
             log.debug("begin constructor....");
         }
@@ -198,16 +180,16 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             log.debug("end constructor....");
         }
     }
-    
+
     /**
      * @internal
      */
     public Datastore(Document doc) {
-    	this();
-    	document = doc;
+        this();
+        document = doc;
     }
 
-    	
+
     /**
      * @internal
      */
@@ -217,10 +199,10 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         filterManager = new FilterManager();
     }
 
-    
-    public void init(Proper prop, Document doc){
+
+    public void init(Proper prop, Document doc) {
         super.init(prop, doc);
-        
+
         String editable = (String) prop.get("EDITABLE");
         if ((editable != null)) {
             setReadOnly(editable.equalsIgnoreCase("no"));
@@ -254,8 +236,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         String head = (String) prop.get("HEAD");
         if (head == null || head.compareTo("NO") == 0) {
             setHead(false);
-        }
-        else {
+        } else {
             setHead(true);
         }
 
@@ -267,7 +248,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             log.debug("rml.DATASTORE.doParsing Actions init");
         }
 
-        
+
         str = (String) prop.get("DEFROW");
         if (str != null) {
             setDefRow(str);
@@ -282,7 +263,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             setSortOrder(str);
         }
     }
-    
+
     /**
      * @internal
      */
@@ -310,12 +291,10 @@ public class Datastore extends RmlObject implements DatastoreAPI {
      */
     public void doAction(int id) {
         try {
-            sqlManager.executeQuery(document.getConnection(), (String) document.calculateMacro(actions[id]));
-        }
-        catch (SQLException e) {
+            sqlManager.executeQuery(document.getConnection(), document.calculateMacro(actions[id]));
+        } catch (SQLException e) {
             log.error("DBMS Error!", e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Calc error!", e);
         }
     }
@@ -329,9 +308,9 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         }
         Vector<Object> v = new Vector<Object>();
 
-        for (int i = 0; i < objs.length; i++) {
-            if (objs[i] instanceof Datastore) {
-                v.addElement(objs[i]);
+        for (Object obj : objs) {
+            if (obj instanceof Datastore) {
+                v.addElement(obj);
             }
         }
         subStores = new Datastore[v.size()];
@@ -358,8 +337,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             }
             this.sortcolumn = sort_fields;
             this.direction = sort_dim;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -429,7 +407,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * устанавливает,доступен ли обьект только для чтения
-     * @param readOnly - только чтение, если true 
+     *
+     * @param readOnly - только чтение, если true
      */
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
@@ -437,6 +416,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * filed = ~alias~,
+     *
      * @internal
      */
     public void setDefaults(String def) {
@@ -464,8 +444,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             try {
                 int curind = getColumn(f1);
                 defaults[curind] = f2;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -508,8 +487,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * ищет первое вхождение о в поле columnIndex, начиная с start_pos возвращает
+     * @internal ищет первое вхождение о в поле columnIndex, начиная с start_pos возвращает
      * ИНДЕКС строки если ничего не нашел возвращает -1
      */
     public Vector<Integer> findElement(Object o, int columnIndex, int start_pos) {
@@ -535,8 +513,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                         foundRowIndexes.addElement(rowIndex);
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("core.rml.dbi.DATASTORE.findElement keys.length ="
                         + model.getRowCount(), e);
             }
@@ -546,7 +523,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Поиск объекта в Dayastore
-     * @param o - объект для поиска
+     *
+     * @param o      - объект для поиска
      * @param column - номер столбца
      * @return массив номеров строк содержащих такой же объект
      */
@@ -641,8 +619,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * устанавливает список первичных ключей для кождой updateble таблицы если
+     * @internal устанавливает список первичных ключей для кождой updateble таблицы если
      * для какой то из таблиц список не задан, ее изменение невозможно формат
      * ('table','column1,column2, ...')
      */
@@ -685,8 +662,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * инициализирует links "field=field,....."
+     * @internal инициализирует links "field=field,....."
      */
     public void setLinks(String links) {
         this.strLinks = links;
@@ -728,26 +704,23 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * возвращает,доступен ли обьект только для чтения
+     * @internal возвращает, доступен ли обьект только для чтения
      */
     public boolean isReadOnly() {
         return readOnly;
     }
 
     /**
-     * @internal
-     * Устанавливает столбцы(поля), подлежащие дальнейшей записи в баз
+     * @internal Устанавливает столбцы(поля), подлежащие дальнейшей записи в баз
      */
     public void setUpdColumns(String[] columns) {
-        for (int i = 0; i < columns.length; i++) {
-            updColumns[getColumn(columns[i])] = 1;
+        for (String column : columns) {
+            updColumns[getColumn(column)] = 1;
         }
     }
 
     /**
-     * @internal
-     * Возвращает столбцы(поля), подлежащие дальнейшей записи в баз
+     * @internal Возвращает столбцы(поля), подлежащие дальнейшей записи в баз
      */
     public String[] getUpdColumns() {
         String[] ret = null;
@@ -762,8 +735,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * Устанавливает столбцы(поля), подлежащие дальнейшей записи в баз
+     * @internal Устанавливает столбцы(поля), подлежащие дальнейшей записи в баз
      */
     public void setUpdColumns(int[] columns) {
         updColumns = new int[columns.length];
@@ -771,8 +743,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * Возвращает столбцы(поля), подлежащие дальнейшей записи в баз
+     * @internal Возвращает столбцы(поля), подлежащие дальнейшей записи в баз
      */
     public int[] getIUpdColumns() {
         return updColumns;
@@ -803,6 +774,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     /**
      * создает новую строку и возвращает ее ИНДЕКС Вновь созданная строка
      * СТАНОВИТСЯ ТЕКУЩЕ
+     *
      * @return номер новой строки
      */
     public int newRow() {
@@ -829,8 +801,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                             ScriptApi c = ScriptApi.getAPI(str);
                             sqlManager.addTransaction(model.getRowIndex(newRowIndex),
                                     model.getColumnName(k), DatastoreTransaction.TRANSACTION_INSERT);
-                        	model.addValue(newRowIndex, k, c.eval(document.getAliases()));
-                            	
+                            model.addValue(newRowIndex, k, c.eval(document.getAliases()));
+
                         } catch (Exception e) {
                             log.error("Shit happens", e);
                         }
@@ -851,31 +823,27 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     // ////////////////////////GlobalValueObject functions ////////////////
 
     /**
-     * @internal
-     * реализация интерфейса GlobalValueObject
+     * @internal реализация интерфейса GlobalValueObject
      */
     public void setValue(Object obj) {
     }
 
     /**
-     * @internal
-     * реализация интерфейса GlobalValueObject
+     * @internal реализация интерфейса GlobalValueObject
      */
     public Object getValue() {
         return this;
     }
 
     /**
-     * @internal
-     * реализация интерфейса GlobalValueObject
+     * @internal реализация интерфейса GlobalValueObject
      */
     public void setValueByName(String name, Object obj) {
         setValue(currentRow, name, obj);
     }
 
     /**
-     * @internal
-     * реализация интерфейса GlobalValueObject
+     * @internal реализация интерфейса GlobalValueObject
      */
     public Object getValueByName(String name) throws RTException {
         if (currentRow == -1) {
@@ -883,8 +851,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         }
         try {
             return getValue(currentRow, name);
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             log.error("Не могу получить значение из DATASTORE " + alias
                     + " документа " + document.mypath + "/" + document.myname
                     + "\nСтрока: " + currentRow + "\nСтолбец: " + name
@@ -917,7 +884,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Возвращает значение столбца выборки из строки с ИНДЕКСОМ row
-     * @param row - номер строки
+     *
+     * @param row    - номер строки
      * @param column - номер столбца
      */
     public Object getValue(int row, int column) {
@@ -936,8 +904,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             } else {
                 return parent.getValue(row, column);
             }
-        }
-        catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             log.error("Не могу получить значение из DATASTORE " + alias
                     + " документа " + document.mypath + "/" + document.myname
                     + "\nСтрока: " + row + "\nСтолбец: " + column
@@ -948,9 +915,9 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Возвращает значение столбца выборки из строки с ИНДЕКСОМ row
-     * @param row - номер строки
+     *
+     * @param row    - номер строки
      * @param column - alias (или target) столбца
-     * 
      * @throws RTException
      */
     public Object getValue(int row, String column) {
@@ -961,9 +928,9 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Устанавливает значение столбца выборки для текущей строк
-     * 
+     *
      * @param column - alias (или target) столбца
-     * @param value - значение  
+     * @param value  - значение
      */
     public void setValue(String column, Object value) {
         setValue(currentRow, column, value);
@@ -971,8 +938,9 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Устанавливает значение столбца выборки для текущей строк
+     *
      * @param column - номер столбца
-     * @param value - значение  
+     * @param value  - значение
      */
     public void setValue(int column, Object value) {
         if (parent == null) {
@@ -983,8 +951,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * Устанавливает значение столбца выборки для строки с ИНДЕКСОМ row
+     * @internal Устанавливает значение столбца выборки для строки с ИНДЕКСОМ row
      */
     public void setValue(int rowIndex, int columnIndex, Object value) {
         setValue(rowIndex, model.getColumnName(columnIndex), value);
@@ -992,7 +959,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Устанавливает значение столбца выборки для строки с ИНДЕКСОМ row
-     * 
+     *
      * @param row
      * @param column
      * @param value
@@ -1000,7 +967,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     public void setValue(int row, String column, Object value) {
         if (parent == null) {
             Object oldValue = model.getValueAt(row, column);
-            if ((value == null && value != oldValue)|| (value != null && !value.equals(oldValue)))   {
+            if ((value == null && value != oldValue) || (value != null && !value.equals(oldValue))) {
                 model.setValueAt(row, column, value);
                 sqlManager.addTransaction(model.getRowIndex(row), column,
                         DatastoreTransaction.TRANSACTION_UPDATE);
@@ -1021,11 +988,12 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Добавляе новый столбец
+     *
      * @param typeCol - тип столбца {@link java.sql.Types}
      * @return имя столбца
      */
     public String addColumn(int typeCol) {
-        return addColumn(typeCol, false);    
+        return addColumn(typeCol, false);
     }
 
     /**
@@ -1037,7 +1005,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         Compute newColumn = new Compute(name, typeCol);
         computeColumn.addElement(newColumn);
         if (addToModel) {
-        int modelColumnCount = model.getColumnCount();
+            int modelColumnCount = model.getColumnCount();
             model.addColumnType(modelColumnCount, newColumn.getType());
             model.addColumnName(modelColumnCount, newColumn.getName());
         }
@@ -1046,10 +1014,11 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * синхронизирует содержимое внутреннего буфера с БД
-     * @throws BadPasswordException 
+     *
+     * @throws BadPasswordException
      * @throws SQLException
      */
-    public void update() throws UpdateException, BadPasswordException, SQLException {
+    public void update() throws SQLException {
         try {
             if (readOnly) {
                 return;
@@ -1062,17 +1031,15 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                 return;
             }
             sqlManager.update(document.getConnection(), model, tables);
-        }
-        catch (BadPasswordException e) {
+        } catch (BadPasswordException e) {
             log.error("Unknown Exception in Datastore.update:", e);
             ErrorReader.getInstance().addMessage(e.getMessage());
-		}
-        catch (SQLException ee3) {
+        } catch (SQLException ee3) {
             log.error("Unknown Exception in Datastore.update:", ee3);
             ErrorReader.getInstance().addMessage(ee3.getMessage());
 
             new UpdateException(ee3);
-        } 
+        }
     }
 
     /**
@@ -1097,8 +1064,8 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         currentRow = 0;
         tables = sqlManager.extractTableAndColumnNames(model);
         if (subStores != null) {
-            for (int i = 0; i < subStores.length; i++) {
-                subStores[i].retrieve();
+            for (Datastore subStore : subStores) {
+                subStore.retrieve();
             }
         }
         if ((sortcolumn != null) && (direction != null)) {
@@ -1111,6 +1078,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Установка запроса, для выборки данных
+     *
      * @param sql - текст запроса (может содержать макрос)
      */
     public void setSql(String sql) {
@@ -1161,6 +1129,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Устанавливает текущую строку Нумерация строк начинается с 0
+     *
      * @param row - номер строки
      */
     public void setCurrentRow(int row) {
@@ -1173,8 +1142,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             if (parent != null) {
                 parent.setCurrentRow(row);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -1186,13 +1154,12 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         currentRow++;
         try {
             if (selAction != null) {
-            	document.doAction(selAction, null);
+                document.doAction(selAction, null);
             }
             if (parent != null) {
                 parent.setCurrentRow(currentRow);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -1214,6 +1181,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Возвращает количество строк результирующего набора
+     *
      * @return кол-во строк
      */
     public int getRowCount() {
@@ -1236,6 +1204,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
 
     /**
      * Создает новую DATASTORE, содержащую данные из нескольких Datastore
+     *
      * @param ds - массив Datastore (если аргумент null, то вернет копию текущей Datastore)
      * @return результирующую Datastore
      */
@@ -1248,30 +1217,28 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             par = parent;
         }
         ret = new Datastore(document);
-        
+
         ret.setSql(par.getSql());
         ret.tables = par.getTables();
         ret.setModel(par.getModel());
         try {
-            for (int i = 0; i < ds.length; i++) {
-                for (int j = 0; j < ds[i].getRowCount(); j++) {
+            for (Datastore d : ds) {
+                for (int j = 0; j < d.getRowCount(); j++) {
                     int nr = ret.newRow();
-                    for (int k = 0; k < ds[i].getCountColumns(); k++) {
-                        ret.setValue(nr, k, ds[i].getValue(j, k));
+                    for (int k = 0; k < d.getCountColumns(); k++) {
+                        ret.setValue(nr, k, d.getValue(j, k));
                     }
                 }
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         return ret;
     }
 
     /**
-     * @internal
-     * заполняет данное DATASTORE данными из другого DATASTORE <br>
+     * @internal заполняет данное DATASTORE данными из другого DATASTORE <br>
      * <b>может вызываться перед retrieve()</b>
      */
     public void fromDs(Datastore source) {
@@ -1331,9 +1298,9 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
      * @param obj
      * @return
+     * @internal
      */
     boolean isTrue(Object obj) {
         if (obj instanceof Double) {
@@ -1343,8 +1310,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     }
 
     /**
-     * @internal
-     * Implementation for Calculator Methods
+     * @internal Implementation for Calculator Methods
      */
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("SETMAXFETCHROW")) {
@@ -1352,7 +1318,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                 throw new RTException("CastException",
                         "method SETMAXFETCHROW must have one parameter with Number type");
             }
-            setMaxFethRow(((Double)arg).intValue());
+            setMaxFethRow(((Double) arg).intValue());
             return new String("");
 
         }
@@ -1360,8 +1326,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
             if (arg instanceof String) {
                 try {
                     executeQuery((String) arg);
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     log.error("Shit happens", e);
                     ErrorReader.getInstance().addMessage(e.getMessage());
                     throw new RTException("RunTime", e.getMessage());
@@ -1379,8 +1344,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                 Vector<Object> v = (Vector<Object>) arg;
                 setValue((String) v.elementAt(0), v.elementAt(1));
                 return new Double(0);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException(
                         "CastException",
@@ -1427,16 +1391,14 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                 }
                 //TODO перенести сортировку в грид
 //                setSort(isort, idim);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException(
                         "CastException",
                         "method Sort must have"
                                 + "two parameters compateable with Array type and with equals length");
 
-            }
-            catch (ArrayIndexOutOfBoundsException e1) {
+            } catch (ArrayIndexOutOfBoundsException e1) {
                 log
                         .error(
                                 "Index Exception method Sort must have two parameters compateable with Array type and with equals length",
@@ -1463,7 +1425,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                 int currow = getCurRow();
                 for (int i = 0; i < getRowCount(); i++) {
                     setCurrentRow(i);
-                    if (isTrue(((OP) ((Quoted) arg).getOP()).eval())) {
+                    if (isTrue(((Quoted) arg).getOP().eval())) {
                         v1.addElement(new Integer(i));
                     }
                 }
@@ -1494,8 +1456,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                     d += ((Double) getValue(i, col)).doubleValue();
                 }
                 return new Double(d);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException("CastException",
                         "method Sum must have one parameter ");
@@ -1591,8 +1552,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                             "method ADDCOLUMN must have"
                                     + "one parameter equals NUMERIC, DATE or STRING");
                 }
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException("CastException",
                         "method ADDCOLUMN must have"
@@ -1609,8 +1569,7 @@ public class Datastore extends RmlObject implements DatastoreAPI {
                     oar[i] = new Double(ar[i]);
                 }
                 return oar;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
@@ -1622,33 +1581,33 @@ public class Datastore extends RmlObject implements DatastoreAPI {
         return new Double(0);
     }
 
-	/**
-	 * Выполнить произвольный запрос
-	 *  
-	 * @param query - запрос
-	 * @throws SQLException
-	 * @throws ConnectException
-	 * @throws BadPasswordException
-	 */
-	public void executeQuery(String query) throws SQLException,
-			ConnectException, BadPasswordException {
-		sqlManager.executeQuery(document.getConnection(), query);
-		// в этом блоке не уверен -спросить у Пашки
-		document.getConnection().commit();
-		DSCollection.repeatLocks();
-		// конец блока в котором не уверен
-	}
+    /**
+     * Выполнить произвольный запрос
+     *
+     * @param query - запрос
+     * @throws SQLException
+     * @throws ConnectException
+     * @throws BadPasswordException
+     */
+    public void executeQuery(String query) throws SQLException {
+        sqlManager.executeQuery(document.getConnection(), query);
+        // в этом блоке не уверен -спросить у Пашки
+        document.getConnection().commit();
+        DSCollection.repeatLocks();
+        // конец блока в котором не уверен
+    }
 
-	/**
-	 * Устанавливает ограничение на кол-во строк 
-	 * @param maxRows
-	 */
-	public void setMaxFethRow(int maxRows) {
-		sqlManager.setMaxFetchRow(maxRows);
-		if (ZetaProperties.dstore_debug > 1) {
-		    log.debug("setMaxFetchRow called with arg " + maxRows);
-		}
-	}
+    /**
+     * Устанавливает ограничение на кол-во строк
+     *
+     * @param maxRows
+     */
+    public void setMaxFethRow(int maxRows) {
+        sqlManager.setMaxFetchRow(maxRows);
+        if (ZetaProperties.dstore_debug > 1) {
+            log.debug("setMaxFetchRow called with arg " + maxRows);
+        }
+    }
 
     /**
      * Оповещает, связанные с Datastore, визуальные компоненты о том что данные изменились
@@ -1721,59 +1680,59 @@ public class Datastore extends RmlObject implements DatastoreAPI {
     /**
      * @internal
      */
-	@Override
-	public void fromDS() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void fromDS() {
+        // TODO Auto-generated method stub
+
+    }
 
     /**
      * @internal
      */
-	@Override
-	public void toDS() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void toDS() {
+        // TODO Auto-generated method stub
+
+    }
 
     /**
      * @internal
      */
-	@Override
-	public void addChild(RmlObject child) {
-		container.addChildToCollection(child);
-	}
+    @Override
+    public void addChild(RmlObject child) {
+        container.addChildToCollection(child);
+    }
 
     /**
      * @internal
      */
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
     /**
      * @internal
      */
-	@Override
-	public void initChildren() {
-		RmlObject[] objs = container.getChildren();
+    @Override
+    public void initChildren() {
+        RmlObject[] objs = container.getChildren();
         addSubStores(objs);
-	}
+    }
 
     /**
      * @internal
      */
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
     /**
      * @internal
      */
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 }

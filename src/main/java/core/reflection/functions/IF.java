@@ -11,27 +11,21 @@
 
 package core.reflection.functions;
 
-import java.util.Hashtable;
-
+import action.api.RTException;
+import action.calc.*;
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
 
-import action.api.RTException;
-import action.calc.ExternFunction;
-import action.calc.Func;
-import action.calc.Lexemator;
-import action.calc.OP;
-import action.calc.Parser;
+import java.util.Hashtable;
 
 public class IF implements ExternFunction {
-    private static final Logger log   = Logger.getLogger(IF.class);
+    private static final Logger log = Logger.getLogger(IF.class);
 
-    OP                          expr  = null;
+    OP expr = null;
 
-    OP                          doing = null;
+    OP doing = null;
 
-    OP                          elser = null;
+    OP elser = null;
 
     public Object eval() throws Exception {
         if (ZetaProperties.calc_debug > 2) {
@@ -44,23 +38,19 @@ public class IF implements ExternFunction {
             }
             if (((Double) result).doubleValue() == 1) {
                 return doing.eval();
-            }
-            else if (elser != null) {
+            } else if (elser != null) {
                 return elser.eval();
             }
-        }
-        else if (result instanceof String) {
+        } else if (result instanceof String) {
             if (ZetaProperties.calc_debug > 2) {
                 log.debug("~clac.funcions.IF::eval string result " + result);
             }
             if (((String) result).trim().toUpperCase().compareTo("TRUE") == 0) {
                 return doing.eval();
-            }
-            else if (elser != null) {
+            } else if (elser != null) {
                 return elser.eval();
             }
-        }
-        else {
+        } else {
             throw new RTException("SYNTAX", "RESALT of expression in IF is "
                     + result);
         }
@@ -87,8 +77,7 @@ public class IF implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             expr = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -97,8 +86,7 @@ public class IF implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             doing = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -106,13 +94,13 @@ public class IF implements ExternFunction {
             log.debug("~clac.funcions.IF::init LED/LTAG");
         }
         switch (lex.type()) {
-        case Lexemator.LEND:
-            break;
-        case Lexemator.LTAG:
-            elser = new Func(lex.as_string(), lex.args());
-            break;
-        default:
-            throw new Exception();
+            case Lexemator.LEND:
+                break;
+            case Lexemator.LTAG:
+                elser = new Func(lex.as_string(), lex.args());
+                break;
+            default:
+                throw new Exception();
         }
         if (ZetaProperties.calc_debug > 2) {
             log.debug("~clac.funcions.IF::init end of parse");

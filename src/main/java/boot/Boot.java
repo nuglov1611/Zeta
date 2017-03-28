@@ -8,42 +8,25 @@
 
 package boot;
 
-import java.awt.Cursor;
-import java.awt.Event;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import core.browser.WorkspaceManager;
+import core.rml.dbi.ErrorReader;
+import loader.NullOutputStream;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import loader.log.ZetaAppender;
+import org.apache.log4j.Logger;
+import properties.*;
+
+import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TimeZone;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-
-import loader.NullOutputStream;
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-import loader.log.ZetaAppender;
-
-import org.apache.log4j.Logger;
-
-import properties.PropertyConstants;
-import properties.PropertyManager;
-import properties.Session;
-import properties.SessionManager;
-import properties.SettingsDialog;
-import core.browser.WorkspaceManager;
-import core.rml.dbi.ErrorReader;
 
 /*
  * Startup class
@@ -55,26 +38,22 @@ public class Boot extends MainWindow implements ActionListener, KeyListener,
     /**
      *
      */
-    private static final Logger log     = Logger.getLogger(Boot.class);
+    private static final Logger log = Logger.getLogger(Boot.class);
 
-    public static boolean       nologon = false;
+    public static boolean nologon = false;
 
     static {
         try {
             // Устанавливаем системный стиль полностью
             String systemLAFName = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(systemLAFName);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             setWindowsLookAndFeel();
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             setWindowsLookAndFeel();
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             setWindowsLookAndFeel();
-        }
-        catch (UnsupportedLookAndFeelException e) {
+        } catch (UnsupportedLookAndFeelException e) {
             log.error("Shit happens", e);
         }
     }
@@ -82,16 +61,15 @@ public class Boot extends MainWindow implements ActionListener, KeyListener,
     private static void setWindowsLookAndFeel() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (UnsupportedLookAndFeelException e) {
+        } catch (UnsupportedLookAndFeelException e) {
             log.error("!", e);
         } catch (ClassNotFoundException e) {
             log.error("!", e);
-		} catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             log.error("!", e);
-		} catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             log.error("!", e);
-		}
+        }
     }
 
     public static Boot instance;
@@ -149,7 +127,7 @@ public class Boot extends MainWindow implements ActionListener, KeyListener,
         txtPassword.addCaretListener(this);
         txtPassword.addFocusListener(this);
         bEnter.addActionListener(this);
-        if(ZetaProperties.DEMO || ZetaProperties.ONLOAD) {
+        if (ZetaProperties.DEMO || ZetaProperties.ONLOAD) {
             bProperties.setEnabled(false);
         } else {
             bProperties.addActionListener(this);
@@ -164,20 +142,18 @@ public class Boot extends MainWindow implements ActionListener, KeyListener,
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             new Thread(ErrorReader.getInstance()).start();
             WorkspaceManager manager = WorkspaceManager.getInstance();
-            if(manager.getCurWorkspace() == null){
-            	manager.newWorkspace();
+            if (WorkspaceManager.getCurWorkspace() == null) {
+                manager.newWorkspace();
             }
             setVisible(false);
-        }
-        catch (SQLException e) {
- //           ErrorReader.getInstance().closeErrorReader();
+        } catch (SQLException e) {
+            //           ErrorReader.getInstance().closeErrorReader();
             txtPassword.setText("");
             log.error("Shit happens", e);
             ZetaUtility.oracleMessage(e, this);
             //if something going wrong
             setVisible(true);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
 //            ErrorReader.getInstance().closeErrorReader();
             ZetaUtility.message(ZetaUtility.pr(ZetaProperties.MSG_UNKNOWNERROR),
@@ -322,9 +298,9 @@ public class Boot extends MainWindow implements ActionListener, KeyListener,
                 ZetaProperties.DEMO = true;
             } else if (args[i].toLowerCase().contains("-prop")) {
                 if (i + 1 < args.length) {
-                ZetaProperties.ONLOAD = true;
-                String file = args[++i];
-                PropertyManager.getIntance(file);
+                    ZetaProperties.ONLOAD = true;
+                    String file = args[++i];
+                    PropertyManager.getIntance(file);
                 } else if (args[i].length() > "-prop".length()) {
                     String file = args[i].substring("-prop".length(), args[i].length()).trim();
                     PropertyManager.getIntance(file);

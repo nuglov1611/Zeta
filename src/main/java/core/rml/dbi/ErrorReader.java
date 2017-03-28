@@ -1,44 +1,41 @@
 package core.rml.dbi;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import core.connection.BadPasswordException;
+import core.connection.ConnectException;
+import core.connection.DBMSConnection;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+import views.MessageFactory;
+
+import java.awt.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
-import views.MessageFactory;
-import core.connection.BadPasswordException;
-import core.connection.ConnectException;
-import core.connection.DBMSConnection;
-
 public class ErrorReader extends Thread {
-private static final Logger log          = Logger
-                                                     .getLogger(ErrorReader.class);
+    private static final Logger log = Logger
+            .getLogger(ErrorReader.class);
 
-    private static ErrorReader  instance     = null;
+    private static ErrorReader instance = null;
 
-    private Connection          conn;
+    private Connection conn;
 
-//    private Statement           stmt;
+    //    private Statement           stmt;
 //
-    private CallableStatement   cs           = null;
+    private CallableStatement cs = null;
 
-    private MsgDebug            fr           = new MsgDebug("Сообщения");
+    private MsgDebug fr = new MsgDebug("Сообщения");
 
-    private String              pipe         = "";
+    private String pipe = "";
 
-    private boolean             success      = false;
+    private boolean success = false;
 
-    private boolean             fullreset    = false;
+    private boolean fullreset = false;
 
-    private volatile boolean    circle       = true;
+    private volatile boolean circle = true;
 
-    private volatile boolean    initializing = false;
+    private volatile boolean initializing = false;
 
     protected ErrorReader() throws BadPasswordException, ConnectException {
         circle = true;
@@ -54,8 +51,7 @@ private static final Logger log          = Logger
         if (instance == null) {
             try {
                 instance = new ErrorReader();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("Shit happens!", e);
             }
         }
@@ -71,70 +67,66 @@ private static final Logger log          = Logger
                 conn = DBMSConnection.reconnect(this);
             }
             if (conn != null) {
-            try {
-                cs = conn
-                        .prepareCall("begin select count(*) into :1 from v$db_pipes where name='ZETA$'; end;");
-                cs.registerOutParameter(1, java.sql.Types.INTEGER);
-                cs.execute();
-                int n = cs.getInt(1);
-                if (n > 0) {
-                    Thread.sleep(15000);
-                }
-
-                executeQuery("begin deb_lib.init('zeta$'); end;");
-                executeQuery("begin deb_lib.write('zeta$presence', user, 5); end;");
                 try {
                     cs = conn
-                            .prepareCall("begin :1 := deb_lib.read('zeta$', 5); end;");
-                    cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+                            .prepareCall("begin select count(*) into :1 from v$db_pipes where name='ZETA$'; end;");
+                    cs.registerOutParameter(1, java.sql.Types.INTEGER);
                     cs.execute();
-                    String s = cs.getString(1).trim();
-                    if (s != null
-                            && s.equals("yes")
-                            && !MessageFactory.getInstance().showMessage(
-                                    ZetaProperties.MSG_USERALREADYEXIST,
-                                    MessageFactory.Type.CONFIRMATION)) {
-                        executeQuery("begin deb_lib.close('zeta$'); end;");
-                        cs.close();
-                        System.exit(0);
+                    int n = cs.getInt(1);
+                    if (n > 0) {
+                        Thread.sleep(15000);
                     }
-                }
-                catch (Exception e) {
+
+                    executeQuery("begin deb_lib.init('zeta$'); end;");
+                    executeQuery("begin deb_lib.write('zeta$presence', user, 5); end;");
+                    try {
+                        cs = conn
+                                .prepareCall("begin :1 := deb_lib.read('zeta$', 5); end;");
+                        cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+                        cs.execute();
+                        String s = cs.getString(1).trim();
+                        if (s != null
+                                && s.equals("yes")
+                                && !MessageFactory.getInstance().showMessage(
+                                ZetaProperties.MSG_USERALREADYEXIST,
+                                MessageFactory.Type.CONFIRMATION)) {
+                            executeQuery("begin deb_lib.close('zeta$'); end;");
+                            cs.close();
+                            System.exit(0);
+                        }
+                    } catch (Exception e) {
+                        //log.error("Shit happens", e);
+                    }
+                    executeQuery("begin deb_lib.close('zeta$'); end;");
+
+                } catch (Exception e) {
                     //log.error("Shit happens", e);
                 }
-                executeQuery("begin deb_lib.close('zeta$'); end;");
 
+                executeQuery("begin deb_lib.close(); end;");
+                if (ZetaProperties.dstore_debug > 0) {
+                    log.debug("pipe removed...");
+                }
+                cs = conn.prepareCall("begin :1 := deb_lib.init(); end;");
+                cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+                cs.executeUpdate();
+                pipe = cs.getString(1);
+                if (ZetaProperties.dstore_debug > 0) {
+                    log.debug("Pipe initialized PipeName=" + pipe);
+                }
+                cs = conn.prepareCall("begin :1 := deb_lib.read('" + pipe + "', " + 1 + "); end;");
+                cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+                success = true;
             }
-            catch (Exception e) {
-                //log.error("Shit happens", e);
-            }
-
-            executeQuery("begin deb_lib.close(); end;");
-            if (ZetaProperties.dstore_debug > 0) {
-                log.debug("pipe removed...");
-            }
-            cs = conn.prepareCall("begin :1 := deb_lib.init(); end;");
-            cs.registerOutParameter(1, java.sql.Types.VARCHAR);
-            cs.executeUpdate();
-            pipe = cs.getString(1);
-            if (ZetaProperties.dstore_debug > 0) {
-                log.debug("Pipe initialized PipeName=" + pipe);
-            }
-            cs = conn.prepareCall("begin :1 := deb_lib.read('"+pipe+"', "+1+"); end;");
-            cs.registerOutParameter(1, java.sql.Types.VARCHAR);
-            success = true;
-        }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Error initializing pipe:", e); // не смогли
             // инициализировать
             // канал для отладки
-            
+
             success = false;
-            if(e.getMessage().toUpperCase().indexOf("ORA-06550")>-1)
-            	throw e;
-        }
-        finally {
+            if (e.getMessage().toUpperCase().contains("ORA-06550"))
+                throw e;
+        } finally {
             initializing = false;
         }
 
@@ -145,14 +137,14 @@ private static final Logger log          = Logger
      */
     private void executeQuery(String query) throws SQLException {
         Statement stmt = null;
-        try{
+        try {
             stmt = conn.createStatement();
             stmt.execute(query);
-        }finally{
+        } finally {
             if (stmt != null) {
-            stmt.close();
+                stmt.close();
+            }
         }
-    }
     }
 
     public void addMessage(String msg) {
@@ -166,10 +158,10 @@ private static final Logger log          = Logger
     @Override
     public void run() {
         try {
-        initPipe();
-		} catch (SQLException e2) {
-			return;
-		}
+            initPipe();
+        } catch (SQLException e2) {
+            return;
+        }
         circle = true;
         while (circle) {
             try {
@@ -187,12 +179,10 @@ private static final Logger log          = Logger
                 }
                 fr.addMessage(message + "\n");
                 fr.setVisible(true);
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 try {
                     sleep(1000);
-                }
-                catch (Exception e1) {
+                } catch (Exception e1) {
                     log.error("Shit happens", e1);
                 }
 
@@ -202,15 +192,14 @@ private static final Logger log          = Logger
                     while (!success && circle) {
                         fullreset = true;
                         try {
-                        initPipe();
-						} catch (SQLException e1) {
-							return;
-						}
+                            initPipe();
+                        } catch (SQLException e1) {
+                            return;
+                        }
                     }
                     // ошибка связи
                 }
-            }
-            catch (Exception extra) {
+            } catch (Exception extra) {
                 log.error("Shit happens", extra);
                 return;
             }
@@ -227,10 +216,9 @@ private static final Logger log          = Logger
             executeQuery("begin deb_lib.write('zeta$empty'); end;");
             this.interrupt();
             cs.close();
-            executeQuery("begin deb_lib.close('"+pipe+"'); end;");
+            executeQuery("begin deb_lib.close('" + pipe + "'); end;");
             DBMSConnection.closeConnection(this);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }

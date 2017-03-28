@@ -1,46 +1,41 @@
 package views;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.sql.SQLException;
-
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
-import publicapi.ToolBar2API;
-import core.connection.BadPasswordException;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.Container;
 import core.rml.RmlObject;
 import core.rml.VisualRmlObject;
-import core.rml.dbi.exception.UpdateException;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZPanel;
+import publicapi.ToolBar2API;
+
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.sql.SQLException;
 
 /**
- * Еще одна Панель с кнопками 
- *
+ * Еще одна Панель с кнопками
  */
 
 public class ToolBar2 extends VisualRmlObject implements FocusListener, ToolBar2API {
 
-	private ZPanel panel = ZPanelImpl.create();
-	
-	private Container container = new Container(this);
+    private ZPanel panel = ZPanelImpl.create();
+
+    private Container container = new Container(this);
 
     public ToolBar2() {
-    	panel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 30));
-    	panel.addFocusListener(this);
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 30));
+        panel.addFocusListener(this);
     }
 
 
-    public void init(Proper p,Document doc) {
-    	super.init(p, doc);
-    	
+    public void init(Proper p, Document doc) {
+        super.init(p, doc);
+
         String s = (String) p.get("ALIGN");
         Integer i;
 
@@ -60,85 +55,84 @@ public class ToolBar2 extends VisualRmlObject implements FocusListener, ToolBar2
     }
 
     public int retrieve() throws Exception {
-    	container.retrieveAll();
-    	return 0;
+        container.retrieveAll();
+        return 0;
     }
 
     public void toDS() {
-    	container.toDSAll();
+        container.toDSAll();
     }
 
     public void fromDS() {
-    	container.fromDSAll();
+        container.fromDSAll();
     }
 
-    public void update() throws UpdateException, BadPasswordException, SQLException {
-    	container.updateAll();
+    public void update() throws SQLException {
+        container.updateAll();
     }
 
-	@Override
-	public void focusGained(FocusEvent e) {
+    @Override
+    public void focusGained(FocusEvent e) {
         try {
             Component c = panel.getJComponent().getComponent(0);
             c.requestFocus();
-        }
-        catch (IndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             ex.printStackTrace();
             panel.getParent().requestFocus();
         }
-	}
+    }
 
-	@Override
-	public void focusLost(FocusEvent e) {
-	}
+    @Override
+    public void focusLost(FocusEvent e) {
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
 
-        if (child instanceof VisualRmlObject){
+        if (child instanceof VisualRmlObject) {
             panel.add(((VisualRmlObject) child).getVisualComponent());
         }
-	}
+    }
 
-	@Override
-	public void focusThis() {
+    @Override
+    public void focusThis() {
         Component c = panel.getJComponent().getComponent(0);
         c.requestFocus();
-	}
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return panel;
-	}
-
-
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return panel;
+    }
 
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public void initChildren() {
+    }
 
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
+
+
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 
 }

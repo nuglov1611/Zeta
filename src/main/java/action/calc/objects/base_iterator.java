@@ -12,9 +12,9 @@
 package action.calc.objects;
 
 public abstract class base_iterator implements iterator {
-    protected int cursor    = -1;
+    protected int cursor = -1;
 
-    int           maxcursor = -1;
+    int maxcursor = -1;
 
     protected base_iterator() {
         maxcursor = -1;
@@ -28,8 +28,7 @@ public abstract class base_iterator implements iterator {
         cursor = 0;
         if (maxcursor >= cursor) {
             return new Double(1);
-        }
-        else {
+        } else {
             return new Double(0);
         }
     }
@@ -42,8 +41,7 @@ public abstract class base_iterator implements iterator {
         cursor = maxcursor;
         if (cursor >= 0) {
             return new Double(1);
-        }
-        else {
+        } else {
             return new Double(0);
         }
     }
@@ -51,14 +49,12 @@ public abstract class base_iterator implements iterator {
     public Double next() throws Exception {
         if (cursor == -1) {
             cursor = 0;
-        }
-        else {
+        } else {
             ++cursor;
         }
         if (maxcursor >= cursor) {
             return new Double(1);
-        }
-        else {
+        } else {
             cursor = maxcursor;
             return new Double(0);
         }
@@ -72,14 +68,12 @@ public abstract class base_iterator implements iterator {
     public Double prev() throws Exception {
         if (cursor == -1) {
             cursor = maxcursor;
-        }
-        else {
+        } else {
             --cursor;
         }
         if (cursor >= 0) {
             return new Double(1);
-        }
-        else {
+        } else {
             cursor = 0;
             return new Double(0);
         }

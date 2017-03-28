@@ -3,15 +3,15 @@ package views.printing;
 import java.util.StringTokenizer;
 
 public class Command {
-    public int      command;
+    public int command;
 
     public String[] sargs;
 
-    public int[]    iargs;
+    public int[] iargs;
 
-    public String   source;
+    public String source;
 
-    public String   dest;
+    public String dest;
 
     public Command(int com, String so, String des, int[] ia, String[] sa) {
         command = com;
@@ -43,7 +43,7 @@ public class Command {
         boolean wasslash = false;
 
         for (int i = 0; i < count; i++) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             s = st2.nextToken();
             for (int j = 0; j < s.length(); j++) {
                 if (s.charAt(j) == '\\' && !wasslash) {
@@ -68,21 +68,19 @@ public class Command {
     }
 
     public String getString() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(command);
 
         sb.append(",");
         if (source != null) {
             sb.append(source);
-        }
-        else {
+        } else {
             throw new Exception("Bad data into Command");
         }
         sb.append(",");
         if (dest != null) {
             sb.append(dest);
-        }
-        else {
+        } else {
             throw new Exception("Bad data into Command");
         }
         sb.append(",");
@@ -100,9 +98,8 @@ public class Command {
         for (String element : sargs) {
             if (element == null) {
                 sb.append("");
-            }
-            else {
-                StringBuffer sbinner = new StringBuffer();
+            } else {
+                StringBuilder sbinner = new StringBuilder();
                 for (int j = 0; j < element.length(); j++) {
                     if (element.charAt(j) == '"') {
                         sbinner.append("\\k");
@@ -141,7 +138,7 @@ public class Command {
         }
         sargs = new String[sa.length];
         for (int i = 0; i < sa.length; i++) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             s = sa[i];
             for (int j = 0; j < s.length(); j++) {
                 if (s.charAt(j) == '\\' && !wasslash) {

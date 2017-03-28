@@ -11,22 +11,21 @@
 
 package core.reflection.functions;
 
-import java.util.StringTokenizer;
-
-import org.apache.log4j.Logger;
-
 import action.calc.OP;
 import action.calc.Parser;
 import action.calc.Tree;
 import action.calc.functions.NullExternFunction;
+import org.apache.log4j.Logger;
+
+import java.util.StringTokenizer;
 
 public class DEFUN extends NullExternFunction {
-	private static final Logger log    = Logger.getLogger(DEFUN.class);
-    static final String fun  = "FUN DEFUN : ";
+    private static final Logger log = Logger.getLogger(DEFUN.class);
+    static final String fun = "FUN DEFUN : ";
 
-    Tree                func = null;
+    Tree func = null;
 
-    String              name = null;
+    String name = null;
 
     public Object eval() throws Exception {
         OP.getFunctions().put(name, func);
@@ -50,9 +49,8 @@ public class DEFUN extends NullExternFunction {
                 foo = (Tree) foo.right;
                 foo.left = st.nextToken().trim().toUpperCase();
             }
-        }
-        catch (Exception e) {
-        	log.error("", e);
+        } catch (Exception e) {
+            log.error("", e);
         }
 
         func = new Tree(Parser.parse1(arg.substring(p2 + 1).toCharArray()), a);

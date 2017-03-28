@@ -4,11 +4,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TreeNodeS extends DefaultMutableTreeNode {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
-    core.rml.dbi.Group                 data_object;
+    core.rml.dbi.Group data_object;
 
     public TreeNodeS(Object s) {
         super(s);

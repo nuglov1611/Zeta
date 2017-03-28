@@ -1,11 +1,10 @@
 package views.grid.listener;
 
+import views.grid.manager.GridTableManager;
+
+import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
-import javax.swing.JTable;
-
-import views.grid.manager.GridTableManager;
 
 public class GridFocusListener implements FocusListener {
 

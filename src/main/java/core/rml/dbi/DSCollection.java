@@ -1,63 +1,56 @@
 package core.rml.dbi;
 
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import publicapi.DSCollectionAPI;
 import action.api.RTException;
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.RmlObject;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import publicapi.DSCollectionAPI;
+
+import java.sql.*;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /*
  * обьект - коллекция DATASTORE позволяет совершать их синхронизацию с базой в
  * пределах одной транзакции
  */
 public class DSCollection extends Datastore implements DSCollectionAPI {
-    private static final Logger log        = Logger
-                                                   .getLogger(DSCollection.class);
+    private static final Logger log = Logger
+            .getLogger(DSCollection.class);
 
-    Datastore[]                 dss;
+    Datastore[] dss;
 
-    String                      query, seqQuery;
+    String query, seqQuery;
 
-    String[]                    aliases;
+    String[] aliases;
 
-    String[]                    names_sq;
+    String[] names_sq;
 
-    Hashtable<String, Object>   fromDBnames;
+    Hashtable<String, Object> fromDBnames;
 
-    Hashtable<String, Object>   seqNames   = new Hashtable<String, Object>();
+    Hashtable<String, Object> seqNames = new Hashtable<String, Object>();
 
-    Datastore                   head       = null;
+    Datastore head = null;
 
-    String                      initAction = null;
+    String initAction = null;
 
     public DSCollection(Document doc) {
         super(doc);
     }
 
     public DSCollection() {
-    	super();
-	}
+        super();
+    }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         setAliases((String) prop.get("ALIASES"));
         setInitQuery((String) prop.get("INITQUERY"));
         setSeqQuery((String) prop.get("SEQQUERY"));
@@ -65,45 +58,45 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
         setInitAction((String) prop.get("INITACTION"));
     }
 
-	public void setDatastores(Datastore[] dss) {
+    public void setDatastores(Datastore[] dss) {
         this.dss = dss;
-        for (int i = 0; i < dss.length; i++) {
-            if (dss[i].isHead()) {
-                head = dss[i];
+        for (Datastore ds : dss) {
+            if (ds.isHead()) {
+                head = ds;
             }
         }
     }
 
     public void removeDs(String alias) {
         Vector<Datastore> v = new Vector<Datastore>();
-        for (int i = 0; i < dss.length; i++) {
-            if (!dss[i].getAlias().equals(alias)) {
-                v.addElement(dss[i]);
+        for (Datastore ds1 : dss) {
+            if (!ds1.getAlias().equals(alias)) {
+                v.addElement(ds1);
             }
         }
         Datastore ds[] = new Datastore[v.size()];
         v.copyInto(ds);
         dss = ds;
     }
-    
+
     @Override
-    public void addChild(RmlObject child){
+    public void addChild(RmlObject child) {
         super.addChild(child);
-        
-    	if(child instanceof Datastore && dss != null){
-    		addDs((Datastore) child);
-    	}
+
+        if (child instanceof Datastore && dss != null) {
+            addDs((Datastore) child);
+        }
     }
 
     public void addDs(Datastore ds) {
-    	try{
-	        Datastore[] dsa = new Datastore[dss.length + 1];
-	        System.arraycopy(dss, 0, dsa, 0, dss.length);
-	        dsa[dss.length] = ds;
-	        dss = dsa;
-    	}catch(Exception e){
-    		log.error("!", e);
-    	}
+        try {
+            Datastore[] dsa = new Datastore[dss.length + 1];
+            System.arraycopy(dss, 0, dsa, 0, dss.length);
+            dsa[dss.length] = ds;
+            dss = dsa;
+        } catch (Exception e) {
+            log.error("!", e);
+        }
     }
 
     public void setSeqQuery(String seqQuery) {
@@ -145,23 +138,20 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                 types = rmd.getColumnType(i);
                 if (types == Types.NUMERIC) {
                     dat = new Double(rset.getDouble(i));
-                }
-                else {
+                } else {
                     dat = rset.getObject(i);
                 }
                 seqNames.put(names_sq[i - 1], dat);
             }
             rset.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Shit happens", e);
             throw new ConnectException("Потеря соединения с сервером");
-        }
-        finally{
-            if(stmt != null)
-                try{
+        } finally {
+            if (stmt != null)
+                try {
                     stmt.close();
-                }catch(SQLException e){
+                } catch (SQLException e) {
                     log.error("!", e);
                 }
         }
@@ -172,11 +162,10 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
         if (dss == null) {
             return 0;
         }
-        for (int i = 0; i < dss.length; i++) {
+        for (Datastore ds : dss) {
             try {
-                dss[i].retrieve();
-            }
-            catch (Exception e) {
+                ds.retrieve();
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -185,11 +174,12 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
 
     /**
      * метод, синхронизирующий коллекцию DATASTORE с базой
-     * @throws BadPasswordException 
-     * @throws SQLException 
+     *
+     * @throws BadPasswordException
+     * @throws SQLException
      */
     @Override
-    public void update() throws BadPasswordException, SQLException {
+    public void update() throws SQLException {
         int i = 0;
         if (ZetaProperties.dstore_debug > 0) {
             log.debug("core.rml.dbi.DSCollection.update called");
@@ -210,8 +200,7 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                     dss[i].update();
                     log.debug("core.rml.dbi.DSCOlection.update " + dss[i]);
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 if (ZetaProperties.dstore_debug > 0) {
                     log.error("Shit happens", e);
                 }
@@ -219,15 +208,14 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                     dss[i].rollback();
                     log.debug("rollback in " + dss[i]);
                 }
-                
+
                 document.getConnection().rollback();
                 if (ZetaProperties.dstore_debug > 0) {
                     log.debug("core.rml.dbi.DSCollection: Rollback PERFORMED");
                 }
                 log.debug("core.rml.dbi.DSCollection.updateException " + e);
                 throw e;
-            }
-            catch (Exception e1) {
+            } catch (Exception e1) {
                 log.error("Shit happens", e1);
                 document.getConnection().rollback();
 //                if (e1.getMessage().toUpperCase().indexOf("PROTOCOL") != -1) {
@@ -243,13 +231,11 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
             if (ZetaProperties.dstore_debug > 0) {
                 log.debug("core.rml.dbi.DSCollection: COMMIT PERFORMED");
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             if (e instanceof UpdateException) {
                 log.error("Shit happens", e);
                 throw e;
-            }
-            else {
+            } else {
                 log
                         .debug("core.rml.dbi.DSCollection.update: ConnectException performed");
                 log.error("Shit happens", e);
@@ -262,12 +248,12 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
     public void reset() throws ConnectException, BadPasswordException {
         ResultSet rset = null;
         ResultSetMetaData rmd = null;
-        Statement stmt = null; 
+        Statement stmt = null;
         try {
             stmt = document.getConnection().createStatement();
             log.debug("core.rml.dbi.DSCollection.reset before execute query=" + query);
             rset = stmt.executeQuery(query);
-            if(rset != null){
+            if (rset != null) {
                 rmd = rset.getMetaData();
                 int columnCount = rmd.getColumnCount();
                 int types;
@@ -281,11 +267,10 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                     types = rmd.getColumnType(i);
                     if (types == Types.NUMERIC) {
                         dat = new Double(rset.getDouble(i));
-                    }
-                    else {
+                    } else {
                         dat = rset.getObject(i);
                     }
-    
+
                     fromDBnames.put(aliases[i - 1], dat);
                     if (ZetaProperties.dstore_debug > 0) {
                         log.debug("core.rml.dbi.DSCollection.reset aliases="
@@ -294,21 +279,19 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                 }
                 rset.close();
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Shit happens", e);
             log.debug("core.rml.dbi.DSCollection.reset " + e);
             throw new ConnectException("Потеря соединения с сервером");
-        }
-        finally{
-            if(stmt != null)
-                try{
+        } finally {
+            if (stmt != null)
+                try {
                     stmt.close();
-                }catch(SQLException e){
+                } catch (SQLException e) {
                     log.error("!", e);
                 }
         }
-        
+
         if (ZetaProperties.dstore_debug > 0) {
             log.debug("core.rml.dbi.DSCollection.reset dss.length=" + dss.length);
         }
@@ -318,25 +301,23 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                 head.clear();
                 head.newRow();
             }
-            for (int i = 0; i < dss.length; i++) {
-                if (!dss[i].isHead()) {
-                    dss[i].retrieve();
-                    dss[i].clear();
+            for (Datastore ds : dss) {
+                if (!ds.isHead()) {
+                    ds.retrieve();
+                    ds.clear();
                 }
-                if (dss[i].handler != null) {
-                    dss[i].handler.notifyHandler(null);
+                if (ds.handler != null) {
+                    ds.handler.notifyHandler(null);
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         if (initAction != null) {
 
             try {
                 document.executeScript(initAction, true);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
 
@@ -369,8 +350,7 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
             for (int i = 0; i < count; i++) {
                 aliases[i] = st.nextToken().trim();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -399,8 +379,7 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
             try {
                 o = seqNames.get(name);
                 nextVal();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 return null;
             }
@@ -415,67 +394,57 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
             try {
                 removeDs((String) arg);
                 return new Double(0);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException("CastException",
                         "method DELSTORE must have"
                                 + " one parameter compateable with String type");
             }
-        }
-        else if (method.equals("ADDSTORE")) {
+        } else if (method.equals("ADDSTORE")) {
             try {
                 addDs((Datastore) arg);
                 return new Double(0);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 log.error("Shit happens", e);
                 throw new RTException(
                         "CastException",
                         "method ADDSTORE must have"
                                 + "one parameter compateable with DATASTORE type");
             }
-        }
-        else if (method.equals("LOCKROW")) {
+        } else if (method.equals("LOCKROW")) {
             try {
                 Vector<String> v = (Vector<String>) arg;
-                String table = (String) v.elementAt(0);
-                String key = (String) v.elementAt(1);
+                String table = v.elementAt(0);
+                String key = v.elementAt(1);
                 Object val = v.elementAt(2);
                 lockRow(table, key, val);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
+                log.error("Shit happens", e);
+                throw new RTException("CastException",
+                        "Wrong arguments of LockRow <Table>, <Key>, <Value>");
+            } catch (IndexOutOfBoundsException e) {
                 log.error("Shit happens", e);
                 throw new RTException("CastException",
                         "Wrong arguments of LockRow <Table>, <Key>, <Value>");
             }
-            catch (IndexOutOfBoundsException e) {
-                log.error("Shit happens", e);
-                throw new RTException("CastException",
-                        "Wrong arguments of LockRow <Table>, <Key>, <Value>");
-            }
-        }
-        else if (method.equals("ISCONNECTED")) {
+        } else if (method.equals("ISCONNECTED")) {
             Statement stmt = null;
             try {
                 stmt = document.getConnection().createStatement();
                 stmt.executeQuery("select user from dual");
                 return new Double(1);
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("Shit happens", e);
                 return new Double(0);
-            }
-            finally{
-                if(stmt != null)
-                    try{
+            } finally {
+                if (stmt != null)
+                    try {
                         stmt.close();
-                    }catch(SQLException e){
+                    } catch (SQLException e) {
                         log.error("!", e);
                     }
             }
-        }
-        else {
+        } else {
             throw new RTException("HasNotMethod", "method " + method
                     + " not defined in class DSCOLLECTION!");
         }
@@ -483,9 +452,9 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
 
     }
 
-    private static Vector<CallableStatement> locks     = new Vector<CallableStatement>();
+    private static Vector<CallableStatement> locks = new Vector<CallableStatement>();
 
-    private Vector<CallableStatement>        thisLocks = new Vector<CallableStatement>();
+    private Vector<CallableStatement> thisLocks = new Vector<CallableStatement>();
 
     public static synchronized void repeatLocks() throws SQLException {
         for (int i = 0; i < locks.size(); i++) {
@@ -499,10 +468,9 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                 locks.removeElement(thisLocks.elementAt(i));
             }
             try {
-            	document.getConnection().rollback();
+                document.getConnection().rollback();
                 repeatLocks();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("Shit happens", e);
             }
         }
@@ -515,11 +483,9 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
                     + " where " + key + "=";
             if (val instanceof String) {
                 sql += "'" + val + "'";
-            }
-            else if (val instanceof Double) {
+            } else if (val instanceof Double) {
                 sql += val;
-            }
-            else {
+            } else {
                 throw new RTException("CastException",
                         "<Value> can be only String or Number");
             }
@@ -529,21 +495,18 @@ public class DSCollection extends Datastore implements DSCollectionAPI {
             CallableStatement cs = document.getConnection().prepareCall(sql);
             if (val instanceof String) {
                 cs.registerOutParameter(1, java.sql.Types.VARCHAR);
-            }
-            else if (val instanceof Double) {
+            } else if (val instanceof Double) {
                 cs.registerOutParameter(1, java.sql.Types.NUMERIC);
             }
 
             try {
                 cs.executeUpdate();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("Shit happens", e);
-                if (e.getMessage().indexOf("NOWAIT") > -1) {
+                if (e.getMessage().contains("NOWAIT")) {
                     throw new SQLException(ZetaUtility.pr(ZetaProperties.MSG_BLOCKED,
                             "Объект уже заблокирован другим пользователем"));
-                }
-                else {
+                } else {
                     throw e;
                 }
             }

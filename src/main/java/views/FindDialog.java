@@ -1,55 +1,39 @@
 package views;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-
-import views.grid.GridSwing;
 import core.browser.WorkspaceManager;
+import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class FindDialog extends JDialog {
-    JCheckBox      casebox;
+    JCheckBox casebox;
 
-    JCheckBox      down;
+    JCheckBox down;
 
-    JCheckBox      up;
+    JCheckBox up;
 
-    ButtonGroup    direction;
+    ButtonGroup direction;
 
-    JTextField     pattern;
+    JTextField pattern;
 
-    JButton        find;
+    JButton find;
 
-    JButton        close;
+    JButton close;
 
-    Object         parent;
+    Object parent;
 
     public boolean find_pressed;
 
     public boolean go_down = true;
 
-    public boolean caze    = false;
+    public boolean caze = false;
 
-    public String  text;
+    public String text;
 
     public FindDialog(Object parent, String title, int width, int height,
-            boolean modal) {
+                      boolean modal) {
         super(WorkspaceManager.getCurWorkspace().getFrame(), title, modal);
         if (UIManager.getLookAndFeel().getSupportsWindowDecorations()) {
             this.setUndecorated(true);
@@ -139,8 +123,7 @@ public class FindDialog extends JDialog {
             // new Thread(new TitleSetter()).start();
             super.setVisible(true);
             pattern.requestFocus();
-        }
-        else {
+        } else {
             super.setVisible(false);
         }
     }
@@ -151,8 +134,7 @@ public class FindDialog extends JDialog {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 new BL().actionPerformed(new ActionEvent(find,
                         ActionEvent.ACTION_PERFORMED, ""));
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 new BL().actionPerformed(new ActionEvent(close,
                         ActionEvent.ACTION_PERFORMED, ""));
             }
@@ -170,9 +152,7 @@ public class FindDialog extends JDialog {
                         ((GridSwing) parent).focusThis();
                     }
                 }
-                return;
-            }
-            if (e.getSource().equals(close)) {
+            } else if (e.getSource().equals(close)) {
                 find_pressed = false;
                 dispose();
                 if (parent != null) {
@@ -180,7 +160,6 @@ public class FindDialog extends JDialog {
                         ((GridSwing) parent).focusThis();
                     }
                 }
-                return;
             }
         }
     }
@@ -188,31 +167,11 @@ public class FindDialog extends JDialog {
     class IL implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
             if (e.getSource().equals(down)) {
-                if (((JCheckBox) e.getSource()).isSelected()) {
-                    go_down = true;
-                }
-                else {
-                    go_down = false;
-                }
-                return;
-            }
-            if (e.getSource().equals(up)) {
-                if (((JCheckBox) e.getSource()).isSelected()) {
-                    go_down = false;
-                }
-                else {
-                    go_down = true;
-                }
-                return;
-            }
-            if (e.getSource().equals(casebox)) {
-                if (((JCheckBox) e.getSource()).isSelected()) {
-                    caze = true;
-                }
-                else {
-                    caze = false;
-                }
-                return;
+                go_down = ((JCheckBox) e.getSource()).isSelected();
+            } else if (e.getSource().equals(up)) {
+                go_down = !((JCheckBox) e.getSource()).isSelected();
+            } else if (e.getSource().equals(casebox)) {
+                caze = ((JCheckBox) e.getSource()).isSelected();
             }
         }
     }

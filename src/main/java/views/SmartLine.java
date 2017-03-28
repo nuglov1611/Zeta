@@ -1,30 +1,28 @@
 package views;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
 
 public class SmartLine {
-    static int     LW      = 25;                         // толщина линии(при рисовании в контексте RGraphics);
+    static int LW = 25;                         // толщина линии(при рисовании в контексте RGraphics);
 
-    int            width   = 10;
+    int width = 10;
 
-    int            type    = 0;                          // 0-горизонтальная; 1-вертикальная
+    int type = 0;                          // 0-горизонтальная; 1-вертикальная
 
     public boolean isPrint = false;
 
-    private int    fwidth;
+    private int fwidth;
 
-    private int    fheight;
+    private int fheight;
 
-    private int    fdesc;
+    private int fdesc;
 
     // толщине линии в 1 пиксел(1/72 дюйма) соответствует
     // LW=100.
 
-    Graphics       g       = null;
+    Graphics g = null;
 
-    Font           font    = new Font("Serif", 0, width);
+    Font font = new Font("Serif", 0, width);
 
     public SmartLine(Graphics g) {
         this.g = g;
@@ -60,8 +58,7 @@ public class SmartLine {
                         50 * a / 100);
                 g.drawLine(x * a / 100, y * a / 100, (x + size - 1) * a / 100,
                         y * a / 100);
-            }
-            else if (type == 1) {
+            } else if (type == 1) {
                 g.setClip((x - 25) * a / 100, y * a / 100, 50 * a / 100, size
                         * a / 100);
                 g.drawLine(x * a / 100, y * a / 100, x * a / 100,
@@ -75,17 +72,17 @@ public class SmartLine {
             // gr.setClip(0,0,Report.pageSize.width+1,
             // Report.pageSize.height+1);
             switch (type) {
-            case 0: {
-                gr.setClip(x, y - 25, size, 50);
-                gr.drawLine(x, y, x + size - 1, y, LW);
-                break;
-            }
+                case 0: {
+                    gr.setClip(x, y - 25, size, 50);
+                    gr.drawLine(x, y, x + size - 1, y, LW);
+                    break;
+                }
 
-            case 1: {
-                gr.setClip(x - 25, y, 50, size);
-                gr.drawLine(x, y, x, y + size - 1, LW);
-                break;
-            }
+                case 1: {
+                    gr.setClip(x - 25, y, 50, size);
+                    gr.drawLine(x, y, x, y + size - 1, LW);
+                    break;
+                }
             }
             return;
         }
@@ -93,26 +90,26 @@ public class SmartLine {
         calcparam(g);
         int c = 0;
         switch (type) {
-        case 0: {
-            c = size / fwidth + 1;
-            int dy = 0;
-            // if (width>=10) dy=1;
-            g.setClip(x, y - 25, size, 50);
-            // if (y-fdesc+1<0) System.out.println("y-fdesc+1="+(y-fdesc+1));
-            for (int i = 0; i < c; i++) {
-                g.drawString("_", x + i * fwidth, y - fdesc + 1 + dy);
+            case 0: {
+                c = size / fwidth + 1;
+                int dy = 0;
+                // if (width>=10) dy=1;
+                g.setClip(x, y - 25, size, 50);
+                // if (y-fdesc+1<0) System.out.println("y-fdesc+1="+(y-fdesc+1));
+                for (int i = 0; i < c; i++) {
+                    g.drawString("_", x + i * fwidth, y - fdesc + 1 + dy);
+                }
+                break;
             }
-            break;
-        }
-        case 1: {
-            c = size / fheight + 2;
-            int off = -1;
-            // if (font.getSize()>10) off = -1;
-            g.setClip(x - 25, y, 50, size);
-            for (int i = 0; i < c; i++) {
-                g.drawString("|", x + off, y + i * fheight);
+            case 1: {
+                c = size / fheight + 2;
+                int off = -1;
+                // if (font.getSize()>10) off = -1;
+                g.setClip(x - 25, y, 50, size);
+                for (int i = 0; i < c; i++) {
+                    g.drawString("|", x + off, y + i * fheight);
+                }
             }
-        }
         }
     }
 

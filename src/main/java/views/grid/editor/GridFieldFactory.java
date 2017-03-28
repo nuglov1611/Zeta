@@ -37,8 +37,7 @@ public class GridFieldFactory {
                 String strVal;
                 try {
                     strVal = column.valueToString(value);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     strVal = value.toString();
                 }
                 if (strVal == null) {
@@ -63,7 +62,7 @@ public class GridFieldFactory {
         int type = GridSwing.getJType(column.getType());
 
         CommonField field;
-        
+
         boolean isEditable = isFieldEditable(isTableEditable, columnEditable);
 
         value = getEditableValue(column, value);

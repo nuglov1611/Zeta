@@ -12,5 +12,5 @@
 package core.document;
 
 public interface Closeable {
-    public void closeNotify();
+    void closeNotify();
 }

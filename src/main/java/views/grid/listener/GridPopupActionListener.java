@@ -1,12 +1,11 @@
 package views.grid.listener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import org.apache.log4j.Logger;
-
 import views.grid.GridSwing;
 import views.menu.ZMenuItem;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GridPopupActionListener implements ActionListener {
 
@@ -26,16 +25,14 @@ public class GridPopupActionListener implements ActionListener {
         log.debug("Action performed:" + command);
         try {
             parent.getDoc().doAction(command, parent);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Shit happens", ex);
         }
         if (e.getSource() instanceof ZMenuItem) {
             String script = ((ZMenuItem) e.getSource()).getExp();
             try {
-            	parent.getDoc().executeScript(script, false);
-            }
-            catch (Exception ex) {
+                parent.getDoc().executeScript(script, false);
+            } catch (Exception ex) {
                 log.error("Shit happens", ex);
             }
         }

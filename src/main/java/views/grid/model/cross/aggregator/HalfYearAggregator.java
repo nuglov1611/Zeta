@@ -19,7 +19,7 @@ public class HalfYearAggregator extends GenericAggregator implements Serializabl
     public Object decodeValue(Object value) {
         if (value != null && value instanceof java.util.Date) {
             cal.setTimeInMillis(((java.util.Date) value).getTime());
-            int month = cal.get(cal.MONTH);
+            int month = cal.get(Calendar.MONTH);
             if (month <= 6)
                 return new Double(1);
             else

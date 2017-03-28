@@ -12,5 +12,5 @@
 package action.calc.objects;
 
 public interface class_constructor {
-    public Object constructor(Object arg) throws Exception;
+    Object constructor(Object arg) throws Exception;
 }

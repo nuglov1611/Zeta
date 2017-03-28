@@ -12,13 +12,13 @@ package action.api;
 
 public class RTException extends Exception {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
-    public String             type;
+    public String type;
 
-    public String             trap;
+    public String trap;
 
     public RTException() {
         super("calc.RTException");

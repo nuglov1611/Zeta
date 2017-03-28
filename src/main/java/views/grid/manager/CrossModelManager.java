@@ -1,15 +1,8 @@
 package views.grid.manager;
 
-import java.awt.Cursor;
-import java.awt.Toolkit;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.SwingUtilities;
-
+import core.parser.Proper;
+import core.rml.RmlConstants;
+import core.rml.dbi.DatastoreModel;
 import views.ColumnTemplate;
 import views.grid.GridColumn;
 import views.grid.GridSwing;
@@ -17,26 +10,21 @@ import views.grid.model.GridMetadataModel;
 import views.grid.model.cross.CrossColumnModel;
 import views.grid.model.cross.CrossDataModel;
 import views.grid.model.cross.CrossRowModel;
-import views.grid.model.cross.functions.AverageFunction;
-import views.grid.model.cross.functions.DisplayFunction;
-import views.grid.model.cross.functions.GenericFunction;
-import views.grid.model.cross.functions.MaxFunction;
-import views.grid.model.cross.functions.MinFunction;
-import views.grid.model.cross.functions.SumFunction;
+import views.grid.model.cross.functions.*;
 import views.grid.model.cross.node.ColGenericNode;
 import views.grid.model.cross.node.GenericNodeKey;
 import views.grid.model.cross.node.GlobalColGenericNode;
 import views.grid.model.cross.node.RowGenericNode;
-import views.grid.model.cross.parameters.ColumnField;
-import views.grid.model.cross.parameters.CrossField;
-import views.grid.model.cross.parameters.CrossParameters;
-import views.grid.model.cross.parameters.CrossParametersAccessor;
-import views.grid.model.cross.parameters.DataField;
-import views.grid.model.cross.parameters.RowField;
+import views.grid.model.cross.parameters.*;
 import views.grid.renderer.cross.CellSpanModel;
-import core.parser.Proper;
-import core.rml.RmlConstants;
-import core.rml.dbi.DatastoreModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author: vagapova.m
@@ -393,7 +381,7 @@ public class CrossModelManager {
                         if (num == null) {
                             row[dataColIndex++] = null;
                         } else {
-                            row[dataColIndex++] = ((DisplayFunction)gf).getDisplayValue();
+                            row[dataColIndex++] = ((DisplayFunction) gf).getDisplayValue();
                         }
                     } else {
                         if (num == null) {
@@ -429,9 +417,9 @@ public class CrossModelManager {
             n = parentNode.getChildren(i);
             if (descriptionRequired) {
                 col[0] = parent.getParametersAccessor().getDataField(0).getDescription();
-                col[pos+1] = formatValue(n.getValue());
+                col[pos + 1] = formatValue(n.getValue());
             } else {
-            col[pos] = formatValue(n.getValue());
+                col[pos] = formatValue(n.getValue());
             }
             cols.add(col);
             oldIndex = cols.size() - 1;
@@ -563,7 +551,7 @@ public class CrossModelManager {
         buildCrossTableModel();
     }
 
-    private final void coordinateRow(int row, boolean expanded) {
+    private void coordinateRow(int row, boolean expanded) {
         int r = 0;
         //TODO put it back
 //        if (row > 0) {
@@ -596,7 +584,7 @@ public class CrossModelManager {
         coordinateRow(row, false);
     }
 
-    private final void coordinateColumn(int column, boolean expanded) {
+    private void coordinateColumn(int column, boolean expanded) {
         int c = 0;
         //TODO put it back
 //        if (column > 0) {

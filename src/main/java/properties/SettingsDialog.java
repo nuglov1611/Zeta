@@ -1,54 +1,22 @@
 package properties;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import boot.Boot;
+import core.browser.AboutDialog;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+import views.MessageFactory;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
-import views.MessageFactory;
-import boot.Boot;
-import core.browser.AboutDialog;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.ResourceBundle;
 
 /*
  * The application's main frame.
@@ -370,19 +338,19 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
         displayTabLayout.setVerticalGroup(
                 displayTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(displayTabLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbLoginAuto, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap()
-                        .addGroup(displayTabLayout.createParallelGroup()
-                                .addComponent(lblAutoLoginSession, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cbSessions, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-                        )
-                        .addComponent(cbLoginAfterExit)
-                        .addGap(19, 19, 19)
-                        .addComponent(lblReportZoom)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(slReportZoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                                .addContainerGap()
+                                .addComponent(cbLoginAuto, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()
+                                .addGroup(displayTabLayout.createParallelGroup()
+                                        .addComponent(lblAutoLoginSession, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cbSessions, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                                )
+                                .addComponent(cbLoginAfterExit)
+                                .addGap(19, 19, 19)
+                                .addComponent(lblReportZoom)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(slReportZoom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
     }
 
@@ -402,60 +370,60 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
                                                                         .addComponent(lblProxyPort))
                                                                 .addGap(20, 20, 20))
                                                         .addGroup(proxyPanelLayout.createSequentialGroup()
-                                                        .addComponent(lblProxyServer)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)))
+                                                                .addComponent(lblProxyServer)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)))
                                                 .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(cbProxyType, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(txtProxyServer)
-                                                .addComponent(txtProxyPort, GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
+                                                        .addComponent(cbProxyType, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtProxyServer)
+                                                        .addComponent(txtProxyPort, GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
                                         .addComponent(cbUseProxy, GroupLayout.Alignment.LEADING))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(proxyPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(proxyPanelLayout.createSequentialGroup()
-                                        .addComponent(cbProxyAuthorization, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cbNtlmAuth))
-                                .addGroup(proxyPanelLayout.createSequentialGroup()
-                                        .addComponent(lblProxyLogin)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtProxyLogin, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
-                                .addGroup(proxyPanelLayout.createSequentialGroup()
-                                .addComponent(lblProxyPassword)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtProxyPassword, GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
-                        .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(proxyPanelLayout.createSequentialGroup()
+                                                .addComponent(cbProxyAuthorization, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(cbNtlmAuth))
+                                        .addGroup(proxyPanelLayout.createSequentialGroup()
+                                                .addComponent(lblProxyLogin)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtProxyLogin, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
+                                        .addGroup(proxyPanelLayout.createSequentialGroup()
+                                                .addComponent(lblProxyPassword)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtProxyPassword, GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
         proxyPanelLayout.setVerticalGroup(
                 proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(proxyPanelLayout.createSequentialGroup()
-                        .addComponent(cbUseProxy)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(cbProxyType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblProxyType))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblProxyServer)
-                                .addComponent(txtProxyServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblProxyPort)
-                                .addComponent(txtProxyPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(cbProxyAuthorization)
-                                .addComponent(cbNtlmAuth))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblProxyLogin)
-                                .addComponent(txtProxyLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblProxyPassword)
-                                .addComponent(txtProxyPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(27, Short.MAX_VALUE))
+                                .addComponent(cbUseProxy)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(cbProxyType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblProxyType))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblProxyServer)
+                                        .addComponent(txtProxyServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblProxyPort)
+                                        .addComponent(txtProxyPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(cbProxyAuthorization)
+                                        .addComponent(cbNtlmAuth))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblProxyLogin)
+                                        .addComponent(txtProxyLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(proxyPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblProxyPassword)
+                                        .addComponent(txtProxyPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(27, Short.MAX_VALUE))
         );
     }
 
@@ -473,12 +441,12 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
         cachePanelLayout.setVerticalGroup(
                 cachePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(cachePanelLayout.createSequentialGroup()
-                        .addComponent(cbUseCache)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(cachePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblCachePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtCachePath))
-        ));
+                                .addComponent(cbUseCache)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(cachePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblCachePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtCachePath))
+                        ));
     }
 
     private void initSessionPanelLayout() {
@@ -490,11 +458,11 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
                         .addComponent(spSessionList, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(sessionPanelLayout
-                        .createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                        .addComponent(bNewSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                        .addComponent(bEditSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                        .addComponent(bCloneSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                        .addComponent(bDelSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)));
+                                .createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(bNewSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                .addComponent(bEditSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                .addComponent(bCloneSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                .addComponent(bDelSession, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)));
         sessionPanelLayout
                 .setVerticalGroup(sessionPanelLayout
                         .createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -517,58 +485,58 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
                 .setHorizontalGroup(previewPanelLayout
                         .createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(previewPanelLayout
-                        .createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(previewPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblRmlServer)
+                                .createSequentialGroup()
+                                .addContainerGap()
                                 .addGroup(previewPanelLayout
-                                        .createSequentialGroup()
+                                        .createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(lblRmlServer)
                                         .addGroup(previewPanelLayout
-                                                .createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtDbName, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                                                .addComponent(txtServer, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                                                .addComponent(lblServer)
-                                                .addComponent(lblDbname))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(previewPanelLayout
-                                        .createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addComponent(txtPort, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                                        .addComponent(txtLogin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                                        .addComponent(lblLogin, GroupLayout.Alignment.LEADING)
-                                        .addComponent(lblPort, GroupLayout.Alignment.LEADING)))
-                                .addComponent(txtRmlServer, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE))
-                        .addContainerGap()));
+                                                .createSequentialGroup()
+                                                .addGroup(previewPanelLayout
+                                                        .createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(txtDbName, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                                                        .addComponent(txtServer, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                                                        .addComponent(lblServer)
+                                                        .addComponent(lblDbname))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(previewPanelLayout
+                                                        .createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(txtPort, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                                        .addComponent(txtLogin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                                        .addComponent(lblLogin, GroupLayout.Alignment.LEADING)
+                                                        .addComponent(lblPort, GroupLayout.Alignment.LEADING)))
+                                        .addComponent(txtRmlServer, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE))
+                                .addContainerGap()));
         previewPanelLayout
                 .setVerticalGroup(previewPanelLayout
                         .createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(previewPanelLayout
-                        .createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(previewPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblDbname)
-                                .addComponent(lblLogin))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(previewPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtDbName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(previewPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblServer)
-                                .addComponent(lblPort))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(previewPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblRmlServer)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                .createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(previewPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblDbname)
+                                        .addComponent(lblLogin))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(previewPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtDbName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(previewPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblServer)
+                                        .addComponent(lblPort))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(previewPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblRmlServer)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
     }
 
     private void initProxyTabLayout() {
@@ -801,8 +769,8 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
             if (cbLoginAuto.isSelected()) {
                 Session loginSession = (Session) cbSessions.getSelectedItem();
                 if (loginSession != null) {
-                PropertyManager.getIntance().saveProperty(PropertyConstants.DEFAULT_LOGIN_SESSION, loginSession.getId());
-            }
+                    PropertyManager.getIntance().saveProperty(PropertyConstants.DEFAULT_LOGIN_SESSION, loginSession.getId());
+                }
             }
             setVisible(false);
             bootFrame.updateSessions(true);
@@ -811,15 +779,15 @@ public class SettingsDialog extends JDialog implements ActionListener, FocusList
             bootFrame.updateSessions(true);
         } else if (source == aboutMenuItem) {
             final AboutDialog aboutDialog = new AboutDialog("О программе", bootFrame);
-            if(SwingUtilities.isEventDispatchThread())
-            aboutDialog.setVisible(true);
-            else{
-            	SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-		            	aboutDialog.setVisible(true);
-					}
-				});
+            if (SwingUtilities.isEventDispatchThread())
+                aboutDialog.setVisible(true);
+            else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        aboutDialog.setVisible(true);
+                    }
+                });
             }
         } else if (source == cbUseProxy) {
             String useProxy = PropertyManager.getXmlBooleanProperty(cbUseProxy.isSelected());

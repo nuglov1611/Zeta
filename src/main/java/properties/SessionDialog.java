@@ -1,39 +1,17 @@
 package properties;
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
+import loader.ZetaProperties;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
-
-import loader.ZetaProperties;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class SessionDialog extends JDialog implements FocusListener, ActionListener, WindowListener, CaretListener {
 
@@ -201,11 +179,11 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
                         .addComponent(dbPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(rmlPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(saveButton)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
-                .addComponent(cancelButton)
-                .addContainerGap()));
+                        .addContainerGap()
+                        .addComponent(saveButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
+                        .addComponent(cancelButton)
+                        .addContainerGap()));
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblSession).addComponent(txtSession, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(dbPanel, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(rmlPanel, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(saveButton).addComponent(cancelButton))
                 .addContainerGap()));
     }
@@ -221,8 +199,8 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
                                         .addComponent(txtDbServer, GroupLayout.PREFERRED_SIZE, 267, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(dbPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(txtDbPort, GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
-                                .addComponent(lblDbPort)))
+                                        .addComponent(txtDbPort, GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                                        .addComponent(lblDbPort)))
                         .addComponent(lblDbname)
                         .addGroup(dbPanelLayout
                                 .createSequentialGroup()
@@ -232,108 +210,108 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
                                         .addComponent(lblDbLogin))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(dbPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(dbPanelLayout
-                                        .createSequentialGroup()
-                                        .addComponent(lblPassword)
-                                        .addGap(120, 120, 120))
-                                .addComponent(txtDbPassword, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)))
+                                        .createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(dbPanelLayout
+                                                .createSequentialGroup()
+                                                .addComponent(lblPassword)
+                                                .addGap(120, 120, 120))
+                                        .addComponent(txtDbPassword, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)))
                         .addComponent(txtDbName, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE));
         dbPanelLayout
                 .setVerticalGroup(dbPanelLayout
                         .createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(dbPanelLayout
-                        .createSequentialGroup()
-                        .addGroup(dbPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblDbServer)
-                                .addComponent(lblDbPort))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(dbPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtDbServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtDbPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDbname)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtDbName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(dbPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblDbLogin)
-                                .addComponent(lblPassword))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(dbPanelLayout
-                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtDbUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtDbPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(47, 47, 47)));
+                                .createSequentialGroup()
+                                .addGroup(dbPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblDbServer)
+                                        .addComponent(lblDbPort))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(dbPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtDbServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtDbPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblDbname)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtDbName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(dbPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblDbLogin)
+                                        .addComponent(lblPassword))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(dbPanelLayout
+                                        .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtDbUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtDbPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(47, 47, 47)));
     }
 
     private void fillRmlPanelLayout() {
         GroupLayout rmlPanelLayout = new GroupLayout(rmlPanel);
         rmlPanel.setLayout(rmlPanelLayout);
         rmlPanelLayout.setHorizontalGroup(
-            rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(rmlPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(cbAutoDownload)
-                    .addGroup(rmlPanelLayout.createSequentialGroup()
-                        .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(lblServerType)
-                            .addComponent(lblRmlServer))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(rmlPanelLayout.createSequentialGroup()
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbServerType, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                                .addComponent(lblRmlLogin)
-                                .addGap(10, 10, 10))
-                            .addGroup(rmlPanelLayout.createSequentialGroup()
-                                .addComponent(lblRmlPassword)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
-                        .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtRmlPassword, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtRmlLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(lblStartDoc)
-                    .addGroup(rmlPanelLayout.createSequentialGroup()
-                        .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtStartDoc, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addComponent(browseFileButton, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(browseServerButton, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(cbAutoDownload)
+                                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(lblServerType)
+                                                        .addComponent(lblRmlServer))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(cbServerType, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                                                                .addComponent(lblRmlLogin)
+                                                                .addGap(10, 10, 10))
+                                                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                                                .addComponent(lblRmlPassword)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
+                                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(txtRmlPassword, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtRmlLogin, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(lblStartDoc)
+                                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtStartDoc, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(browseFileButton, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(browseServerButton, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))))
+                                .addContainerGap())
         );
         rmlPanelLayout.setVerticalGroup(
-            rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(rmlPanelLayout.createSequentialGroup()
-                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblServerType)
-                    .addComponent(txtRmlLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblRmlLogin)
-                    .addComponent(cbServerType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtRmlPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblRmlPassword)
-                    .addComponent(lblRmlServer))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(browseServerButton)
-                    .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblStartDoc)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtStartDoc, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(browseFileButton))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbAutoDownload)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(rmlPanelLayout.createSequentialGroup()
+                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblServerType)
+                                        .addComponent(txtRmlLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblRmlLogin)
+                                        .addComponent(cbServerType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtRmlPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblRmlPassword)
+                                        .addComponent(lblRmlServer))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(browseServerButton)
+                                        .addComponent(txtRmlServer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblStartDoc)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(rmlPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtStartDoc, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(browseFileButton))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cbAutoDownload)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }
 
@@ -464,8 +442,7 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
             browseFileButton.setEnabled(true);
             txtRmlLogin.setEnabled(false);
             txtRmlPassword.setEnabled(false);
-        }
-        else {
+        } else {
             browseServerButton.setEnabled(false);
             browseFileButton.setEnabled(false);
             txtRmlLogin.setEnabled(true);
@@ -476,8 +453,7 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
     private void setAutoDownload(final boolean isAuto) {
         if (!isAuto) {
             checkServerType();
-        }
-        else {
+        } else {
             browseServerButton.setEnabled(false);
             browseFileButton.setEnabled(false);
             txtRmlLogin.setEnabled(false);
@@ -514,8 +490,7 @@ public class SessionDialog extends JDialog implements FocusListener, ActionListe
     public void caretUpdate(CaretEvent e) {
         if (txtSession.getText().length() > 0) {
             saveButton.setEnabled(true);
-        }
-        else {
+        } else {
             saveButton.setEnabled(false);
         }
     }

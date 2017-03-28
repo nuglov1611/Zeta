@@ -2,10 +2,10 @@ package publicapi;
 
 /**
  * Панель с закладками
- * @deprecated рекомендуется использовать TabbedPane
  *
+ * @deprecated рекомендуется использовать TabbedPane
  */
 public interface TabSetAPI extends VisualRmlObjectAPI, RetrieveableAPI, RmlContainerAPI {
 
-	
+
 }

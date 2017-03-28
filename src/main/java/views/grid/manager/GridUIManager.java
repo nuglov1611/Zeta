@@ -1,18 +1,14 @@
 package views.grid.manager;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
-
+import core.rml.RmlConstants;
 import loader.ZetaProperties;
 import views.grid.GridColumn;
 import views.util.ResourceHelper;
-import core.rml.RmlConstants;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GridUIManager {
 
@@ -101,19 +97,19 @@ public class GridUIManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-        if (row >= 0 && row <= tableManager.getRowCount() &&
-                column >= 0 && column < tableManager.getAllColumnCount()) {
-            String cellKey = row + "_" + column;
-            if (ResourceHelper.DEFAULT_COLOR.equals(textColor)) {
-                cellBgColors.remove(cellKey);
-            } else {
-                Color cellColor = ResourceHelper.getColor(textColor);
-                if (cellColor != null) {
-                    cellBgColors.put(cellKey, cellColor);
+                if (row >= 0 && row <= tableManager.getRowCount() &&
+                        column >= 0 && column < tableManager.getAllColumnCount()) {
+                    String cellKey = row + "_" + column;
+                    if (ResourceHelper.DEFAULT_COLOR.equals(textColor)) {
+                        cellBgColors.remove(cellKey);
+                    } else {
+                        Color cellColor = ResourceHelper.getColor(textColor);
+                        if (cellColor != null) {
+                            cellBgColors.put(cellKey, cellColor);
+                        }
+                    }
                 }
             }
-        }
-    }
         });
     }
 

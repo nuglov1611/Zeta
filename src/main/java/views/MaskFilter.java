@@ -8,7 +8,7 @@ public class MaskFilter {
     static char mask_any = '\u0000'; // маска '*'
 
     // Vector template = new Vector();
-    char[]      template = null;
+    char[] template = null;
 
     public MaskFilter(String mask) {
         if (mask == null || mask.equals("")) {
@@ -30,8 +30,7 @@ public class MaskFilter {
                 if (s == 0 || (templ.elementAt(s - 1).charValue() != mask_any)) {
                     templ.addElement(new Character(mask_any));
                     continue;
-                }
-                else if (s != 0 && (templ.elementAt(s - 1).charValue() == 0)) {
+                } else if (s != 0 && (templ.elementAt(s - 1).charValue() == 0)) {
                     continue;
                 }
             }
@@ -71,20 +70,14 @@ public class MaskFilter {
 
     public boolean accept(String str) {
         if (template == null) {
-            if (str == null || str.equals("")) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return str == null || str.equals("");
         }
 
         if (template[0] == mask_any
                 && template[template.length - 1] == mask_any) {
             return accept2(str, 0, str.length() - 1, template, 0,
                     template.length - 1);
-        }
-        else if (template[0] == mask_any
+        } else if (template[0] == mask_any
                 && template[template.length - 1] != mask_any) {
             int[] be = getNextTemp2(template.length - 1, 0, template);
             if (be == null) {
@@ -93,12 +86,10 @@ public class MaskFilter {
             if (endsWith(str, 0, str.length() - 1, template, be[1], be[0])) {
                 return accept2(str, 0, str.length() - 1 - (be[0] - be[1] + 1),
                         template, 0, template.length - 1 - (be[0] - be[1] + 1));
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else if (template[0] != mask_any
+        } else if (template[0] != mask_any
                 && template[template.length - 1] == mask_any) {
             int[] be = getNextTemp1(0, template.length - 1, template);
             if (be == null) {
@@ -107,12 +98,10 @@ public class MaskFilter {
             if (startsWith(str, 0, str.length() - 1, template, be[0], be[1])) {
                 return accept2(str, (be[1] - be[0] + 1), str.length() - 1,
                         template, (be[1] - be[0] + 1), template.length - 1);
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else if (template[0] != mask_any
+        } else if (template[0] != mask_any
                 && template[template.length - 1] != mask_any) {
             int[] be1 = getNextTemp1(0, template.length - 1, template);
             int[] be2 = getNextTemp2(template.length - 1, 0, template);
@@ -120,25 +109,18 @@ public class MaskFilter {
                 return false;
             }
             if (be1[0] == be2[1] && be1[1] == be2[0]) {
-                if (template.length == str.length()
+                return template.length == str.length()
                         && startsWith(str, 0, str.length() - 1, template,
-                                be1[0], be1[1])) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            else if (startsWith(str, 0, str.length() - 1, template, be1[0],
+                        be1[0], be1[1]);
+            } else if (startsWith(str, 0, str.length() - 1, template, be1[0],
                     be1[1])
                     && endsWith(str, 0, str.length() - 1, template, be2[1],
-                            be2[0])) {
+                    be2[0])) {
                 return accept2(str, (be1[1] - be1[0] + 1), str.length() - 1
-                        - (be2[0] - be2[1] + 1), template,
+                                - (be2[0] - be2[1] + 1), template,
                         (be1[1] - be1[0] + 1), template.length - 1
                                 - (be2[0] - be2[1] + 1));
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -146,9 +128,9 @@ public class MaskFilter {
     }
 
     private boolean accept2(String str, int sb, int se, char[] temp, int tb,
-            int te) {
+                            int te) {
         int current = sb;
-        int[] be = new int[] { -1, tb - 1 };
+        int[] be = new int[]{-1, tb - 1};
         while ((be = getNextTemp1(be[1] + 1, te, temp)) != null) {
             int index;
             if ((index = indexOf(str, current, se, temp, be[0], be[1])) < 0) {
@@ -160,7 +142,7 @@ public class MaskFilter {
     }
 
     private boolean endsWith(String str, int sb, int se, char[] template,
-            int tb, int te) {
+                             int tb, int te) {
         return startsWith(str, se - (te - tb), se, template, tb, te);
     }
 
@@ -169,23 +151,21 @@ public class MaskFilter {
                 || end > template.length - 1) {
             return null;
         }
-        int[] ret = new int[] { -1, -1 };
+        int[] ret = new int[]{-1, -1};
         for (int i = start; i <= end; i++) {
             if (template[i] != mask_any && ret[0] == -1) {
                 ret[0] = i;
                 if (i == end) {
                     ret[1] = i;
                     return ret;
-                }
-                else {
+                } else {
                     continue;
                 }
             }
             if (ret[0] != -1 && (template[i] == mask_any || (i == end))) {
                 if (template[i] == mask_any) {
                     ret[1] = i - 1;
-                }
-                else {
+                } else {
                     ret[1] = i;
                 }
                 return ret;
@@ -199,23 +179,21 @@ public class MaskFilter {
                 || end < 0) {
             return null;
         }
-        int[] ret = new int[] { -1, -1 };
+        int[] ret = new int[]{-1, -1};
         for (int i = start; i >= end; i--) {
             if (template[i] != mask_any && ret[0] == -1) {
                 ret[0] = i;
                 if (i == end) {
                     ret[1] = i;
                     return ret;
-                }
-                else {
+                } else {
                     continue;
                 }
             }
             if (ret[0] != -1 && (template[i] == mask_any || (i == end))) {
                 if (template[i] == mask_any) {
                     ret[1] = i + 1;
-                }
-                else {
+                } else {
                     ret[1] = i;
                 }
                 return ret;
@@ -225,7 +203,7 @@ public class MaskFilter {
     }
 
     private int indexOf(String str, int sb, int se, char[] template, int tb,
-            int te) {
+                        int te) {
         int tlen = te - tb + 1;
         int slen = se - sb + 1;
         if (slen == 0 && tlen == 0) {
@@ -247,7 +225,7 @@ public class MaskFilter {
     }
 
     private boolean startsWith(String str, int sb, int se, char[] template,
-            int tb, int te) {
+                               int tb, int te) {
         // str - строка, в которой производится поиск
         // template - шаблон(допускается только маска '?')
         // sb - начальная позиция для поиска в строке

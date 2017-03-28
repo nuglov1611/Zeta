@@ -1,16 +1,11 @@
 package views.grid.renderer.grid;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-
-import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-
+import core.rml.RmlConstants;
 import views.grid.GridSwing;
 import views.grid.renderer.GridRowHeader;
-import core.rml.RmlConstants;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class RowHeaderRenderer extends JButton implements ListCellRenderer {
 

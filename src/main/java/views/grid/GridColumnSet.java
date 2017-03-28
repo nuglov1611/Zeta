@@ -1,32 +1,28 @@
 package views.grid;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.Vector;
-
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-
-import org.apache.log4j.Logger;
-
-import publicapi.ColumnSetAPI;
-import views.grid.model.GridMetadataModel;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.Container;
 import core.rml.RmlObject;
+import org.apache.log4j.Logger;
+import publicapi.ColumnSetAPI;
+import views.grid.model.GridMetadataModel;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.util.Vector;
 
 /**
  * @author: vagapova.m
  * @since: 19.12.2010
  */
-public class GridColumnSet extends RmlObject implements ColumnSetAPI{
+public class GridColumnSet extends RmlObject implements ColumnSetAPI {
 
     private static final Logger log = Logger.getLogger(GridColumnSet.class);
-    
+
     Container container = new Container(this);
 
     protected int margin = 0;
@@ -62,16 +58,16 @@ public class GridColumnSet extends RmlObject implements ColumnSetAPI{
     }
 
     public void setParent(Object p) {
-        for(GridColumn col : columns){
-        	col.setParent(p);
+        for (GridColumn col : columns) {
+            col.setParent(p);
         }
-        for(GridColumnSet cols : columnSets){
-        	cols.setParent(p);
+        for (GridColumnSet cols : columnSets) {
+            cols.setParent(p);
         }
     }
-    
+
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         if (prop == null) {
             return;
@@ -156,14 +152,14 @@ public class GridColumnSet extends RmlObject implements ColumnSetAPI{
         return renderer;
     }
 
-	@Override
-	public Object method(String method, Object arg) throws Exception {
-		return null;
-	}
+    @Override
+    public Object method(String method, Object arg) throws Exception {
+        return null;
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
-	    container.addChildToCollection(child);
+    @Override
+    public void addChild(RmlObject child) {
+        container.addChildToCollection(child);
         if (child == null) {
             log.error("Object GridSwing cannot be created!");
             throw new Error("Object GridSwing cannot be created!");
@@ -173,24 +169,24 @@ public class GridColumnSet extends RmlObject implements ColumnSetAPI{
         } else if (child instanceof GridColumnSet) {
             columnSets.add((GridColumnSet) child);
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 }

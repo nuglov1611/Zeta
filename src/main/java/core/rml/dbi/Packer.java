@@ -3,7 +3,7 @@ package core.rml.dbi;
 import java.io.InputStream;
 
 public interface Packer {
-    public Object unpack(InputStream is);
+    Object unpack(InputStream is);
 
-    public InputStream pack(Object o);
+    InputStream pack(Object o);
 }

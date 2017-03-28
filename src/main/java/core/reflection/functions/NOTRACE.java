@@ -22,8 +22,7 @@ public class NOTRACE extends BaseExternFunction {
         OP.setTrace(false);
         try {
             return expr.eval();
-        }
-        finally {
+        } finally {
             OP.setTrace(trace);
         }
     }

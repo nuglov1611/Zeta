@@ -11,5 +11,5 @@
 package core.rml.dbi;
 
 public interface Handler {
-    public void notifyHandler(Object o);
+    void notifyHandler(Object o);
 }

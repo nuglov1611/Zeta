@@ -1,20 +1,5 @@
 package core.reflection.rml;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
-
-import org.apache.log4j.Logger;
-
-import publicapi.ComboBoxAPI;
-import publicapi.RetrieveableAPI;
-import publicapi.RmlContainerAPI;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
 import action.calc.Nil;
 import core.connection.BadPasswordException;
 import core.document.Document;
@@ -26,45 +11,58 @@ import core.rml.dbi.Handler;
 import core.rml.ui.impl.ZComboBoxImpl;
 import core.rml.ui.interfaces.ZComboBox;
 import core.rml.ui.interfaces.ZComponent;
+import org.apache.log4j.Logger;
+import publicapi.ComboBoxAPI;
+import publicapi.RetrieveableAPI;
+import publicapi.RmlContainerAPI;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
+
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  * Графический компонент "выпадающий список"
- * @author nick
  *
+ * @author nick
  */
 public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable, Handler, RetrieveableAPI, RmlContainerAPI {
-    private class AL implements ActionListener{
+    private class AL implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-        	if(updating)
-        		return;
-        	
-            ((LISTITEM)combo.getItemAt(combo.getSelectedIndex())).doAction();
+            if (updating)
+                return;
+
+            ((LISTITEM) combo.getItemAt(combo.getSelectedIndex())).doAction();
             doAction();
         }
-        
+
     }
-    
-    private static final Logger       log          = Logger
-                                                           .getLogger(COMBOBOX.class);
-    
+
+    private static final Logger log = Logger
+            .getLogger(COMBOBOX.class);
+
     private Container container = new Container(this);
 
     private ZComboBox combo = ZComboBoxImpl.create();
-    
-    private FocusPosition             fp           = new FocusPosition();
 
-    private String                    targetColumn = null;
+    private FocusPosition fp = new FocusPosition();
 
-    private core.rml.dbi.Datastore             ds           = null;
+    private String targetColumn = null;
 
-    private String                    action       = null;
-    
-    private boolean 				  updating     = true;
+    private core.rml.dbi.Datastore ds = null;
+
+    private String action = null;
+
+    private boolean updating = true;
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         combo.addActionListener(new AL());
 
         targetColumn = (String) prop.get("TARGET");
@@ -78,16 +76,15 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
     }
 
     public void addChild(RmlObject child) {
-    	boolean oldUpd = updating;
-    	updating = true;
+        boolean oldUpd = updating;
+        updating = true;
         if (child instanceof core.rml.dbi.Datastore) {
             ds = (core.rml.dbi.Datastore) child;
             ds.addHandler(this);
+        } else if (child instanceof LISTITEM) {
+            combo.addItem(child);
         }
-        else if (child instanceof LISTITEM) {
-        	combo.addItem(child);
-        }
-    	updating = oldUpd;
+        updating = oldUpd;
     }
 
     public void fromDS() {
@@ -95,7 +92,7 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
 
     public int retrieve() throws Exception {
         if (ds != null)
-        	return ds.retrieve();
+            return ds.retrieve();
         return 0;
     }
 
@@ -106,8 +103,7 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
         if (ds != null)
             try {
                 ds.update();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("!", e);
             }
     }
@@ -122,7 +118,7 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
     }
 
     public void notifyHandler(Object o) {
-    	updating = true;
+        updating = true;
         if (targetColumn == null)
             return;
 
@@ -135,8 +131,7 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
             try {
                 itm.init(p, document);
                 addChild(itm);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("!!!", e);
             }
         }
@@ -146,9 +141,8 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
     private void doAction() {
         if (action != null && !action.trim().equals("")) {
             try {
-               document.doAction(action, null);
-            }
-            catch (Exception e) {
+                document.doAction(action, null);
+            } catch (Exception e) {
                 log.error("", e);
             }
         }
@@ -159,60 +153,54 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
             String i_alias = null;
             String i_label = null;
             String i_action = null;
-            if(arg instanceof Vector){
+            if (arg instanceof Vector) {
                 final Vector<String> v = (Vector<String>) arg;
                 i_alias = v.elementAt(0);
                 i_label = v.elementAt(1);
                 i_action = v.elementAt(2);
-            }else{
+            } else {
                 i_alias = (String) arg;
             }
-                   
+
             addItem(i_alias, i_label, i_action);
-        }
-        else if (method.equals("GETSELECTEDINDEX")) {
+        } else if (method.equals("GETSELECTEDINDEX")) {
             return new Double(getSelectedIndex());
-        }
-        else if (method.equals("GETSELECTEDITEM")) {
+        } else if (method.equals("GETSELECTEDITEM")) {
             return getSelectedItem();
-        }
-        else if (method.equals("SETSELECTEDITEM")) {
-        	if(arg instanceof Double){
-        		setSelectedIndex(((Double)arg).intValue());
-        	}else{
-        		setSelectedItem(arg);
-        		
-        	}
-        }
-        else if (method.equals("GETITEM")) {
+        } else if (method.equals("SETSELECTEDITEM")) {
+            if (arg instanceof Double) {
+                setSelectedIndex(((Double) arg).intValue());
+            } else {
+                setSelectedItem(arg);
+
+            }
+        } else if (method.equals("GETITEM")) {
             return getItemAt(((Double) arg).intValue());
-        }
-        else if (method.equalsIgnoreCase("getItemCount")) {
+        } else if (method.equalsIgnoreCase("getItemCount")) {
             return new Double(getItemCount());
-        }
-        else if (method.equalsIgnoreCase("setValue")) {
-        	String val = arg.toString();
-        	setSelectedItem(val);
-        }else{
+        } else if (method.equalsIgnoreCase("setValue")) {
+            String val = arg.toString();
+            setSelectedItem(val);
+        } else {
             return super.method(method, arg);
 
         }
-        
+
         return new Nil();
     }
 
     @Override
     public void setSelectedItem(String item_label) {
         LISTITEM cur_itm = null;
-        for(int i=0; i<getItemCount(); i++){
-        	final LISTITEM tmp_itm = (LISTITEM) combo.getModel().getElementAt(i);  
-        	if(tmp_itm.toString().equals(item_label)){
-        		cur_itm = tmp_itm;
-        		break;
-        	}
+        for (int i = 0; i < getItemCount(); i++) {
+            final LISTITEM tmp_itm = (LISTITEM) combo.getModel().getElementAt(i);
+            if (tmp_itm.toString().equals(item_label)) {
+                cur_itm = tmp_itm;
+                break;
+            }
         }
-        if(cur_itm != null){
-        	combo.setSelectedItem(cur_itm);
+        if (cur_itm != null) {
+            combo.setSelectedItem(cur_itm);
         }
     }
 
@@ -240,7 +228,7 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
         doAction();
     }
 
-    
+
     @Override
     public Object getSelectedItem() {
         return combo.getItemAt(getSelectedIndex());
@@ -277,38 +265,38 @@ public class COMBOBOX extends VisualRmlObject implements ComboBoxAPI, Focusable,
         fp.setFocusPosition(position);
     }
 
-	@Override
-	public void setFocusable(boolean focusable) {
-		combo.setFocusable(focusable);
-	}
+    @Override
+    public void setFocusable(boolean focusable) {
+        combo.setFocusable(focusable);
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return combo;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return combo;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return BasicBorders.getTextFieldBorder();
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return BasicBorders.getTextFieldBorder();
+    }
 
 }

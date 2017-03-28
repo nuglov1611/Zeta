@@ -6,7 +6,6 @@ package core.rml.ui;
  * <code>javax.swing.SwingUtilities.invokeLater(Runnable)</code>.
  *
  * @author Eugene Matyushkin aka Skipy
- *
  * @since 13.08.2010
  */
 public enum RequiresEDTPolicy {

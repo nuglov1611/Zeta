@@ -12,5 +12,5 @@
 package action.api;
 
 public interface HaveMethod {
-    public Object method(String method, Object arg) throws Exception;
+    Object method(String method, Object arg) throws Exception;
 }

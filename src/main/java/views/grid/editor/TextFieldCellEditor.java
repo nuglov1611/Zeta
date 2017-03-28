@@ -1,13 +1,10 @@
 package views.grid.editor;
 
-import java.awt.Component;
-
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-
 import views.grid.GridColumn;
 import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class TextFieldCellEditor extends DefaultCellEditor {
 
@@ -20,13 +17,13 @@ public class TextFieldCellEditor extends DefaultCellEditor {
     }
 
     public Object getCellEditorValue() {
-        if(currField == null)
+        if (currField == null)
             return super.stopCellEditing();
         return currField.getValue();
     }
 
     public boolean stopCellEditing() {
-        if(currField == null)
+        if (currField == null)
             return super.stopCellEditing();
         String newText = currField.getText();
         if (!currField.isValid(newText)) {
@@ -47,10 +44,10 @@ public class TextFieldCellEditor extends DefaultCellEditor {
         columnIndex = parentGrid.convertColumnIndexToModel(columnIndex);
 
         GridColumn currColumn = parentGrid.getVColumn(columnIndex);
-        
+
         currField = GridFieldFactory.getInstance().
                 createField(parentGrid, currColumn, value, parentGrid.isEditable());
-        
+
         parentGrid.toDSSaved = false;
         return currField;
     }

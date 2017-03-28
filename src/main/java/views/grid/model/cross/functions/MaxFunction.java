@@ -6,28 +6,27 @@ package views.grid.model.cross.functions;
  */
 public class MaxFunction extends GenericFunction {
 
-  private Double maxValue;
+    private Double maxValue;
 
 
-  public MaxFunction() {
-  }
-
-
-  public void processValue(Object value) {
-    if (maxValue==null) {
-      if (value!=null && value instanceof Number)
-      maxValue = new Double( ((Number)value).doubleValue());
+    public MaxFunction() {
     }
-    else if (value!=null &&
-             value instanceof Number &&
-             ((Number)value).doubleValue()>maxValue.doubleValue())
-      maxValue = new Double( ((Number)value).doubleValue() );
-  }
 
 
-  public Double getValue() {
-    return maxValue;
-  }
+    public void processValue(Object value) {
+        if (maxValue == null) {
+            if (value != null && value instanceof Number)
+                maxValue = new Double(((Number) value).doubleValue());
+        } else if (value != null &&
+                value instanceof Number &&
+                ((Number) value).doubleValue() > maxValue.doubleValue())
+            maxValue = new Double(((Number) value).doubleValue());
+    }
+
+
+    public Double getValue() {
+        return maxValue;
+    }
 
 
 }

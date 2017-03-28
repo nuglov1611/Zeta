@@ -8,19 +8,18 @@
 
 package loader.protocols;
 
+import loader.Protocol;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-import loader.Protocol;
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 public class FILE implements Protocol {
-    private static final Logger log  = Logger.getLogger(FILE.class);
+    private static final Logger log = Logger.getLogger(FILE.class);
 
-    String                      root = "/";
+    String root = "/";
 
     public FILE(String link) {
         root = link;
@@ -39,8 +38,7 @@ public class FILE implements Protocol {
                         + path);
             fs.close();
             return text;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (ZetaProperties.loader_exception) {
                 log.error("~loader.FILE::getByName Exception", e);
             }
@@ -69,13 +67,11 @@ public class FILE implements Protocol {
 
                 text = new String(b, foo + 1, b.length - foo - 1, encoding)
                         .toCharArray();
-            }
-            else
+            } else
                 text = new String(b).toCharArray();
             return text;
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (ZetaProperties.loader_exception)
                 log.error("~loader.FILE::getByName_chars exception", e);
 
@@ -95,8 +91,7 @@ public class FILE implements Protocol {
             fs.write('\n');
             fs.write(data);
             fs.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (ZetaProperties.loader_exception) {
                 log.error("~loader.FILE::write exception", e);
             }

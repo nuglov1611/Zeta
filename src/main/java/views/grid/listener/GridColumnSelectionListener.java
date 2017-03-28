@@ -1,18 +1,17 @@
 package views.grid.listener;
 
-import javax.swing.ListSelectionModel;
+import org.apache.log4j.Logger;
+import views.grid.manager.GridTableManager;
+
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import org.apache.log4j.Logger;
-
-import views.grid.manager.GridTableManager;
 
 /**
  * User: marina.vagapova
  * Date: 2/23/13
  */
-public class  GridColumnSelectionListener implements ListSelectionListener {
+public class GridColumnSelectionListener implements ListSelectionListener {
     private static final Logger log = Logger.getLogger(GridColumnSelectionListener.class);
 
     private GridTableManager gridTableManager;
@@ -26,7 +25,7 @@ public class  GridColumnSelectionListener implements ListSelectionListener {
         //Ignore extra messages.
         if (e.getValueIsAdjusting()) return;
 
-        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
         if (!lsm.isSelectionEmpty()) {
             int selectedColumn = lsm.getLeadSelectionIndex();
             if (selectedColumn != GridTableManager.DEFAULT_COLUMN) {

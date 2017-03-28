@@ -1,32 +1,31 @@
 package views.focuser;
 
-import java.awt.Component;
-import java.util.Vector;
-
-import javax.swing.FocusManager;
-import javax.swing.JPanel;
-
-import publicapi.FocuserAPI;
-import publicapi.RmlContainerAPI;
 import action.api.RTException;
 import core.rml.Container;
 import core.rml.RmlObject;
 import core.rml.VisualRmlObject;
+import publicapi.FocuserAPI;
+import publicapi.RmlContainerAPI;
+
+import javax.swing.FocusManager;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
 
 /*
  * Focuser realization class. Author: Nikolay Uglov
  */
 public class Focuser extends RmlObject implements RmlContainerAPI, FocuserAPI {
-    private FocusPolicy       policy     = new FocusPolicy();
-    
+    private FocusPolicy policy = new FocusPolicy();
+
     private Container container = new Container(this);
-    private JPanel            focus_root = null;
+    private JPanel focus_root = null;
 
-    private Component         first_component;
+    private Component first_component;
 
-    private Vector<FocusItem> items      = new Vector<FocusItem>();
+    private Vector<FocusItem> items = new Vector<FocusItem>();
 
-    private Vector<Component> order      = new Vector<Component>();
+    private Vector<Component> order = new Vector<Component>();
 
     public static Focusable getFocusable(Component comp) {
         if (comp == null) {
@@ -35,8 +34,7 @@ public class Focuser extends RmlObject implements RmlContainerAPI, FocuserAPI {
 
         if (comp instanceof Focusable) {
             return (Focusable) comp;
-        }
-        else {
+        } else {
             return getFocusable(comp.getParent());
         }
     }
@@ -47,13 +45,7 @@ public class Focuser extends RmlObject implements RmlContainerAPI, FocuserAPI {
                 .getFocusOwner());
         if (f != null && order.indexOf(f) == -1) {
             return false;
-        }
-        else if (f != null && f == f_cur) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        } else return !(f != null && f == f_cur);
     }
 
     public void setFirsFocus(Component first) {
@@ -68,16 +60,13 @@ public class Focuser extends RmlObject implements RmlContainerAPI, FocuserAPI {
                 arg = ((Vector<Object>) arg).elementAt(0);
             }
             focus(arg);
-        }
-        else if (method.equals("FOCUSNEXT")) {
+        } else if (method.equals("FOCUSNEXT")) {
             focusNext();
             // FocusManager.getCurrentManager().downFocusCycle();
-        }
-        else if (method.equals("FOCUSPREVIOUS")) {
+        } else if (method.equals("FOCUSPREVIOUS")) {
             focusPrevious();
             // FocusManager.getCurrentManager().upFocusCycle();
-        }
-        else {
+        } else {
             throw new RTException("HasMethodException",
                     "object FOCUSER has not method " + method);
         }
@@ -140,29 +129,29 @@ public class Focuser extends RmlObject implements RmlContainerAPI, FocuserAPI {
         return order.get(idx);
     }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         if (child instanceof FocusItem) {
             items.add((FocusItem) child);
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 }

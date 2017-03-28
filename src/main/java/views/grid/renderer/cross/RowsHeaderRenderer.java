@@ -1,21 +1,11 @@
 package views.grid.renderer.cross;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-
 import views.grid.GridSwing;
 import views.grid.model.cross.node.RowGenericNode;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 /**
  * TableCellRenderer used for row fields.
@@ -52,8 +42,7 @@ public class RowsHeaderRenderer extends DefaultTableCellRenderer {
     int col = -1;
     int row = -1;
 
-    public static String convertToMultiline(String orig)
-    {
+    public static String convertToMultiline(String orig) {
         return "<html>" + orig.replaceAll("\n", "<br>") + "</html>";
     }
 

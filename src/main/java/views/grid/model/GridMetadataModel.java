@@ -1,24 +1,13 @@
 package views.grid.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
 import org.apache.log4j.Logger;
-
 import views.ColumnTemplate;
 import views.grid.GridColumn;
 import views.grid.GridColumnSet;
+
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.util.*;
 
 /**
  * @author vagapova.m
@@ -249,8 +238,8 @@ public class GridMetadataModel {
 
     public int setColumnVisible(GridColumn column, boolean isVisible) {
         int movedIndex = -1;
-        Integer columnIndex =  getColumnIndexByTarget(column.getTarget());  
-        		//getColumnModelIndex(column);
+        Integer columnIndex = getColumnIndexByTarget(column.getTarget());
+        //getColumnModelIndex(column);
         if (columnIndex != null) {
             if (isVisible && !columnsVisible.contains(columnIndex)) {
                 int closestColumnIndex = findNearColumnIndex(columnIndex);

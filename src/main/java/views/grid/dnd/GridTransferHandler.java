@@ -1,17 +1,13 @@
 package views.grid.dnd;
 
+import org.apache.log4j.Logger;
+import views.grid.GridSwing;
+import views.grid.manager.GridTableManager;
+
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.TransferHandler;
-
-import org.apache.log4j.Logger;
-
-import views.grid.GridSwing;
-import views.grid.manager.GridTableManager;
 
 /**
  * @author Alex
@@ -47,10 +43,7 @@ public class GridTransferHandler extends TransferHandler {
     @Override
     public boolean canImport(TransferSupport supp) {
         // Check for String flavor
-        if (!supp.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return false;
-        }
-        return true;
+        return supp.isDataFlavorSupported(DataFlavor.stringFlavor);
     }
 
     @Override
@@ -75,7 +68,7 @@ public class GridTransferHandler extends TransferHandler {
                 // Insert the data at this location
                 grid.getTableManager().getDataTable().getModel().setValueAt(data, viewRowIndex, viewColIndex);
                 grid.notifyHandler(null);
-                grid.getTableManager().getVColumn(viewColIndex).runDropHook();;
+                grid.getTableManager().getVColumn(viewColIndex).runDropHook();
             }
 
             return true;

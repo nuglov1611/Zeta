@@ -1,11 +1,6 @@
 package views.grid.filter;
 
-import java.awt.Component;
-
-import javax.swing.Action;
-import javax.swing.JList;
-import javax.swing.JPopupMenu;
-
+import core.rml.ui.impl.ZScrollPaneImpl;
 import views.grid.GridColumn;
 import views.grid.GridSwing;
 import views.grid.action.DialogFilterAction;
@@ -13,7 +8,9 @@ import views.grid.action.SelectAllFilterAction;
 import views.grid.filter.model.HeaderFilterListModel;
 import views.grid.filter.model.HeaderListItem;
 import views.grid.listener.GridHeaderPopupMouseListener;
-import core.rml.ui.impl.ZScrollPaneImpl;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author: vagapova.m
@@ -58,10 +55,10 @@ public class FilterMenu extends JPopupMenu {
         for (int i = 0; i < rowCount; i++) {
             Object value = grid.getTableManager().getValueAt(i, columnIndex);
             String displayName = "";
-                try {
-                    displayName = column.valueToString(value);
-                } catch (Exception ignored) {
-                }
+            try {
+                displayName = column.valueToString(value);
+            } catch (Exception ignored) {
+            }
             if (displayName == null || "".equals(displayName)) {
                 displayName = "<Пусто>";
             }

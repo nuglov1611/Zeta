@@ -1,20 +1,13 @@
 package views;
 
-import java.awt.Component;
-import java.awt.Font;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
+import core.browser.WorkspaceManager;
 import loader.ZetaProperties;
 import loader.ZetaUtility;
-
 import org.apache.log4j.Logger;
-
 import views.util.ResourceHelper;
-import core.browser.WorkspaceManager;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *  ласс дл€ показа системных сообщений разных типов:
@@ -32,7 +25,7 @@ public class MessageFactory {
     private static final String OK_MESSAGE_TEXT = ZetaUtility.pr(ZetaProperties.MSG_OKBUTTON, "Ok");
 
     private static final String NO_MESSAGE_TEXT = ZetaUtility.pr(ZetaProperties.MSG_NOBUTTON, "No");
-    
+
     private static final String CANCEL_MESSAGE_TEXT = ZetaUtility.pr(ZetaProperties.MSG_CANCELBUTTON, "Cancel");
 
     private static final String INPUT_MESSAGE_TEXT = ZetaUtility.pr(ZetaProperties.MSG_INPUTBUTTON, "Input");
@@ -71,10 +64,10 @@ public class MessageFactory {
         final int textLength = 60;
         StringBuilder temp = new StringBuilder();
         String[] lines = messageText.split("[%]");
-        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            String[] words = lines[lineIndex].split("\\s");
+        for (String line1 : lines) {
+            String[] words = line1.split("\\s");
             int wordPartIndex = 0;
-            for (int wordIndex = 0; wordIndex < words.length;) {
+            for (int wordIndex = 0; wordIndex < words.length; ) {
                 StringBuilder line = new StringBuilder();
                 do {
                     String word = words[wordIndex];
@@ -125,11 +118,11 @@ public class MessageFactory {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_ERROR, "error");
         } else if (messageType == Type.CONFIRMATION) {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_SURE, "U R sure ?");
-        } else if (messageType == Type.WARNING){
+        } else if (messageType == Type.WARNING) {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_WARNING, "warning");
         } else if (messageType == Type.INFO) {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_IFORMATION, "information");
-        } else if (messageType == Type.INPUT){
+        } else if (messageType == Type.INPUT) {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_INPUT, "input");
         } else {
             strType = ZetaUtility.pr(ZetaProperties.TITLE_MESSAG, "message");
@@ -142,7 +135,7 @@ public class MessageFactory {
     }
 
     public boolean showMessage(Component owner, String message, Type messageType) {
-        return showMessage(owner, null, message, messageType);   
+        return showMessage(owner, null, message, messageType);
     }
 
     public boolean showMessage(final Component owner, final String messageHeader,
@@ -170,7 +163,7 @@ public class MessageFactory {
             iconType = JOptionPane.QUESTION_MESSAGE;
 //            options = new Object[]{OK_MESSAGE_TEXT, CANCEL_MESSAGE_TEXT};
             options = new Object[]{YES_MESSAGE_TEXT, NO_MESSAGE_TEXT};
-            optionType = JOptionPane.YES_NO_OPTION;         
+            optionType = JOptionPane.YES_NO_OPTION;
         } else if (Type.EXTENDED_CONFIRMATION == messageType) {
             iconType = JOptionPane.QUESTION_MESSAGE;
 //            options = new Object[]{OK_MESSAGE_TEXT, NO_MESSAGE_TEXT, CANCEL_MESSAGE_TEXT};
@@ -195,7 +188,7 @@ public class MessageFactory {
             log.error("Shit happens", new UnsupportedOperationException());
         }
         int answer;
-        if (font != null) {  
+        if (font != null) {
             JLabel message = new JLabel(dialogText);
             Font messageFont = ResourceHelper.getFont(font);
             if (messageFont != null) {
@@ -212,7 +205,7 @@ public class MessageFactory {
         return answer == JOptionPane.YES_OPTION;
     }
 
-    
+
     /**
      * Show YesNoCancel dialog
      *
@@ -220,19 +213,17 @@ public class MessageFactory {
      * @param messageText - message text
      * @return chosen option
      */
-    public int showYesNoCancelMessage(final Component owner, final String messageText){
+    public int showYesNoCancelMessage(final Component owner, final String messageText) {
         int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
         int iconType = JOptionPane.QUESTION_MESSAGE;
 //        Object[] options = new Object[]{OK_MESSAGE_TEXT, NO_MESSAGE_TEXT, CANCEL_MESSAGE_TEXT};
         Object[] options = new Object[]{YES_MESSAGE_TEXT, NO_MESSAGE_TEXT, CANCEL_MESSAGE_TEXT};
-        
-        final Object defaultOption = CANCEL_MESSAGE_TEXT;
 
         return JOptionPane.showOptionDialog(owner, messageText, null,
-                optionType, iconType, null, options, defaultOption);
+                optionType, iconType, null, options, CANCEL_MESSAGE_TEXT);
     }
-    
-    
+
+
     /**
      * Show input dialog
      *
@@ -253,20 +244,19 @@ public class MessageFactory {
      * @return value from input or null if user cancelled the input
      */
     public String showInputMessage(Component owner, String messageText,
-                                  String inputValue) {
-        Object defaultOption = INPUT_MESSAGE_TEXT;
+                                   String inputValue) {
         Object[] options = new Object[]{INPUT_MESSAGE_TEXT, CANCEL_MESSAGE_TEXT};
         String title = extractTitle(Type.INPUT);
         final String dialogText = processMessage(messageText);
-        JOptionPane    pane = new JOptionPane(dialogText, JOptionPane.PLAIN_MESSAGE,
-                                              JOptionPane.OK_CANCEL_OPTION, null,
-                                              options, defaultOption);
+        JOptionPane pane = new JOptionPane(dialogText, JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION, null,
+                options, INPUT_MESSAGE_TEXT);
 
         pane.setWantsInput(true);
         pane.setSelectionValues(null);
         pane.setInitialSelectionValue(inputValue);
         pane.setComponentOrientation(((owner == null) ?
-	    JOptionPane.getRootFrame() : owner).getComponentOrientation());
+                JOptionPane.getRootFrame() : owner).getComponentOrientation());
 
         JDialog dialog = pane.createDialog(owner, title);
 

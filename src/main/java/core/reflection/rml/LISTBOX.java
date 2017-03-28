@@ -1,20 +1,5 @@
 package core.reflection.rml;
 
-import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.apache.log4j.Logger;
-
-import publicapi.ListBoxAPI;
-import publicapi.RetrieveableAPI;
-import publicapi.RmlContainerAPI;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
 import action.calc.Nil;
 import core.connection.BadPasswordException;
 import core.document.Document;
@@ -28,41 +13,54 @@ import core.rml.ui.impl.ZScrollPaneImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZList;
 import core.rml.ui.interfaces.ZScrollPane;
+import org.apache.log4j.Logger;
+import publicapi.ListBoxAPI;
+import publicapi.RetrieveableAPI;
+import publicapi.RmlContainerAPI;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
 
-public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, Handler, RetrieveableAPI, RmlContainerAPI {
-    private class SL implements ListSelectionListener{
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.sql.SQLException;
+import java.util.Vector;
+
+public class LISTBOX extends VisualRmlObject implements ListBoxAPI, Focusable, Handler, RetrieveableAPI, RmlContainerAPI {
+    private class SL implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            ((LISTITEM)list.getModel().getElementAt(list.getSelectedIndex())).doAction();
+            ((LISTITEM) list.getModel().getElementAt(list.getSelectedIndex())).doAction();
             doAction();
         }
-        
+
     }
-    
-    private Container container = new Container(this); 
-    
+
+    private Container container = new Container(this);
+
     private ZScrollPane panel = ZScrollPaneImpl.create();
-    
+
     private ZList list = ZListImpl.create();
     private Vector<Object> listData = new Vector<Object>();
-    
-    private static final Logger       log          = Logger
-                                                           .getLogger(COMBOBOX.class);
 
-    private FocusPosition             fp           = new FocusPosition();
+    private static final Logger log = Logger
+            .getLogger(COMBOBOX.class);
 
-    private String                    targetColumn = null;
+    private FocusPosition fp = new FocusPosition();
 
-    private core.rml.dbi.Datastore             ds           = null;
+    private String targetColumn = null;
 
-    private String                    action       = null;
+    private core.rml.dbi.Datastore ds = null;
+
+    private String action = null;
 
     public void init(Proper prop, Document doc) {
 
-    	super.init(prop, doc);
-    	
-    	panel.getViewport().setView(list.getJComponent());
+        super.init(prop, doc);
+
+        panel.getViewport().setView(list.getJComponent());
         list.addListSelectionListener(new SL());
         document = doc;
 
@@ -80,8 +78,7 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
         if (child instanceof core.rml.dbi.Datastore) {
             ds = (core.rml.dbi.Datastore) child;
             ds.addHandler(this);
-        }
-        else if (child instanceof LISTITEM) {
+        } else if (child instanceof LISTITEM) {
             listData.add(child);
         }
     }
@@ -93,11 +90,10 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
         if (ds != null)
             try {
                 ds.retrieve();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("!", e);
             }
-            
+
         return 0;
     }
 
@@ -108,8 +104,7 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
         if (ds != null)
             try {
                 ds.update();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("!", e);
             }
     }
@@ -132,8 +127,7 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
             try {
                 itm.init(p, document);
                 addChild(itm);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("!!!", e);
             }
         }
@@ -144,9 +138,8 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
         if (action != null && !action.trim().equals("")) {
             try {
                 document.executeScript(action, false);
-            }
-            catch (Exception e) {
-            	log.error("", e);
+            } catch (Exception e) {
+                log.error("", e);
             }
         }
     }
@@ -156,33 +149,28 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
             String i_alias = null;
             String i_label = null;
             String i_action = null;
-            if(arg instanceof Vector){
+            if (arg instanceof Vector) {
                 final Vector<String> v = (Vector<String>) arg;
                 i_alias = v.elementAt(0);
                 i_label = v.elementAt(1);
                 i_action = v.elementAt(2);
-            }else{
+            } else {
                 i_alias = (String) arg;
             }
-                   
+
             addItem(i_alias, i_label, i_action);
-        }
-        else if (method.equals("GETSELECTEDINDEX")) {
+        } else if (method.equals("GETSELECTEDINDEX")) {
             return new Double(getSelectedIndex());
-        }
-        else if (method.equals("GETSELECTEDITEM")) {
+        } else if (method.equals("GETSELECTEDITEM")) {
             return getSelectedValue();
-        }
-        else if (method.equals("SETSELECTEDITEM")) {
+        } else if (method.equals("SETSELECTEDITEM")) {
             setSelectedIndex(((Double) arg).intValue());
-        }
-        else if (method.equals("GETITEM")) {
-            return getItemAt(((Double)arg).intValue());
-        }
-        else if (method.equalsIgnoreCase("getItemCount")) {
+        } else if (method.equals("GETITEM")) {
+            return getItemAt(((Double) arg).intValue());
+        } else if (method.equalsIgnoreCase("getItemCount")) {
             return new Double(getItemCount());
-        }else{
-        	return super.method(method, arg);
+        } else {
+            return super.method(method, arg);
         }
         return new Nil();
     }
@@ -201,39 +189,39 @@ public class LISTBOX  extends VisualRmlObject implements ListBoxAPI, Focusable, 
         fp.setFocusPosition(position);
     }
 
-	@Override
-	public void setFocusable(boolean focusable) {
-		panel.setFocusable(focusable);
-	}
+    @Override
+    public void setFocusable(boolean focusable) {
+        panel.setFocusable(focusable);
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return panel;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return panel;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 
     @Override
     public void addItem(String item_alias, String item_label, String item_action) {

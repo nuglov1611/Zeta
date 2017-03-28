@@ -1,26 +1,18 @@
 package views.printing;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Toolkit;
+import views.UTIL;
+
+import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.io.DataOutputStream;
 import java.text.AttributedCharacterIterator;
 
-import views.UTIL;
-
 public class RGraphics extends Graphics {
-    DataOutputStream dos   = null;
+    DataOutputStream dos = null;
 
-    protected Font   font  = null;
+    protected Font font = null;
 
-    protected Color  color = null;
+    protected Color color = null;
 
     RGraphics(DataOutputStream dos) {
         this.dos = dos;
@@ -61,7 +53,7 @@ public class RGraphics extends Graphics {
 
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle,
-            int arcAngle) {
+                        int arcAngle) {
     }
 
     @Override
@@ -74,7 +66,7 @@ public class RGraphics extends Graphics {
 
     @Override
     public boolean drawImage(Image img, int x, int y, Color bgcolor,
-            ImageObserver observer) {
+                             ImageObserver observer) {
         return true;
     }
 
@@ -85,26 +77,26 @@ public class RGraphics extends Graphics {
 
     @Override
     public boolean drawImage(Image img, int x, int y, int width, int height,
-            Color bgcolor, ImageObserver observer) {
+                             Color bgcolor, ImageObserver observer) {
         return true;
     }
 
     @Override
     public boolean drawImage(Image img, int x, int y, int width, int height,
-            ImageObserver observer) {
+                             ImageObserver observer) {
         return true;
     }
 
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-            int sx1, int sy1, int sx2, int sy2, Color bgcolor,
-            ImageObserver observer) {
+                             int sx1, int sy1, int sx2, int sy2, Color bgcolor,
+                             ImageObserver observer) {
         return true;
     }
 
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-            int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
+                             int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
         return true;
     }
 
@@ -143,7 +135,7 @@ public class RGraphics extends Graphics {
 
     @Override
     public void drawRoundRect(int x, int y, int width, int height,
-            int arcWidth, int arcHeight) {
+                              int arcWidth, int arcHeight) {
     }
 
     @Override
@@ -170,7 +162,7 @@ public class RGraphics extends Graphics {
 
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle,
-            int arcAngle) {
+                        int arcAngle) {
     }
 
     @Override
@@ -193,19 +185,19 @@ public class RGraphics extends Graphics {
 
     @Override
     public void fillRoundRect(int x, int y, int width, int height,
-            int arcWidth, int arcHeight) {
+                              int arcWidth, int arcHeight) {
     }
 
     @Override
     public void finalize() {
+        super.finalize();
     }
 
     public void flush() {
         if (dos != null) {
             try {
                 dos.flush();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
             }
         }
     }
@@ -239,8 +231,7 @@ public class RGraphics extends Graphics {
     public FontMetrics getFontMetrics() {
         if (font != null) {
             return getFontMetrics(font);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -311,10 +302,8 @@ public class RGraphics extends Graphics {
         if (dos != null) {
             try {
                 dos.writeUTF(com.getString());
+            } catch (Exception e) {
             }
-            catch (Exception e) {
-            }
-            ;
         }
     }
 
@@ -324,10 +313,8 @@ public class RGraphics extends Graphics {
         if (dos != null) {
             try {
                 dos.writeUTF(com);
+            } catch (Exception e) {
             }
-            catch (Exception e) {
-            }
-            ;
         }
     }
 }

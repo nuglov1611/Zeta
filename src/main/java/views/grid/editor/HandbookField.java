@@ -1,15 +1,12 @@
 package views.grid.editor;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-
 import views.grid.GridColumn;
 import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 
 public class HandbookField extends CommonField {
 
@@ -35,14 +32,14 @@ public class HandbookField extends CommonField {
                         .addComponent(editField, 0,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(selectButton, GroupLayout.PREFERRED_SIZE,
-                        BUTTON_WIDTH, GroupLayout.PREFERRED_SIZE)
+                                BUTTON_WIDTH, GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(editField, 0,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(selectButton, 0,
-                        GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         setValue(value);
@@ -62,7 +59,7 @@ public class HandbookField extends CommonField {
     @Override
     public boolean willLostFocus(FocusEvent e) {
         Component oComp = e.getOppositeComponent();
-        if(oComp != null && oComp.equals(selectButton))
+        if (oComp != null && oComp.equals(selectButton))
             return false;
         else
             return super.willLostFocus(e);

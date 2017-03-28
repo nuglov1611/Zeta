@@ -11,26 +11,24 @@
 
 package core.reflection.functions;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.api.ARGV;
 import action.calc.GotoException;
 import action.calc.OP;
 import action.calc.ReturnException;
 import action.calc.XFunction;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 public class X extends BaseExternFunction implements XFunction {
     protected final static Logger log = Logger.getLogger(X.class);
 
-    static final String           fun = "FUN X : ";
+    static final String fun = "FUN X : ";
 
-    OP                            args;
+    OP args;
 
     public Object call(ARGV _V) throws Exception {
         boolean flag = true;
@@ -50,27 +48,22 @@ public class X extends BaseExternFunction implements XFunction {
                 try {
                     if (label != null) {
                         expr.evalLabel(label);
-                    }
-                    else {
+                    } else {
                         expr.eval();
                     }
-                }
-                catch (ReturnException e) {
+                } catch (ReturnException e) {
                     // e.printStackTrace();
                     result = e.result;
-                }
-                catch (GotoException e) {
+                } catch (GotoException e) {
                     // e.printStackTrace();
                     label = e.label;
                     flag = true;
                 }
             }
-        }
-        finally {
+        } finally {
             if (V != null) {
                 OP.getAliases().put("V", V);
-            }
-            else {
+            } else {
                 OP.getAliases().remove("V");
             }
         }
@@ -84,7 +77,7 @@ public class X extends BaseExternFunction implements XFunction {
     @Override
     public void getAliases(Hashtable<String, Object> h) throws Exception {
         super.getAliases(h);
-        for (Enumeration<String> e = h.keys(); e.hasMoreElements();) {
+        for (Enumeration<String> e = h.keys(); e.hasMoreElements(); ) {
             String s = e.nextElement();
             if (s.indexOf('.') == -1) {
                 h.remove(s);

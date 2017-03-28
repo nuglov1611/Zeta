@@ -1,12 +1,12 @@
 package core.rml.dbi;
 
 public interface DataTree {
-    public int getGroupDimension(int[] rowid);
+    int getGroupDimension(int[] rowid);
 
-    public Object getGroupValue(int[] rowid);
+    Object getGroupValue(int[] rowid);
 
-    public Group getRoot();
+    Group getRoot();
 
-    public void resolveAllGroups();
+    void resolveAllGroups();
 
 }

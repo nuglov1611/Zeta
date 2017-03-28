@@ -20,47 +20,44 @@ public class REG2ORA extends BaseExternFunction {
         if (str.equals("")) {
             return "";
         }
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
         boolean was_slash = false;
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
             switch (ch) {
-            case '\\':
-                if (was_slash) {
-                    ret.append("\\");
+                case '\\':
+                    if (was_slash) {
+                        ret.append("\\");
+                        break;
+                    } else {
+                        was_slash = true;
+                        continue;
+                    }
+                case '*':
+                    if (was_slash) {
+                        ret.append("*");
+                    } else {
+                        ret.append("%");
+                    }
                     break;
-                }
-                else {
-                    was_slash = true;
-                    continue;
-                }
-            case '*':
-                if (was_slash) {
-                    ret.append("*");
-                }
-                else {
-                    ret.append("%");
-                }
-                break;
-            case '?':
-                if (was_slash) {
-                    ret.append("?");
-                }
-                else {
-                    ret.append("_");
-                }
-                break;
-            case '%':
-                ret.append("^%");
-                break;
-            case '_':
-                ret.append("^_");
-                break;
-            case '^':
-                ret.append("^^");
-                break;
-            default:
-                ret.append(ch);
+                case '?':
+                    if (was_slash) {
+                        ret.append("?");
+                    } else {
+                        ret.append("_");
+                    }
+                    break;
+                case '%':
+                    ret.append("^%");
+                    break;
+                case '_':
+                    ret.append("^_");
+                    break;
+                case '^':
+                    ret.append("^^");
+                    break;
+                default:
+                    ret.append(ch);
             }
             was_slash = false;
         }

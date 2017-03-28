@@ -1,39 +1,25 @@
 package views;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
-import views.grid.GridSwing;
 import core.browser.WorkspaceManager;
 import core.reflection.objects.VALIDATOR;
+import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 // Данный класс нужен для задания параметров фильтрации
 
 // и сортировки столбцов Grid'a с помощью диалогового окна
 public class FilterDialog extends JDialog {
-    
-    public static int  OK          = 0;
 
-    public static int  RESET       = 1;
+    public static int OK = 0;
 
-    public static int  CANCEL      = 2;
+    public static int RESET = 1;
 
-    public int         result      = -1;
+    public static int CANCEL = 2;
+
+    public int result = -1;
 
     JButton ok = new JButton(StringBundle.FilterDialog_Button_Ok);
 
@@ -43,41 +29,41 @@ public class FilterDialog extends JDialog {
 
     JButton save = new JButton(StringBundle.FilterDialog_Button_Save);
 
-    JPanel             p           = new JPanel();                                  // сюда будут встроены header, spane, buttonPanel
+    JPanel p = new JPanel();                                  // сюда будут встроены header, spane, buttonPanel
 
-    JPanel             header      = new JPanel();
+    JPanel header = new JPanel();
 
-    JPanel             buttonPanel = new JPanel();                                  // в эту панель будут встраиваться кнопки
+    JPanel buttonPanel = new JPanel();                                  // в эту панель будут встраиваться кнопки
 
-    ScrollPane         spane       = new ScrollPane();                              // в эту ScrollPane встроится p1
+    ScrollPane spane = new ScrollPane();                              // в эту ScrollPane встроится p1
 
-    JPanel             p1          = new JPanel();                                  // в эту панель будут встраиваться субпанели
+    JPanel p1 = new JPanel();                                  // в эту панель будут встраиваться субпанели
 
-    JPanel[]           subpanels   = null;                                          // в эту панель будут встраиваться эл-ты
+    JPanel[] subpanels = null;                                          // в эту панель будут встраиваться эл-ты
 
     // управления
 
-    int                rowSize     = 30;
+    int rowSize = 30;
 
-    int                bpHeight    = 35;
+    int bpHeight = 35;
 
-    int                left        = 30;                                            // отступы при расположении элементов
+    int left = 30;                                            // отступы при расположении элементов
 
-    int                top         = 15;                                            //
+    int top = 15;                                            //
 
-    GridSwing          parent      = null;
+    GridSwing parent = null;
 
-    FilterStruct[]     data        = null;
+    FilterStruct[] data = null;
 
-    JLabel[]           titles      = null;
+    JLabel[] titles = null;
 
-    SmartCheckbox[][]  boxes       = null;
+    SmartCheckbox[][] boxes = null;
 
-    JLabel[]           sortOrder   = null;
+    JLabel[] sortOrder = null;
 
-    SmartTextField[][] values      = null;
+    SmartTextField[][] values = null;
 
-    int                numRows     = 0;
+    int numRows = 0;
 
     public FilterDialog(GridSwing parent, String title, int width, int height) {
         super(WorkspaceManager.getCurWorkspace().getFrame(), title, true);
@@ -158,14 +144,14 @@ public class FilterDialog extends JDialog {
     class SmartCheckbox extends JCheckBox {
         SmartCheckbox[][] siblings = null;
 
-        JLabel[]          labels   = null;
+        JLabel[] labels = null;
 
-        boolean           isSort   = false;
+        boolean isSort = false;
 
-        int               sort     = 0;    // приоритет в sort order'e
+        int sort = 0;    // приоритет в sort order'e
 
         public SmartCheckbox(SmartCheckbox[][] siblings, JLabel[] labels,
-                boolean isSort) {
+                             boolean isSort) {
             super();
             this.siblings = siblings;
             this.labels = labels;
@@ -190,9 +176,9 @@ public class FilterDialog extends JDialog {
                 return 0;
             }
             int current = 0;
-            for (int i = 0; i < siblings.length; i++) {
-                if (siblings[i][0].sort > current) {
-                    current = siblings[i][0].sort;
+            for (SmartCheckbox[] sibling : siblings) {
+                if (sibling[0].sort > current) {
+                    current = sibling[0].sort;
                 }
             }
             return current;
@@ -221,12 +207,12 @@ public class FilterDialog extends JDialog {
             } else {
                 if (sort > 0) {
                     labels[getIndex()].setText("");
-                    for (int i = 0; i < siblings.length; i++) {
-                        if (siblings[i][0].sort > sort) {
-                            siblings[i][0].sort--;
-                            labels[siblings[i][0].getIndex()]
+                    for (SmartCheckbox[] sibling : siblings) {
+                        if (sibling[0].sort > sort) {
+                            sibling[0].sort--;
+                            labels[sibling[0].getIndex()]
                                     .setText(new String("("
-                                            + siblings[i][0].sort + ")"));
+                                            + sibling[0].sort + ")"));
                         }
                     }
                     sort = 0;
@@ -241,9 +227,9 @@ public class FilterDialog extends JDialog {
     }
 
     class SmartTextField extends JTextField implements FocusListener {
-    	VALIDATOR validator;
+        VALIDATOR validator;
 
-        Object    value = null;
+        Object value = null;
 
         public SmartTextField(VALIDATOR v) {
             super();
@@ -256,8 +242,7 @@ public class FilterDialog extends JDialog {
             try {
                 String str = validator.toString(value);
                 setText(str);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 setText("");
             }
@@ -274,13 +259,11 @@ public class FilterDialog extends JDialog {
                     setValue(null);
                     return;
                 }
-                ;
                 try {
                     value = validator.toObject(str);
                     str = validator.toString(value);
                     setText(str);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
 
                     ex.printStackTrace();
                     setText("");
@@ -331,8 +314,7 @@ public class FilterDialog extends JDialog {
             if (e.getSource().equals(save)) {
                 try {
                     // parent.saveFilter(getFilterStruct());
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     System.out
                             .println("views.Filterdialog$AL::actionPerformed : "

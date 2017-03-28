@@ -1,46 +1,44 @@
 package core.reflection.rml;
 
-import java.awt.event.KeyEvent;
-
-import org.apache.log4j.Logger;
-
-import publicapi.KeyCatcherAPI;
 import action.api.RTException;
 import action.calc.objects.class_type;
 import core.document.Document;
 import core.document.KeyCatcher;
 import core.parser.Proper;
 import core.rml.RmlObject;
+import org.apache.log4j.Logger;
+import publicapi.KeyCatcherAPI;
+
+import java.awt.event.KeyEvent;
 
 public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, class_type {
-	private static final Logger log = Logger.getLogger(KEYCATCHER.class);
-	
-    private String                      exp         = null;
+    private static final Logger log = Logger.getLogger(KEYCATCHER.class);
 
-    private boolean                   eachKey   = false;
+    private String exp = null;
 
-    private int[]                     endKeys   = null;
+    private boolean eachKey = false;
 
-    private boolean                   finished  = false;
+    private int[] endKeys = null;
 
-    private boolean                   inProcess = false;
+    private boolean finished = false;
 
-    private char                      nowChar;
+    private boolean inProcess = false;
 
-    private StringBuffer              msg       = new StringBuffer();
+    private char nowChar;
 
-    private int                       keyNum    = 0;
+    private StringBuffer msg = new StringBuffer();
 
-    private char[]                    keyBuf    = null;
+    private int keyNum = 0;
+
+    private char[] keyBuf = null;
 
     public boolean catchKey(KeyEvent e) {
         if (eachKey) {
             nowChar = e.getKeyChar();
             inProcess = true;
             try {
-            	document.executeScript(exp, false);
-            }
-            catch (Exception ex) {
+                document.executeScript(exp, false);
+            } catch (Exception ex) {
                 log.error("", ex);
             }
             inProcess = false;
@@ -48,22 +46,19 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
                 finished = false;
                 return false;
             }
-        }
-        else if (e.getKeyCode() == endKeys[keyNum]) {
+        } else if (e.getKeyCode() == endKeys[keyNum]) {
             keyBuf[keyNum++] = e.getKeyChar();
             if (keyNum == endKeys.length) {
                 try {
-                	document.executeScript(exp, false);
-                }
-                catch (Exception ex) {
+                    document.executeScript(exp, false);
+                } catch (Exception ex) {
                     log.error("", ex);
                 }
                 msg.setLength(0);
                 keyNum = 0;
                 return false;
             }
-        }
-        else {
+        } else {
             if (keyNum > 0) {
                 int dropLen = 1;
                 do {
@@ -79,8 +74,7 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
                         if (tmp < keyNum
                                 || e.getKeyCode() != endKeys[tmp - dropLen]) {
                             dropLen++;
-                        }
-                        else {
+                        } else {
                             break;
                         }
                     }
@@ -100,7 +94,7 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
 
         exp = (String) prop.get("EVENT");
 
@@ -114,9 +108,8 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
         if (sp != null)
             try {
                 endKeys = doc.parseKeys(sp);
-            }
-            catch (IllegalArgumentException e) {
-            	log.error("", e);
+            } catch (IllegalArgumentException e) {
+                log.error("", e);
             }
 
 //        if (!eachKey && (endKeys == null || endKeys.length == 0))
@@ -126,9 +119,8 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
 
         try {
             doc.addKeyCatcher(this, keys);
-        }
-        catch (IllegalArgumentException e) {
-        	log.error("", e);
+        } catch (IllegalArgumentException e) {
+            log.error("", e);
         }
     }
 
@@ -144,8 +136,7 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
                 return method("GETKEYCHAR", null);
             else if (name.equals("INPUT"))
                 return method("GETMESSAGE", null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
         }
         return null;
     }
@@ -155,22 +146,19 @@ public class KEYCATCHER extends RmlObject implements KeyCatcherAPI, KeyCatcher, 
             if (!inProcess)
                 throw new RTException("WrongState",
                         "Need to be in handling each key for allowing method getKeyChar");
-            return new String(new char[] { nowChar });
-        }
-        else if (method.equals("FINISHPROCESSING")) {
+            return new String(new char[]{nowChar});
+        } else if (method.equals("FINISHPROCESSING")) {
             if (!inProcess)
                 throw new RTException("WrongState",
                         "Need to be in handling each key for allowing method finishProcessing");
             finished = true;
             return null;
-        }
-        else if (method.equals("GETMESSAGE")) {
+        } else if (method.equals("GETMESSAGE")) {
             if (eachKey)
                 throw new RTException("WrongState",
                         "Need to be in handling message for allowing method getMessage");
             return msg.toString();
-        }
-        else
+        } else
             throw new RTException("HasNotMethod", "method " + method
                     + " not defined in class rml.KEYCATCHER!");
     }

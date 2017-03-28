@@ -12,7 +12,7 @@
 package action.calc.objects;
 
 public interface class_field {
-    public Object field(String field) throws Exception;
+    Object field(String field) throws Exception;
 
-    public Object set_field(String field, Object value) throws Exception;
+    Object set_field(String field, Object value) throws Exception;
 }

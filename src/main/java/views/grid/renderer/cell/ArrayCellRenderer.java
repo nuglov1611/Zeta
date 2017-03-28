@@ -1,27 +1,21 @@
 package views.grid.renderer.cell;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.util.Hashtable;
+import core.rml.RmlConstants;
+import views.grid.GridColumn;
+import views.grid.manager.GridTableManager;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
-
-import views.grid.GridColumn;
-import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
+import java.awt.*;
+import java.util.Hashtable;
 
 public class ArrayCellRenderer implements TableCellRenderer {
     private GridTableManager tableManager;
     Hashtable<GridColumn, JComboBox> combos = new Hashtable<GridColumn, JComboBox>();
+
     public ArrayCellRenderer(GridTableManager tableManager) {
         super();
         this.tableManager = tableManager;
@@ -34,7 +28,7 @@ public class ArrayCellRenderer implements TableCellRenderer {
         column = tableManager.convertColumnIndexToModel(column);
         GridColumn currColumn = tableManager.getVColumn(column);
 
-        if(!combos.containsKey(currColumn)){
+        if (!combos.containsKey(currColumn)) {
             JComboBox combo = new JComboBox(currColumn.getItems());
             Font font = tableManager.getUIManager().getFont(row, column);
             if (font != null) {
@@ -42,7 +36,7 @@ public class ArrayCellRenderer implements TableCellRenderer {
             }
             combos.put(currColumn, combo);
         }
-        
+
         JComboBox combo = combos.get(currColumn);
         if (isSelected) {
             combo.setForeground(table.getSelectionForeground());

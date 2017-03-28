@@ -14,8 +14,6 @@ package core.reflection.rml;
 import views.ToolBar;
 
 
-
-
 /**
  */
 public class TOOLBAR extends ToolBar {

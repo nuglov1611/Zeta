@@ -1,32 +1,26 @@
 package views.grid.renderer;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
+import core.rml.RmlConstants;
+import core.rml.ui.interfaces.ZComponent;
+import core.rml.ui.interfaces.ZScrollPane;
+import org.apache.log4j.Logger;
+import views.grid.GridSwing;
+import views.grid.editor.CommonField;
+import views.grid.manager.GridTableManager;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.plaf.basic.BasicListUI;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.View;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
-
-import javax.swing.JList;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
-import javax.swing.plaf.basic.BasicListUI;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.View;
-
-import org.apache.log4j.Logger;
-
-import views.grid.GridSwing;
-import views.grid.editor.CommonField;
-import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZScrollPane;
 
 /**
  * @author: vagapova.m
@@ -43,8 +37,7 @@ public class GridTable extends JTable {
         if (grid.getStringProperty(RmlConstants.EDIT_STYLE)
                 .equalsIgnoreCase(RmlConstants.EDIT_STYLE_FAST)) {
             setFastEdit(true);
-        }
-        else {
+        } else {
             setFastEdit(false);
         }
     }
@@ -132,26 +125,26 @@ public class GridTable extends JTable {
 
     public void setFastEdit(boolean fastEdit) {
         this.fastEdit = fastEdit;
-        if(!fastEdit){
+        if (!fastEdit) {
             putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
         }
     }
 
     private boolean fastEdit = false;
 
-    public void editingStopped(ChangeEvent e){
+    public void editingStopped(ChangeEvent e) {
         super.editingStopped(e);
         //log.debug("editingStopped");
     }
 
-    public void editingCanceled(ChangeEvent e){
+    public void editingCanceled(ChangeEvent e) {
         super.editingCanceled(e);
         //log.debug("editingCanceled");
     }
-    
-    
+
+
     public void changeSelection(int row, int column, boolean toggle,
-            boolean extend) {
+                                boolean extend) {
         super.changeSelection(row, column, toggle, extend);
 
 //        if (fastEdit) {
@@ -172,31 +165,31 @@ public class GridTable extends JTable {
 
     @Override
     public boolean editCellAt(int row, int column, EventObject e) {
-        
-        boolean res = false; 
+
+        boolean res = false;
         if (fastEdit) {
-            if(e instanceof KeyEvent){
-            	int keyCode = ((KeyEvent)e).getKeyCode();
-            	if(keyCode == KeyEvent.VK_CAPS_LOCK ||
-            	   keyCode == KeyEvent.VK_SCROLL_LOCK ||
-            	   keyCode == KeyEvent.VK_WINDOWS ||
-            	   keyCode == KeyEvent.VK_CONTEXT_MENU ||
-            	   keyCode == KeyEvent.VK_PAUSE ||
-            	   keyCode == KeyEvent.VK_NUM_LOCK ||
-            	   ((KeyEvent)e).isActionKey() ||
-                   (((KeyEvent) e).getModifiers() == KeyEvent.CTRL_MASK &&
-                    (keyCode == KeyEvent.VK_C || keyCode == KeyEvent.VK_V || keyCode == KeyEvent.VK_X || keyCode == KeyEvent.VK_DELETE))
-                  )
-            		return false;
+            if (e instanceof KeyEvent) {
+                int keyCode = ((KeyEvent) e).getKeyCode();
+                if (keyCode == KeyEvent.VK_CAPS_LOCK ||
+                        keyCode == KeyEvent.VK_SCROLL_LOCK ||
+                        keyCode == KeyEvent.VK_WINDOWS ||
+                        keyCode == KeyEvent.VK_CONTEXT_MENU ||
+                        keyCode == KeyEvent.VK_PAUSE ||
+                        keyCode == KeyEvent.VK_NUM_LOCK ||
+                        ((KeyEvent) e).isActionKey() ||
+                        (((KeyEvent) e).getModifiers() == KeyEvent.CTRL_MASK &&
+                                (keyCode == KeyEvent.VK_C || keyCode == KeyEvent.VK_V || keyCode == KeyEvent.VK_X || keyCode == KeyEvent.VK_DELETE))
+                        )
+                    return false;
             }
-        	
+
             if (grid.getSourceRows() != 0 && grid.isEditable()) {
                 int selRow = grid.getTableManager().getCurrentRow();
                 int selCol = grid.getTableManager()
                         .getCurrentColumn();
                 if (selRow != GridTableManager.DEFAULT_ROW
                         && selCol != GridTableManager.DEFAULT_COLUMN) {
-                	res = super.editCellAt(row, column, e);
+                    res = super.editCellAt(row, column, e);
                     if (res) {
                         Component editorComponent = getEditorComponent();
                         if (editorComponent != null) {
@@ -213,8 +206,7 @@ public class GridTable extends JTable {
                     }
                 }
             }
-        }
-        else 
+        } else
             res = super.editCellAt(row, column, e);
         return res;
     }

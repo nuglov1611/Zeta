@@ -4,6 +4,6 @@ import java.awt.event.KeyEvent;
 
 public interface KeyCatcher {
 
-    public boolean catchKey(KeyEvent e);
+    boolean catchKey(KeyEvent e);
 
 }

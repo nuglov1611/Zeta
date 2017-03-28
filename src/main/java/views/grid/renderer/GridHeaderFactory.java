@@ -1,20 +1,8 @@
 package views.grid.renderer;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.util.EventListener;
-import java.util.List;
-
-import javax.swing.JList;
-import javax.swing.JTable;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-
+import core.rml.RmlConstants;
+import core.rml.ui.interfaces.ZComponent;
+import core.rml.ui.interfaces.ZScrollPane;
 import views.grid.GridSwing;
 import views.grid.renderer.cross.CellSpanTable;
 import views.grid.renderer.cross.ColumnHeaderRenderer;
@@ -24,9 +12,16 @@ import views.grid.renderer.grid.GridColumnHeader;
 import views.grid.renderer.grid.GridColumnHeaderRenderer;
 import views.grid.renderer.grid.RowHeaderListModel;
 import views.grid.renderer.grid.RowHeaderRenderer;
-import core.rml.RmlConstants;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZScrollPane;
+
+import javax.swing.*;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.util.EventListener;
+import java.util.List;
 
 /**
  * @author: vagapova.m
@@ -89,7 +84,7 @@ public class GridHeaderFactory {
             TableCellRenderer defaultHeaderRenderer = dataTable.getTableHeader().getDefaultRenderer();
             if (parent.isContainsSets()) {
                 dataTable.setTableHeader(new GridColumnHeader(parent, dataTable.getColumnModel()));
-            }  else {
+            } else {
                 //С сортировкой перемещается не только отсортированная ячейка, а вся строка целиком
                 dataTable.getTableHeader().setReorderingAllowed(true);
             }

@@ -1,9 +1,7 @@
 package views.grid.renderer;
 
+import javax.swing.*;
 import java.util.List;
-
-import javax.swing.JList;
-import javax.swing.ListModel;
 
 /**
  * @author: vagapova.m

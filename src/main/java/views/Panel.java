@@ -1,26 +1,5 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
-import publicapi.PanelAPI;
 import action.api.RTException;
 import core.document.Document;
 import core.parser.Proper;
@@ -32,39 +11,48 @@ import core.rml.dbi.Datastore;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZPanel;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+import publicapi.PanelAPI;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.SQLException;
+import java.util.Vector;
 
 /**
-* Графический компонент "Панель"
-* 
-*/
+ * Графический компонент "Панель"
+ */
 public class Panel extends VisualRmlObject implements PanelAPI {
-    private static final Logger       log         = Logger
-                                                          .getLogger(Panel.class);
-    
+    private static final Logger log = Logger
+            .getLogger(Panel.class);
+
     private ZPanel panel = ZPanelImpl.create();
-    
+
     private Container container = new Container(this);
 
-    private Vector<Field>             fields      = new Vector<Field>();         // дети-Fields(и только они!)
+    private Vector<Field> fields = new Vector<Field>();         // дети-Fields(и только они!)
 
-    private String                    font_face   = "Serif";                     // имя фонта
+    private String font_face = "Serif";                     // имя фонта
 
-    private int                       font_family = 0;                           // стиль фонта(Plain,Bold,Italic)
+    private int font_family = 0;                           // стиль фонта(Plain,Bold,Italic)
 
-    private int                       font_size   = 12;
+    private int font_size = 12;
 
-    private String                    colontitul;
+    private String colontitul;
 
-    private Datastore                 ds;
+    private Datastore ds;
 
-    private views.Menu                menu;
+    private views.Menu menu;
 
-    private ActionListener            popupAL;
+    private ActionListener popupAL;
 
-    int                               menuKey     = 93;
+    int menuKey = 93;
 
-    
-    
+
     public Panel() {
 //        panel.setLayout(null);
         panel.setFont(new Font(font_face, font_family, font_size));
@@ -73,11 +61,11 @@ public class Panel extends VisualRmlObject implements PanelAPI {
         panel.setMinimumSize(new Dimension(0, 0));
     }
 
-    
+
     class CompL extends ComponentAdapter {
         public void componentResized(ComponentEvent e) {
-        	panel.revalidate();
-        	panel.repaint();
+            panel.revalidate();
+            panel.repaint();
         }
     }
 
@@ -96,13 +84,13 @@ public class Panel extends VisualRmlObject implements PanelAPI {
     }
 
     public void initChildren() {
-    	final RmlObject[] objs = container.getChildren();
-    	
+        final RmlObject[] objs = container.getChildren();
+
         if (ds == null) { // если датасторе не указано, создаем фиктивное
             ds = new core.rml.dbi.Datastore(document);
             ds.setSql("select user from dual");
         }
-        
+
         for (RmlObject o : objs) {
             if (o instanceof Field) {
 
@@ -123,7 +111,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
 //                panel.add(((views.Label) o).getVisualComponent());
 //            }else if (o instanceof Datastore) {
 //                setDATASTORE((Datastore) o);
-            }else if (o instanceof views.Menu) {
+            } else if (o instanceof views.Menu) {
                 popupAL = new PopupAL();
                 menu = (views.Menu) o;
                 if (menu == null) {
@@ -131,8 +119,8 @@ public class Panel extends VisualRmlObject implements PanelAPI {
                     continue;
                 }
                 menu.addActionListenerRecursiv(popupAL);
-            }else if (o instanceof VisualRmlObject)
-            	LayoutMng.add(panel, (VisualRmlObject) o);
+            } else if (o instanceof VisualRmlObject)
+                LayoutMng.add(panel, (VisualRmlObject) o);
 //                panel.add(((VisualRmlObject) o).getVisualComponent());
 
         }
@@ -140,7 +128,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
     }
 
     public int retrieve() {
-    	int ret = 0;
+        int ret = 0;
         if (ds == null) {
             log.debug("ds = null");
             return 0;
@@ -149,8 +137,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
         try {
             ret = ds.retrieve();
             fromDS();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Catch exception from DATASTORE.retrieve() : ", e);
         }
         return ret;
@@ -160,8 +147,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
         toDS();
         try {
             ds.update();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Shit happens", e);
         }
     }
@@ -186,8 +172,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             if (col.indexOf(Datastore.compute) == 0) { //значит, target для этого филда начинается c @@COMPUTE
                 try {
                     f.setValue(f.textToObject(f.gettext()));
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Shit happens", e);
                     f.settext(null);
                 }
@@ -200,15 +185,13 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             Object value = null;
             try {
                 value = ds.getValue(0, col);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
             int type = 0;
             try {
                 type = ds.getType(col);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Cannot get type!", e);
             }
 
@@ -239,12 +222,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             views.Field f = fields.elementAt(i);
             if (f == null) {
                 log.debug("child-field is null!");
-                continue;
             }
-            // if (!f.fromEditField(f.gettext()))
-            // {
-            // throw new Error("Bad value from field!");
-            // }
         }
 
     }
@@ -265,7 +243,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
     public synchronized void setfont_family(int fam) {
         Font f = new Font(font_face, fam, font_size);
         if (f != null) {
-        	panel.setFont(f);
+            panel.setFont(f);
             font_family = fam;
         }
     }
@@ -277,7 +255,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
     public synchronized void setfont_size(int size) {
         Font f = new Font(font_face, font_family, size);
         if (f != null) {
-        	panel.setFont(f);
+            panel.setFont(f);
             font_size = size;
         }
     }
@@ -288,15 +266,14 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             int green = Integer.parseInt(color.substring(3, 5), 16);
             int blue = Integer.parseInt(color.substring(5, 7), 16);
             setfont_color_i((red << 16) + (green << 8) + blue);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Exception inside Field.setfont_color: ", e);
         }
 
     }
 
     public void setfont_color_i(int color) {
-    	panel.setForeground(new Color(color));
+        panel.setForeground(new Color(color));
 
     }
 
@@ -306,15 +283,14 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             int green = Integer.parseInt(color.substring(3, 5), 16);
             int blue = Integer.parseInt(color.substring(5, 7), 16);
             setbg_color_i((red << 16) + (green << 8) + blue);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Exception inside Field.setbg_color: ", e);
         }
 
     }
 
     public void setbg_color_i(int color) {
-    	panel.setBackground(new Color(color));
+        panel.setBackground(new Color(color));
     }
 
     public void setcolontitul(String colontitul) {
@@ -326,21 +302,20 @@ public class Panel extends VisualRmlObject implements PanelAPI {
     }
 
     public void addField(Field f) {
-    	LayoutMng.add(panel, f);
+        LayoutMng.add(panel, f);
 //    	panel.add(f.getVisualComponent());
         fields.addElement(f);
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
-    	LayoutMng.setLayout(panel, prop, null);
+        super.init(prop, doc);
+        LayoutMng.setLayout(panel, prop, null);
 
         String sp = (String) prop.get("MENUKEY");
         if (sp != null) {
             try {
                 menuKey = Integer.parseInt(sp);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -385,16 +360,15 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             String command = e.getActionCommand();
             try {
                 document.doAction(command, null);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 log.error("Shit happens", ex);
             }
             if (e.getSource() instanceof views.Item) {
                 try {
-					document.executeScript(((views.Item) e.getSource()).getExp(), false);
-				} catch (Exception ex) {
-					log.debug("!", ex);
-				}
+                    document.executeScript(((views.Item) e.getSource()).getExp(), false);
+                } catch (Exception ex) {
+                    log.debug("!", ex);
+                }
             }
         }
     }
@@ -404,20 +378,20 @@ public class Panel extends VisualRmlObject implements PanelAPI {
 
         if (method.equals("GETMENU")) {
             return getMenu();
-        }
-        else if (method.equals("SETMENU")) {
+        } else if (method.equals("SETMENU")) {
             setMenu((views.Menu) arg);
 
             return new Double(0);
 
-        }else
-        	return super.method(method, arg);
-        
+        } else
+            return super.method(method, arg);
+
     }
 
     /**
      * Получть контекстное меню
-     * @return меню MENU 
+     *
+     * @return меню MENU
      */
     public views.Menu getMenu() {
         return menu;
@@ -425,7 +399,8 @@ public class Panel extends VisualRmlObject implements PanelAPI {
 
     /**
      * Добавить контекстное меню
-     * @param m MENU меню 
+     *
+     * @param m MENU меню
      * @throws RTException
      */
     public void setMenu(views.Menu m) throws RTException {
@@ -435,8 +410,7 @@ public class Panel extends VisualRmlObject implements PanelAPI {
             }
             menu = m;
             menu.addActionListenerRecursiv(popupAL);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             throw new RTException("RunTime", " Exception " + e.getMessage()
                     + " in method setmenu (svr_grid )");
@@ -444,41 +418,41 @@ public class Panel extends VisualRmlObject implements PanelAPI {
         }
     }
 
-	@Override
-	public void focusThis() {
-		panel.requestFocus();
-	}
+    @Override
+    public void focusThis() {
+        panel.requestFocus();
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return panel;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return panel;
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
 
-        if(child instanceof Datastore)
-			ds = (Datastore) child;
-	}
+        if (child instanceof Datastore)
+            ds = (Datastore) child;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 }

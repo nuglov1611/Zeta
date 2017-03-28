@@ -12,5 +12,5 @@
 package action.calc.objects;
 
 public interface class_type {
-    public String type() throws Exception;
+    String type() throws Exception;
 }

@@ -11,10 +11,10 @@
 
 package core.reflection.functions;
 
-import loader.ZetaProperties;
 import action.calc.OP;
 import action.calc.ReturnException;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
 
 public class RET extends BaseExternFunction {
     static final String fun = "FUN RET : ";

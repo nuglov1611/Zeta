@@ -10,22 +10,22 @@
  */
 package core.rml.dbi;
 
-import java.util.Hashtable;
-
 import action.api.GlobalValuesObject;
 import action.api.HaveMethod;
 import action.api.RTException;
 import action.calc.objects.class_type;
 
+import java.util.Hashtable;
+
 
 public class Group implements class_type, HaveMethod, GlobalValuesObject {
-    public int                begrow;
+    public int begrow;
 
-    public int                endrow;
+    public int endrow;
 
-    Group[]                   subgroups;
+    Group[] subgroups;
 
-    Datastore                 rep;
+    Datastore rep;
 
     Hashtable<String, Object> hash;
 
@@ -50,8 +50,7 @@ public class Group implements class_type, HaveMethod, GlobalValuesObject {
         if (subgroups == null) {
             subgroups = new Group[1];
             subgroups[0] = child;
-        }
-        else {
+        } else {
             int size = subgroups.length;
             Group[] grs = new Group[size + 1];
             for (int i = 0; i < size; i++) {
@@ -78,15 +77,13 @@ public class Group implements class_type, HaveMethod, GlobalValuesObject {
                     d += ((Double) rep.getValue(i, col)).doubleValue();
                 }
                 return new Double(d);
-            }
-            else {
-                for (int i = 0; i < subgroups.length; i++) {
-                    d = d + subgroups[i].sum(col).doubleValue();
+            } else {
+                for (Group subgroup : subgroups) {
+                    d = d + subgroup.sum(col).doubleValue();
                 }
                 return new Double(d);
             }
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             //e.printStackTrace();
             throw new RTException("CastException",
                     "method Sum must can perform only numeric fields!");
@@ -101,6 +98,7 @@ public class Group implements class_type, HaveMethod, GlobalValuesObject {
     }
 
     // ////////////////////////GlobalValueObject functions ////////////////
+
     /**
      * реализация интерфейса GlobalValueObject
      */
@@ -130,8 +128,7 @@ public class Group implements class_type, HaveMethod, GlobalValuesObject {
         Object o = hash.get(name);
         if ((o == null) || (o instanceof int[])) {
             return null;
-        }
-        else {
+        } else {
             return o;
         }
     }
@@ -144,20 +141,17 @@ public class Group implements class_type, HaveMethod, GlobalValuesObject {
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("ITERATOR")) {
             return new GroupIterator((GroupReport) rep, this);
-        }
-        else if (method.equals("SUM")) {
+        } else if (method.equals("SUM")) {
             // вычисление суммы по данному полю
             try {
                 return sum((String) arg);
-            }
-            catch (ClassCastException e) {
-               // e.printStackTrace();
+            } catch (ClassCastException e) {
+                // e.printStackTrace();
                 throw new RTException("CastException",
                         "method Sum must have one parameter"
                                 + "compateable with String type");
             }
-        }
-        else if (method.equals("SIZE")) {
+        } else if (method.equals("SIZE")) {
             return new Double(endrow - begrow + 1);
         }
 

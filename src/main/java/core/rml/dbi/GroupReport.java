@@ -1,12 +1,11 @@
 package core.rml.dbi;
 
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.sql.Types;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
 
 public class GroupReport extends Datastore implements DataTree {
     private static final Logger log = Logger.getLogger(GroupReport.class);
@@ -44,16 +43,16 @@ public class GroupReport extends Datastore implements DataTree {
     public int[] getGroupColumn() {
         int length = 0;
         if (groupCriteria != null) {
-            for (int i = 0; i < groupCriteria.length; i++) {
-                length += groupCriteria[i].length;
+            for (int[] aGroupCriteria : groupCriteria) {
+                length += aGroupCriteria.length;
             }
         }
         int[] ret = new int[length];
 
         if (groupCriteria != null) {
-            for (int i = 0; i < groupCriteria.length; i++) {
-                for (int j = 0; j < groupCriteria[i].length; j++, length--) {
-                    ret[length - 1] = groupCriteria[i][j];
+            for (int[] aGroupCriteria : groupCriteria) {
+                for (int j = 0; j < aGroupCriteria.length; j++, length--) {
+                    ret[length - 1] = aGroupCriteria[j];
                 }
             }
         }
@@ -73,8 +72,7 @@ public class GroupReport extends Datastore implements DataTree {
         }
         if (grouping == null && dir == null) {
             // Обработка ситуации когда не заданы параметры группировк
-        }
-        else {
+        } else {
             StringTokenizer st1 = new StringTokenizer(grouping.toUpperCase(),
                     ";");
             StringTokenizer st2 = new StringTokenizer(dir, ";");
@@ -152,21 +150,11 @@ public class GroupReport extends Datastore implements DataTree {
     public boolean eq(Object o1, Object o2, int type) {
         switch (type) {
             case Types.NUMERIC: {
-                if (((Double) o1).doubleValue() == ((Double) o2).doubleValue()) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return ((Double) o1).doubleValue() == ((Double) o2).doubleValue();
             }
             case Types.CHAR:
             case Types.VARCHAR: {
-                if (((String) o1).compareTo((String) o2) == 0) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return ((String) o1).compareTo((String) o2) == 0;
             }
             default: {
                 log.debug("core.rml.dbi.GroupReport.eq: UNKNOWN TYPE FOR OPERATIONS!!!");
@@ -191,8 +179,7 @@ public class GroupReport extends Datastore implements DataTree {
             }
             if (st.size() == level) {
                 st.addElement(gr);
-            }
-            else {
+            } else {
                 st.insertElementAt(gr, level);
             }
             st.elementAt(level - 1).addChild(gr);
@@ -215,8 +202,7 @@ public class GroupReport extends Datastore implements DataTree {
                 try {
                     new_level = ((Double) getValue(row + 1, levelColumn))
                             .intValue();
-                }
-                catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ArrayIndexOutOfBoundsException e) {
                     log.error("Shit happens", e);
                     gr = new Group(row + 1, row + 1);
                     v.addElement(gr);
@@ -231,8 +217,7 @@ public class GroupReport extends Datastore implements DataTree {
                     try {
                         new_level = ((Double) getValue(row + 1, levelColumn))
                                 .intValue();
-                    }
-                    catch (ArrayIndexOutOfBoundsException e) {
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         log.error("Shit happens", e);
                         throw new Exception("@@@@@@@@");
                     }
@@ -248,24 +233,21 @@ public class GroupReport extends Datastore implements DataTree {
                     v.addElement(gr);
                     row++;
                     put = false;
-                }
-                else {
+                } else {
                     flag = false;
                     v.addElement(gr);
                     put = false;
                 }
 
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         if (row == getRowCount() - 1) {
             int size = v.size();
             if (v.elementAt(size - 1).begrow != gr.begrow) {
                 v.addElement(gr);
-            }
-            else {
+            } else {
                 v.addElement(new Group(row, row));
             }
             putLast = true;
@@ -303,9 +285,6 @@ public class GroupReport extends Datastore implements DataTree {
                     v.addElement(gr);
                     beg = i;
                     n[k] = getValue(i, columns[k]);
-                }
-                else {
-                    continue;
                 }
             }
         }
@@ -360,8 +339,7 @@ public class GroupReport extends Datastore implements DataTree {
                     System.arraycopy(dir_columns, 0, d, dim.length,
                             dir_columns.length);
                     setSort(c, d);
-                }
-                else {
+                } else {
                     setSort(sort, dim);
                 }
             }
@@ -374,8 +352,7 @@ public class GroupReport extends Datastore implements DataTree {
                 if (tree) {
                     row = 0;
                     resolveTree(1);
-                }
-                else {
+                } else {
                     root = new Group(0, getRowCount() - 1);
                     root.setReport(this);
                     root.setSubgroups(resolveOneGroup(0, root));
@@ -384,12 +361,10 @@ public class GroupReport extends Datastore implements DataTree {
                     log
                             .debug("core.rml.dbi.GroupReport.resolveAllGroups:: all groups maked!!! ");
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
-        }
-        else {
+        } else {
             root = new Group(0, getRowCount() - 1);
             Group[] grs = new Group[this.getRowCount()];
             for (int l = 0; l < this.getRowCount(); l++) {
@@ -433,8 +408,7 @@ public class GroupReport extends Datastore implements DataTree {
         if (!tree) {
             return getValue(sub[rowid[rowid.length - 1]].begrow,
                     groupCriteria[rowid.length - 1][0]);
-        }
-        else {
+        } else {
             return getValue(sub[rowid[rowid.length - 1]].begrow, nameColumn);
         }
         // return
@@ -444,8 +418,8 @@ public class GroupReport extends Datastore implements DataTree {
 
     public int getGroupDimension(int[] gr_id) {
         Group[] sub = root.getSubgroups();
-        for (int i = 0; i < gr_id.length; i++) {
-            sub = sub[gr_id[i]].getSubgroups();
+        for (int aGr_id : gr_id) {
+            sub = sub[aGr_id].getSubgroups();
         }
         return sub.length;
     }
@@ -471,8 +445,7 @@ public class GroupReport extends Datastore implements DataTree {
                     s = s.substring(0, pos);
                 }
                 rowid[i] = Integer.parseInt(s);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -490,29 +463,25 @@ public class GroupReport extends Datastore implements DataTree {
                                 + getValue(sub[i].begrow,
                                 groupCriteria[rowid.length - 1][0])
                                 + "/" + i + "#" + sub[i].begrow + "\n";
-                    }
-                    else {
+                    } else {
                         ret = ret + "N/" + getValue(sub[i].begrow, nameColumn)
                                 + "/" + i + "#" + sub[i].begrow + "\n";
                     }
-                }
-                else {
+                } else {
                     if (!tree) {
                         ret = ret
                                 + "P/"
                                 + getValue(sub[i].begrow,
                                 groupCriteria[rowid.length - 1][0])
                                 + "/" + sub[i].begrow + "\n";
-                    }
-                    else {
+                    } else {
                         ret = ret + "P/" + getValue(sub[i].begrow, nameColumn)
                                 + "/" + sub[i].begrow + "\n";
                     }
                 }
             }
             return ret;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             return "P/" + "null" + "/" + "-1";
         }
@@ -535,16 +504,15 @@ public class GroupReport extends Datastore implements DataTree {
                 }
             }
             log.info("---------------------------------------------" + level);
-        }
-        else {
+        } else {
             for (int i = gr.begrow; i <= gr.endrow; i++) {
                 for (int j = 0; j < getCountColumns(); j++) {
                     log.info(s + " |" + getValue(i, j));
                 }
             }
             log.info("---------------------------------------------" + level);
-            for (int k = 0; k < grps.length; k++) {
-                printGroups(level + 1, grps[k]);
+            for (Group grp : grps) {
+                printGroups(level + 1, grp);
             }
         }
     }
@@ -575,7 +543,7 @@ public class GroupReport extends Datastore implements DataTree {
     }
 
     /**
-     *Устанавливает и выполняет сортировк
+     * Устанавливает и выполняет сортировк
      */
     public void setSort() {
         VMatrix vm = new VMatrix(this, sortcolumn, sortDirection);
@@ -592,7 +560,7 @@ public class GroupReport extends Datastore implements DataTree {
     }
 
     /**
-     *Сбрасывает сортировк
+     * Сбрасывает сортировк
      */
     public void resetSort() {
 //        System.arraycopy(keys, 0, skeys, 0, keys.length);

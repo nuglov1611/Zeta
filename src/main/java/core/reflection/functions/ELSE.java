@@ -11,21 +11,19 @@
 
 package core.reflection.functions;
 
-import java.util.Hashtable;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.calc.ExternFunction;
 import action.calc.Lexemator;
 import action.calc.OP;
 import action.calc.Parser;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 public class ELSE implements ExternFunction {
-    private static final Logger log   = Logger.getLogger(ELSE.class);
+    private static final Logger log = Logger.getLogger(ELSE.class);
 
-    OP                          doing = null;
+    OP doing = null;
 
     public Object eval() throws Exception {
         if (ZetaProperties.calc_debug > 2) {
@@ -47,8 +45,7 @@ public class ELSE implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             doing = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         if (ZetaProperties.calc_debug > 2) {

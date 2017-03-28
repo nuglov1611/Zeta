@@ -12,5 +12,5 @@
 package action.calc.objects;
 
 public interface class_iterator {
-    public iterator iterator() throws Exception;
+    iterator iterator() throws Exception;
 }

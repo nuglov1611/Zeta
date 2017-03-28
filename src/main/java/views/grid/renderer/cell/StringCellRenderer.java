@@ -1,27 +1,16 @@
 package views.grid.renderer.cell;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import core.rml.RmlConstants;
+import views.grid.GridColumn;
+import views.grid.manager.GridTableManager;
 
-import javax.swing.BorderFactory;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
-
-import views.grid.GridColumn;
-import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
+import javax.swing.text.*;
+import java.awt.*;
 
 public class StringCellRenderer implements TableCellRenderer {
 

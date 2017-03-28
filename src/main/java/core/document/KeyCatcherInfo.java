@@ -2,7 +2,7 @@ package core.document;
 
 class KeyCatcherInfo {
 
-    int[]      keys;
+    int[] keys;
 
     KeyCatcher com;
 

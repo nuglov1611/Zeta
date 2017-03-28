@@ -1,8 +1,8 @@
 package views.grid.model.cross.node;
 
-import java.util.ArrayList;
-
 import views.grid.model.cross.functions.GenericFunction;
+
+import java.util.ArrayList;
 
 /**
  * Column field node: contains its children nodes
@@ -42,22 +42,24 @@ public class ColGenericNode {
      */
     private int level = 0;
 
-  /** data field values */
-  private GenericFunction[] gf = new GenericFunction[0];
+    /**
+     * data field values
+     */
+    private GenericFunction[] gf = new GenericFunction[0];
 
     public ColGenericNode() {
         rootNode = true;
     }
 
 
-  /**
-   * @param userObject object stored inside this
-   */
-  public ColGenericNode(GenericNodeKey vpath, GenericFunction[] gf) {
-    this.vpath = vpath;
-    this.value = vpath.getLastNode();
-    this.gf = gf;
-  }
+    /**
+     * @param userObject object stored inside this
+     */
+    public ColGenericNode(GenericNodeKey vpath, GenericFunction[] gf) {
+        this.vpath = vpath;
+        this.value = vpath.getLastNode();
+        this.gf = gf;
+    }
 
     /**
      * Add a child node to this.
@@ -70,12 +72,12 @@ public class ColGenericNode {
     }
 
 
-  /**
-   * @return object stored inside this
-   */
-  public final GenericFunction[] getGenericFunctions() {
-    return gf;
-  }
+    /**
+     * @return object stored inside this
+     */
+    public final GenericFunction[] getGenericFunctions() {
+        return gf;
+    }
 
     /**
      * Add a child node to this.

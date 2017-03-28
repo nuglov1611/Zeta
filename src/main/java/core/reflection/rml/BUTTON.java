@@ -16,6 +16,6 @@ import views.Button;
 
 /**
  */
-public class BUTTON extends Button{
-	
+public class BUTTON extends Button {
+
 }

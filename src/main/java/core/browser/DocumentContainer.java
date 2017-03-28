@@ -1,24 +1,5 @@
 package core.browser;
 
-import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.sql.Connection;
-import java.util.ArrayList;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXBusyLabel;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.BusyPainter;
-
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
 import core.connection.DBMSConnection;
@@ -30,6 +11,21 @@ import core.rml.ui.impl.ZProgressBarImpl;
 import core.rml.ui.interfaces.ZLabel;
 import core.rml.ui.interfaces.ZPanel;
 import core.rml.ui.interfaces.ZProgressBar;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.BusyPainter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
+import java.sql.Connection;
+import java.util.ArrayList;
 
 public abstract class DocumentContainer extends JPanel {
 
@@ -48,17 +44,19 @@ public abstract class DocumentContainer extends JPanel {
     private Workspace workSpace = null;
 
     private Document firstDoc = null;
-    
+
     protected JXPanel lockPanel = new JXPanel(false);
     protected JXBusyLabel busyLabel = null;
 
-    /** Creates new form DocumentContainer */
+    /**
+     * Creates new form DocumentContainer
+     */
     public DocumentContainer() {
         super();
         initComponents();
     }
 
-    private void initLockPanel(){
+    private void initLockPanel() {
         lockPanel.setAlpha(.5f);
 //        final GridBagLayout layout = new GridBagLayout();
 //        final GridBagConstraints c = new GridBagConstraints();
@@ -76,20 +74,19 @@ public abstract class DocumentContainer extends JPanel {
 //        busyLabel.getBusyPainter().setPoints(9);
 //        busyLabel.setBusy(true);
 //        busyLabel.setDelay(100);
-        
-        
-        
+
+
 //        layout.setConstraints(busyLabel, c);
 //        lockPanel.add(busyLabel);
         BusyPainter painter = new BusyPainter(
-                new Rectangle2D.Float(0, 0,13.500001f,1),
-                new RoundRectangle2D.Float(12.5f,12.5f,59.0f,59.0f,10,10));
+                new Rectangle2D.Float(0, 0, 13.500001f, 1),
+                new RoundRectangle2D.Float(12.5f, 12.5f, 59.0f, 59.0f, 10, 10));
         painter.setTrailLength(5);
         painter.setPoints(31);
         painter.setFrame(1);
         lockPanel.setBackgroundPainter(painter);
-                
-        
+
+
         lockPanel.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
 
@@ -111,22 +108,23 @@ public abstract class DocumentContainer extends JPanel {
 
             }
         });
-        lockPanel.addKeyListener(new KeyListener(){
+        lockPanel.addKeyListener(new KeyListener() {
 
-			public void keyPressed(KeyEvent e) {
-			}
+            public void keyPressed(KeyEvent e) {
+            }
 
-			public void keyReleased(KeyEvent e) {
-			}
+            public void keyReleased(KeyEvent e) {
+            }
 
-			public void keyTyped(KeyEvent e) {
-			}});
+            public void keyTyped(KeyEvent e) {
+            }
+        });
         lockPanel.setFocusCycleRoot(true);
     }
-    
+
     private void initComponents() {
-    	
-    	initLockPanel();
+
+        initLockPanel();
 
         setLayout(new BorderLayout());
         docPanel = ZPanelImpl.create();
@@ -155,7 +153,7 @@ public abstract class DocumentContainer extends JPanel {
     protected abstract void setTitle(String title);
 
     protected abstract void showDocumentInNewWindow(String doc_name,
-            Object[] args) throws LoadDocumentException;
+                                                    Object[] args) throws LoadDocumentException;
 
     protected abstract void showDocumentWindow();
 
@@ -194,7 +192,7 @@ public abstract class DocumentContainer extends JPanel {
 
     protected void loadDocument(Document doc) {
         curDoc = doc;
-        
+
         if (firstDoc == null) {
             firstDoc = doc;
         }
@@ -211,7 +209,7 @@ public abstract class DocumentContainer extends JPanel {
         showDocumentWindow();
         log.debug("Document " + doc.mypath + "/" + doc.myname + " called!");
         activateFocus();
-        
+
     }
 
     public void closeDocument() {
@@ -253,7 +251,8 @@ public abstract class DocumentContainer extends JPanel {
         }
     }
 
-    
+
     public abstract void setMenuBar(JMenuBar menu);
+
     public abstract JMenuBar createMenuBar(ArrayList<JMenu> documentMenu);
 }

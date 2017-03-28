@@ -1,14 +1,12 @@
 package views.util;
 
-import java.awt.Color;
-import java.awt.Font;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 /**
- *
  * @author : mvagapova.
  */
 public class ResourceHelper {
@@ -58,7 +56,7 @@ public class ResourceHelper {
 
     public static synchronized Font getFont(final String fontName) {
         Font font = null;
-        try{
+        try {
             font = Font.decode(fontName);
         } catch (Exception e) {
             log.error("Shit happens! Can't decode font " + fontName, e);

@@ -1,16 +1,14 @@
 package views.focuser;
 
-import java.awt.Component;
-import java.awt.Container;
-
-import javax.swing.LayoutFocusTraversalPolicy;
+import javax.swing.*;
+import java.awt.*;
 
 public class FocusPolicy extends LayoutFocusTraversalPolicy {
     Component first_focus = null;
 
-    Component last_focus  = null;
+    Component last_focus = null;
 
-    Focuser   focuser     = null;
+    Focuser focuser = null;
 
     public FocusPolicy() {
         super();
@@ -43,8 +41,7 @@ public class FocusPolicy extends LayoutFocusTraversalPolicy {
 
         if (first_focus != null) {
             return first_focus;
-        }
-        else {
+        } else {
             return super.getDefaultComponent(focusCycleRoot);
         }
     }
@@ -52,28 +49,25 @@ public class FocusPolicy extends LayoutFocusTraversalPolicy {
     public Component getLastComponent(Container focusCycleRoot) {
         if (last_focus != null) {
             return last_focus;
-        }
-        else {
+        } else {
             return super.getLastComponent(focusCycleRoot);
         }
     }
 
     public Component getComponentAfter(Container focusCycleRoot,
-            Component aComponent) {
+                                       Component aComponent) {
         if (focuser != null) {
             return focuser.getNextComponent(aComponent);
-        }
-        else {
+        } else {
             return super.getComponentAfter(focusCycleRoot, aComponent);
         }
     }
 
     public Component getComponentBefore(Container focusCycleRoot,
-            Component aComponent) {
+                                        Component aComponent) {
         if (focuser != null) {
             return focuser.getPreviousComponent(aComponent);
-        }
-        else {
+        } else {
             return super.getComponentBefore(focusCycleRoot, aComponent);
         }
     }

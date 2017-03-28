@@ -11,11 +11,10 @@
 
 package action.calc;
 
-import java.util.Hashtable;
-
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 class ABOVE extends Arifmetic {
     public ABOVE() {
@@ -43,15 +42,15 @@ class AND extends Logical {
 
 abstract class Arifmetic extends OP {
     @Override
-    public Object eval() throws NullPointerException, ClassCastException,
+    public Object eval() throws
             Exception {
-    	try{
-	        return new Double(ops(((Double) doHardOP(left)).doubleValue(),
-	                ((Double) doHardOP(right)).doubleValue()));
-    	}catch(ClassCastException e){
-    		log.error("java.lang.String left="+left+" or right="+ right + "cannot be cast to java.lang.Double", e);
-    		throw e;
-    	}
+        try {
+            return new Double(ops(((Double) doHardOP(left)).doubleValue(),
+                    ((Double) doHardOP(right)).doubleValue()));
+        } catch (ClassCastException e) {
+            log.error("java.lang.String left=" + left + " or right=" + right + "cannot be cast to java.lang.Double", e);
+            throw e;
+        }
     }
 
     abstract double ops(double a, double b);
@@ -90,13 +89,11 @@ class EQU extends OP {
     }
 
     @Override
-    public Object eval() throws Exception, NullPointerException,
-            ClassCastException {
+    public Object eval() throws Exception {
         int res;
         if (doHardOP(left).equals(doHardOP(right))) {
             res = 1;
-        }
-        else {
+        } else {
             res = 0;
         }
         if (ZetaProperties.calc_debug > 20) {
@@ -133,13 +130,11 @@ class EQUBELOW extends Arifmetic {
 
 abstract class Logical extends OP {
     @Override
-    public Object eval() throws Exception, NullPointerException,
-            ClassCastException {
+    public Object eval() throws Exception {
         int res;
         if (ops(instof(doHardOP(left)), instof(doHardOP(right)))) {
             res = 1;
-        }
-        else {
+        } else {
             res = 0;
         }
         if (ZetaProperties.calc_debug > 20) {
@@ -149,12 +144,10 @@ abstract class Logical extends OP {
         return new Double(res);
     }
 
-    public boolean instof(Object x) throws Exception, NullPointerException,
-            ClassCastException {
+    public boolean instof(Object x) throws Exception {
         try {
             return ((Double) x).doubleValue() != 0;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             return ((String) x).trim().toUpperCase().compareTo("TRUE") == 0;
         }
@@ -216,48 +209,47 @@ class NOTEQU extends EQU {
     public Object eval() throws Exception {
         if (((Double) super.eval()).doubleValue() == 0) {
             return new Double(1);
-        }
-        else {
+        } else {
             return new Double(0);
         }
     }
 }
 
 
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /**
  * Суть операция
  */
 
 public abstract class OP extends Tree {
-    protected final static Logger           log         = Logger
-                                                                .getLogger(OP.class);
+    protected final static Logger log = Logger
+            .getLogger(OP.class);
 
-    private static ThreadLocal<Hashtable<String, Object>> lAliases = new ThreadLocal<Hashtable<String,Object>>();
+    private static ThreadLocal<Hashtable<String, Object>> lAliases = new ThreadLocal<Hashtable<String, Object>>();
     private static ThreadLocal<Hashtable<String, Tree>> lFunctions = new ThreadLocal<Hashtable<String, Tree>>();
-    private static ThreadLocal<Boolean> lTrace = new ThreadLocal<Boolean>(){
-    	  @Override 
-    	  protected Boolean initialValue() {
-              return false;    
-          }
+    private static ThreadLocal<Boolean> lTrace = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return false;
+        }
     };
 
-    private static ThreadLocal<Boolean> lSoft = new ThreadLocal<Boolean>(){
-  	  @Override 
-  	  protected Boolean initialValue() {
-            return false;    
+    private static ThreadLocal<Boolean> lSoft = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return false;
         }
-  };
-    
-    public static synchronized final  Hashtable<String, Object> getAliases(){
-    	return lAliases.get();
+    };
+
+    public static synchronized Hashtable<String, Object> getAliases() {
+        return lAliases.get();
     }
 
-    public static synchronized final  void setAliases(Hashtable<String, Object> aliases) {
-    	
-    	lAliases.set(aliases);
-    	
+    public static synchronized void setAliases(Hashtable<String, Object> aliases) {
+
+        lAliases.set(aliases);
+
         if (aliases != null) {
             Hashtable<String, Tree> o = (Hashtable<String, Tree>) aliases
                     .get("##functions##");
@@ -266,59 +258,57 @@ public abstract class OP extends Tree {
                 aliases.put("##functions##", o);
             }
             lFunctions.set(o);
+        } else {
+            lFunctions.set(null);
         }
-        else {
-        	lFunctions.set(null);
-        }
     }
 
-    public static synchronized final  Hashtable<String, Tree> getFunctions(){
-    	return lFunctions.get();
-    }
-    
-    public static synchronized final  boolean getSoft(){
-    	return lSoft.get();
-    }
-    
-    public static synchronized final  void setSoft(boolean soft){
-    	lSoft.set(soft);
-    }
-    
-    public static synchronized final  boolean getTrace(){
-    	return lTrace.get();
-    }
-    
-    public static synchronized final  void setTrace(boolean trace){
-    	lTrace.set(trace);
+    public static synchronized Hashtable<String, Tree> getFunctions() {
+        return lFunctions.get();
     }
 
-    public static final int                 ALIAS_PRIOR = 12;
+    public static synchronized boolean getSoft() {
+        return lSoft.get();
+    }
 
-    public static final int                 U_PRIOR     = 10;
+    public static synchronized void setSoft(boolean soft) {
+        lSoft.set(soft);
+    }
 
-    public static final int                 AM_PRIOR    = 6;
+    public static synchronized boolean getTrace() {
+        return lTrace.get();
+    }
 
-    public static final int                 MD_PRIOR    = 8;
+    public static synchronized void setTrace(boolean trace) {
+        lTrace.set(trace);
+    }
 
-    public static final int                 L_PRIOR     = 4;
+    public static final int ALIAS_PRIOR = 12;
 
-    public static final int                 Q_PRIOR     = 2;
+    public static final int U_PRIOR = 10;
 
-    public static final int                 SET_PRIOR   = 1;
+    public static final int AM_PRIOR = 6;
+
+    public static final int MD_PRIOR = 8;
+
+    public static final int L_PRIOR = 4;
+
+    public static final int Q_PRIOR = 2;
+
+    public static final int SET_PRIOR = 1;
 
     public static Object doHardOP(Object a) throws Exception {
         boolean x = lSoft.get();
         lSoft.set(false);
         try {
             return doOP(a);
-        }
-        finally {
-        	lSoft.set(x);
+        } finally {
+            lSoft.set(x);
         }
     }
 
     public static Object doOP(Object x) throws Exception {
-    	while (x instanceof OP) {
+        while (x instanceof OP) {
             if (ZetaProperties.calc_debug > 2) {
                 log.debug("~calc.OP::doOP eval " + ((OP) x).expr());
             }
@@ -332,12 +322,11 @@ public abstract class OP extends Tree {
 
     public static Object doSoftOP(Object a) throws Exception {
 
-    	boolean x = lSoft.get();
+        boolean x = lSoft.get();
         lSoft.set(true);
         try {
             return doOP(a);
-        }
-        finally {
+        } finally {
             lSoft.set(x);
         }
     }
@@ -348,62 +337,62 @@ public abstract class OP extends Tree {
 
     public static OP getOP(char sym, char sym2) {
         switch (sym2) {
-        case '=':
-            switch (sym) {
             case '=':
-                return new EQU();
-            case '>':
-                return new EQUABOVE();
-            case '<':
-                return new EQUBELOW();
-            case '!':
-                return new NOTEQU();
-            case '+':
-                return new SETPLUS();
-            case '-':
-                return new SETMINUS();
-            case '*':
-                return new SETMUL();
-            case '/':
-                return new SETDIV();
-            case '&':
-                return new SETAND();
-            case '|':
-                return new SETOR();
+                switch (sym) {
+                    case '=':
+                        return new EQU();
+                    case '>':
+                        return new EQUABOVE();
+                    case '<':
+                        return new EQUBELOW();
+                    case '!':
+                        return new NOTEQU();
+                    case '+':
+                        return new SETPLUS();
+                    case '-':
+                        return new SETMINUS();
+                    case '*':
+                        return new SETMUL();
+                    case '/':
+                        return new SETDIV();
+                    case '&':
+                        return new SETAND();
+                    case '|':
+                        return new SETOR();
+                    default:
+                        return null;
+                }
+            case ' ':
+                switch (sym) {
+                    case '=':
+                        return new SET();
+                    case '>':
+                        return new ABOVE();
+                    case '<':
+                        return new BELOW();
+                    case '+':
+                        return new PLUS();
+                    case '-':
+                        return new MINUS();
+                    case '*':
+                        return new MUL();
+                    case '/':
+                        return new DIV();
+                    case '&':
+                        return new AND();
+                    case '|':
+                        return new OR();
+                    case '!':
+                        return new NOT();
+                    case ';':
+                        return new COMA();
+                    case ',':
+                        return new COMA();
+                    default:
+                        return null;
+                }
             default:
                 return null;
-            }
-        case ' ':
-            switch (sym) {
-            case '=':
-                return new SET();
-            case '>':
-                return new ABOVE();
-            case '<':
-                return new BELOW();
-            case '+':
-                return new PLUS();
-            case '-':
-                return new MINUS();
-            case '*':
-                return new MUL();
-            case '/':
-                return new DIV();
-            case '&':
-                return new AND();
-            case '|':
-                return new OR();
-            case '!':
-                return new NOT();
-            case ';':
-                return new COMA();
-            case ',':
-                return new COMA();
-            default:
-                return null;
-            }
-        default:
-            return null;
         }
     }
 
@@ -411,7 +400,7 @@ public abstract class OP extends Tree {
         if (obj == null) {
             return "[null]";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("[");
         int i = 0;
         int len = (obj).length;
@@ -422,15 +411,13 @@ public abstract class OP extends Tree {
             Object x = (obj)[i];
             if (x instanceof Object[]) {
                 sb.append(printArray((Object[]) x));
-            }
-            else {
+            } else {
                 sb.append(x);
             }
             ++i;
             if (i < len) {
                 sb.append(",");
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -438,18 +425,18 @@ public abstract class OP extends Tree {
         return sb.toString();
     }
 
-    int  prior = 0;
+    int prior = 0;
 
-    char sym   = ' ';
+    char sym = ' ';
 
-    char sym2  = ' ';
+    char sym2 = ' ';
 
     public abstract Object eval() throws Exception;
 
     public synchronized Object eval(Hashtable<String, Object> aliases)
             throws Exception {
 
-    	boolean xsoft = lSoft.get();
+        boolean xsoft = lSoft.get();
         lSoft.set(false);
         Hashtable<String, Object> foo = lAliases.get();
         setAliases(aliases);
@@ -457,12 +444,10 @@ public abstract class OP extends Tree {
         lTrace.set(false);
         try {
             return eval();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("~calc.OP::eval EVAL_EXCEPTION::", e);
             throw e;
-        }
-        finally {
+        } finally {
             setAliases(foo);
             lSoft.set(xsoft);
             lTrace.set(xtrace);
@@ -515,14 +500,12 @@ public abstract class OP extends Tree {
                     && !(right instanceof Const)) {
                 right = ((OP) right).setOP(op);
                 return this;
-            }
-            else {
+            } else {
                 op.left = right;
                 right = op;
                 return this;
             }
-        }
-        else {
+        } else {
             if (ZetaProperties.calc_debug > 2) {
                 log
                         .debug("~calc.OP::setOP\n\tTOP=" + op + "\n\tLEFT="
@@ -537,12 +520,10 @@ public abstract class OP extends Tree {
         if (right != null) {
             if ((right instanceof Const) || !(right instanceof OP)) {
                 throw new Exception("try set operand in Not null point");
-            }
-            else if (right instanceof OP) {
+            } else if (right instanceof OP) {
                 ((OP) right).setOperand(foo);
             }
-        }
-        else {
+        } else {
             right = foo;
         }
     }
@@ -573,25 +554,23 @@ class PLUS extends OP {
     }
 
     @Override
-    public Object eval() throws NullPointerException, ClassCastException,
+    public Object eval() throws
             Exception {
         Object a = doHardOP(left);
         Object b = doHardOP(right);
-        if(a == null)
-        	a = "";
-        if(b== null)
-        	b ="";
+        if (a == null)
+            a = "";
+        if (b == null)
+            b = "";
         if (a instanceof Double) {
             return new Double(((Double) a).doubleValue()
                     + ((Double) b).doubleValue());
-        }
-        else if (a instanceof String) {
+        } else if (a instanceof String) {
             if (b instanceof Object[]) {
                 b = printArray((Object[]) b);
             }
-            return (String) a + b.toString();
-        }
-        else {
+            return a + b.toString();
+        } else {
             throw new ResonException(
                     "~calc.PLUS::eval  PLUS may added only\n\t"
                             + "String+Double\n\t" + "String+String\n\t"
@@ -601,8 +580,8 @@ class PLUS extends OP {
 }
 
 class SET extends OP {
-    public static Object set(Object a, Object b) throws NullPointerException,
-            ClassCastException, Exception {
+    public static Object set(Object a, Object b) throws
+            Exception {
         if (ZetaProperties.calc_debug > 20) {
             log.debug("~calc.SET::static#set a="
                     + ((a instanceof OP) ? ((OP) a).expr() : a) + " b="
@@ -614,8 +593,7 @@ class SET extends OP {
             }
             if (a instanceof OP) {
                 a = ((OP) a).eval();
-            }
-            else {
+            } else {
                 throw new Exception("Can't set Constant to new value");
             }
         }

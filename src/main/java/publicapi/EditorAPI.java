@@ -1,8 +1,8 @@
 package publicapi;
 
 /**
-* Графический компонент "Редактор"   
-*/
+ * Графический компонент "Редактор"
+ */
 public interface EditorAPI extends VisualRmlObjectAPI, RmlContainerAPI {
 
 }

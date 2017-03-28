@@ -2,12 +2,12 @@ package views.focuser;
 
 public interface Focusable {
 
-    public void focusThis();
+    void focusThis();
 
-    public int getFocusPosition();
+    int getFocusPosition();
 
-    public void setFocusPosition(int position);
+    void setFocusPosition(int position);
 
-    public void setFocusable(boolean focusable);
+    void setFocusable(boolean focusable);
 
 }

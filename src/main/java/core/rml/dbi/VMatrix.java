@@ -5,9 +5,9 @@ import java.util.List;
 public class VMatrix {
     Datastore ds;
 
-    int[]     columns;
+    int[] columns;
 
-    int[]     directions;
+    int[] directions;
 
     public VMatrix(Datastore ds, int[] columns, int[] directions) {
         this.ds = ds;

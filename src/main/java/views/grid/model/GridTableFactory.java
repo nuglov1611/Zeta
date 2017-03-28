@@ -1,39 +1,12 @@
 package views.grid.model;
 
-import java.awt.Dimension;
-import java.awt.event.ComponentListener;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.util.Date;
-import java.util.EventListener;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.DropMode;
-import javax.swing.GroupLayout;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-
+import core.rml.RmlConstants;
+import core.rml.ui.impl.ZScrollPaneImpl;
+import core.rml.ui.interfaces.ZComponent;
+import core.rml.ui.interfaces.ZScrollPane;
 import org.apache.log4j.Logger;
-
 import views.grid.GridSwing;
-import views.grid.action.CopyAction;
-import views.grid.action.DeleteAction;
-import views.grid.action.EnterAction;
-import views.grid.action.FocusNextAction;
-import views.grid.action.FocusPrevAction;
-import views.grid.action.InsertAction;
-import views.grid.action.PasteAction;
+import views.grid.action.*;
 import views.grid.dnd.GridTransferHandler;
 import views.grid.editor.ArrayCellEditor;
 import views.grid.editor.BooleanCellEditor;
@@ -43,18 +16,21 @@ import views.grid.manager.GridTableManager;
 import views.grid.model.cross.CrossColumnModel;
 import views.grid.model.cross.CrossRowModel;
 import views.grid.renderer.GridTable;
-import views.grid.renderer.cell.ArrayCellRenderer;
-import views.grid.renderer.cell.BooleanCellRenderer;
-import views.grid.renderer.cell.DateCellRenderer;
-import views.grid.renderer.cell.NumericCellRenderer;
-import views.grid.renderer.cell.StringCellRenderer;
+import views.grid.renderer.cell.*;
 import views.grid.renderer.cross.CellSpanModel;
 import views.grid.renderer.cross.CellSpanTable;
 import views.grid.renderer.cross.CrossTablePanel;
-import core.rml.RmlConstants;
-import core.rml.ui.impl.ZScrollPaneImpl;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZScrollPane;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Date;
+import java.util.EventListener;
+import java.util.List;
 
 /**
  * @author vagapova.m
@@ -142,12 +118,12 @@ public class GridTableFactory {
             mainPanel.setLayout(mainPanelLayout);
 
             mainPanelLayout.setHorizontalGroup(
-                mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(dataScrollPane.getJComponent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                    mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(dataScrollPane.getJComponent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             );
             mainPanelLayout.setVerticalGroup(
-                mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(dataScrollPane.getJComponent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                    mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dataScrollPane.getJComponent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             );
 
             mainPanel.setMainScrollPane(dataScrollPane);
@@ -230,26 +206,26 @@ public class GridTableFactory {
             try {
                 parent.getCrossModelManager().compileData();
 
-            // define TableModel for all tables...
+                // define TableModel for all tables...
                 CrossColumnModel columnModel = parent.getCrossModelManager().getColumnModel();
                 CellSpanModel colsSpanModel = parent.getCrossModelManager().getColsCellSpanModel();
-            colsTable.setModel(columnModel);
+                colsTable.setModel(columnModel);
                 colsTable.setCellSpanModel(colsSpanModel);
                 CrossRowModel rowModel = parent.getCrossModelManager().getRowModel();
                 CellSpanModel rowSpanModel = parent.getCrossModelManager().getRowsCellSpanModel();
-            rowsTable.setModel(rowModel);
-            rowsTable.setCellSpanModel(rowSpanModel);
-            dataModel = parent.getCrossModelManager().getDataModel();
-            dataTable.setModel(dataModel);
+                rowsTable.setModel(rowModel);
+                rowsTable.setCellSpanModel(rowSpanModel);
+                dataModel = parent.getCrossModelManager().getDataModel();
+                dataTable.setModel(dataModel);
 
                 JTableHeader th = dataTable.getTableHeader();
-            th.setPreferredSize(new Dimension(th.getPreferredSize().width, 0));
-            th.setReorderingAllowed(false);
-            th.setResizingAllowed(false);
+                th.setPreferredSize(new Dimension(th.getPreferredSize().width, 0));
+                th.setReorderingAllowed(false);
+                th.setResizingAllowed(false);
 
                 tableManager.initRowHeader();
                 tableManager.initColumnHeader();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 log.warn("Issue during building model", e);
             }
 

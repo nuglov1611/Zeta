@@ -11,18 +11,17 @@
 
 package action.api;
 
-import java.util.Hashtable;
-
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 public class ARGV extends Hashtable<String, Object> implements GlobalValuesObject {
     private static final Logger log = Logger.getLogger(ARGV.class);
 
 //    Hashtable<String, Object>   h   = new Hashtable<String, Object>();
 
-    Object                      object;
+    Object object;
 
     public ARGV() {
         if (ZetaProperties.calc_debug > 2) {
@@ -49,15 +48,13 @@ public class ARGV extends Hashtable<String, Object> implements GlobalValuesObjec
             try {
                 o = ((GlobalValuesObject) o).getValueByName(name
                         .substring(i + 1));
-            }
-            catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 log.error("Shit happens", e);
                 throw new RTException("NullException", "in argv: variable "
                         + name + " is not initialized");
 
             }
-        }
-        else {
+        } else {
             o = get(name);
         }
         if (o == null) {
@@ -91,8 +88,7 @@ public class ARGV extends Hashtable<String, Object> implements GlobalValuesObjec
             }
             ((GlobalValuesObject) o).setValueByName(name.substring(i + 1), obj);
 
-        }
-        else {
+        } else {
             put(name, obj);
         }
     }

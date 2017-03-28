@@ -9,10 +9,8 @@ import java.lang.annotation.Target;
  * Annotation to mark methods that require execution in EDT
  *
  * @author Eugene Matyushkin aka Skipy
- *   
- * @since 13.08.2010
- *
  * @see ru.skipy.tests.ui.RequiresEDTPolicy
+ * @since 13.08.2010
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

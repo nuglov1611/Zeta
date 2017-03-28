@@ -1,34 +1,32 @@
 package core.connection;
 
+import loader.ZetaProperties;
+import oracle.jdbc.pool.OracleDataSource;
+import org.apache.log4j.Logger;
+import properties.PropertyConstants;
+import properties.Session;
+import properties.SessionManager;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import loader.ZetaProperties;
-import oracle.jdbc.pool.OracleDataSource;
-
-import org.apache.log4j.Logger;
-
-import properties.PropertyConstants;
-import properties.Session;
-import properties.SessionManager;
-
 public class OracleConnection extends DBMSConnection {
-    private static final Logger log      = Logger
-                                                 .getLogger(OracleConnection.class);
+    private static final Logger log = Logger
+            .getLogger(OracleConnection.class);
 
     private static final String protocol = "jdbc:oracle:thin:";
 
-    private static final String initSQL  = "alter session set NLS_DATE_FORMAT='dd-mm-yyyy'";
+    private static final String initSQL = "alter session set NLS_DATE_FORMAT='dd-mm-yyyy'";
 
     protected static Connection connect() throws ConnectException,
             BadPasswordException {
         long sec = GregorianCalendar.getInstance().getTimeInMillis();
 
         log.debug("Start connecting");
-        
+
         Session cur_session = SessionManager.getIntance().getCurrentSession();
         user = cur_session.getProperty(PropertyConstants.DB_USERNAME);
         pwd = cur_session.getProperty(PropertyConstants.DB_PASSWORD);
@@ -47,7 +45,7 @@ public class OracleConnection extends DBMSConnection {
         Locale origLocale = Locale.getDefault();
         try {
             boolean workaround = false;
-            
+
             if (origLocale.toString().equals("ru_RU")) {
                 Locale.setDefault(new Locale("en", "US"));
                 workaround = true;
@@ -71,24 +69,20 @@ public class OracleConnection extends DBMSConnection {
                 log.debug("NLS_TERRITORY changed to " + territory);
             }
             stmt.execute(initSQL);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Error during conneting to database", e);
-            if (e.getMessage().toUpperCase().indexOf("ORA-01017") > -1) {
+            if (e.getMessage().toUpperCase().contains("ORA-01017")) {
                 throw new BadPasswordException(
                         "Неверный пароль или имя пользователя", e);
-            }
-            else {
+            } else {
                 throw new ConnectException("Невозможно установить соединение", e);
             }
-        }
-        finally {
+        } finally {
             Locale.setDefault(origLocale);
             try {
-                if(stmt != null)
+                if (stmt != null)
                     stmt.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("!", e);
             }
         }
@@ -98,7 +92,7 @@ public class OracleConnection extends DBMSConnection {
         }
 
         sec = GregorianCalendar.getInstance().getTimeInMillis() - sec;
-        log.debug("Connection done during " + sec/1000 + " seconds");
+        log.debug("Connection done during " + sec / 1000 + " seconds");
         return conn;
     }
 

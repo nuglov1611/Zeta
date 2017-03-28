@@ -11,12 +11,11 @@
 
 package action.calc;
 
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.util.Enumeration;
 import java.util.Vector;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
 
 public class COMA extends OP {
     protected final static Logger log = Logger.getLogger(COMA.class);
@@ -28,7 +27,7 @@ public class COMA extends OP {
     }
 
     @Override
-    public Object eval() throws NullPointerException, ClassCastException,
+    public Object eval() throws
             Exception {
         if (ZetaProperties.calc_debug > 3) {
             log.debug("~calc.COMA::eval aliases " + OP.getAliases());
@@ -39,24 +38,21 @@ public class COMA extends OP {
             result = doOP(left);
             if (result instanceof Vector) {
                 v = (Vector<Object>) result;
-            }
-            else {
+            } else {
                 v = new Vector<Object>();
                 v.addElement(result);
             }
-        }
-        else {
+        } else {
             v = new Vector<Object>();
         }
         if (right != null) {
             result = doOP(right);
             if (result instanceof Vector) {
                 Vector<Object> r = (Vector<Object>) result;
-                for (Enumeration<Object> e = r.elements(); e.hasMoreElements();) {
+                for (Enumeration<Object> e = r.elements(); e.hasMoreElements(); ) {
                     v.addElement(e.nextElement());
                 }
-            }
-            else {
+            } else {
                 v.addElement(result);
             }
         }

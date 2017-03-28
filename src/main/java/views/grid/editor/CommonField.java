@@ -1,37 +1,24 @@
 package views.grid.editor;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.FocusManager;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-
-import views.field.BaseField;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
-import views.grid.GridColumn;
-import views.grid.GridSwing;
 import core.document.NotifyInterface;
 import core.document.ObjectNotifyInterface;
 import core.document.Shortcutter;
 import core.reflection.objects.VALIDATOR;
 import core.rml.RmlConstants;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
 import org.apache.log4j.Logger;
+import views.field.BaseField;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
+import views.grid.GridColumn;
+import views.grid.GridSwing;
+
+import javax.swing.FocusManager;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.*;
 
 abstract public class CommonField extends JPanel implements BaseField, ActionListener, NotifyInterface, Shortcutter, Focusable, KeyListener, FocusListener {
 
@@ -49,11 +36,9 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
     protected Object parent;
 
     private boolean isEditing = false;
-    
-    protected JTextComponent editField;
-    private FocusPosition                    fp               = new FocusPosition();
 
-    
+    protected JTextComponent editField;
+    private FocusPosition fp = new FocusPosition();
 
 
     protected CommonField(Object parent, GridColumn column, Object value, boolean isEditable) {
@@ -80,14 +65,14 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
             setFont(font);
         }
 
-        
+
         editField.addKeyListener(this);
 
 
         editField.addFocusListener(this);
 
         addFocusListener(this);
-        
+
 //        Color fontColor = editColumn.getFont_color();
 //        if (fontColor != null) {
 //            setForeground(fontColor);
@@ -153,8 +138,7 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
         try {
             editColumn.valueToString(value);
             isValueValid = true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             isValueValid = false;
         }
         return isValueValid;
@@ -199,8 +183,7 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
 //                       value = null;
 //               }
 //            }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         return value;
@@ -216,8 +199,7 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
             }
             lastValidValue = strValue;
             editField.setText(strValue);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -246,15 +228,15 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
     }
 
     public void keyPressed(KeyEvent e) {
-        if (parent instanceof GridSwing ){
-            GridSwing grid = (GridSwing) parent; 
-            if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (parent instanceof GridSwing) {
+            GridSwing grid = (GridSwing) parent;
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 grid.getActionManager().processEnterAction();
             }
-            }else{
-        	super.processKeyEvent(e);
+        } else {
+            super.processKeyEvent(e);
         }
-        
+
     }
 
     public void keyReleased(KeyEvent e) {
@@ -265,34 +247,33 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
         }
     }
 
-  @Override
-  public void keyTyped(KeyEvent e) {
-  }
-    
-  
-  
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+
     synchronized public void startEditing() {
 //        if (isEditing) 
 //            return;
 
         isEditing = true;
-        if(!FocusManager.getCurrentManager().getFocusOwner().equals(editField))
-        editField.requestFocus();
+        if (!FocusManager.getCurrentManager().getFocusOwner().equals(editField))
+            editField.requestFocus();
         editField.setCaretPosition(editField.getText().length());
         editField.selectAll();
     }
 
     synchronized public void startEditing(KeyEvent e) {
         isEditing = true;
-        if(!e.isActionKey() && 
-            e.getKeyCode()!=KeyEvent.VK_DELETE &&
-            e.getKeyCode()!=KeyEvent.VK_INSERT)
-        editField.setText(""+e.getKeyChar());
-        else if(e.getKeyCode()==KeyEvent.VK_DELETE){
-        	editField.setText("");
+        if (!e.isActionKey() &&
+                e.getKeyCode() != KeyEvent.VK_DELETE &&
+                e.getKeyCode() != KeyEvent.VK_INSERT)
+            editField.setText("" + e.getKeyChar());
+        else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+            editField.setText("");
         }
-        	
-        if(!FocusManager.getCurrentManager().getFocusOwner().equals(editField))
+
+        if (!FocusManager.getCurrentManager().getFocusOwner().equals(editField))
             editField.requestFocus();
 //        e.setSource(editField);
 //        KeyListener[] kl = editField.getKeyListeners();
@@ -301,63 +282,59 @@ abstract public class CommonField extends JPanel implements BaseField, ActionLis
 //        }
     }
 
-    
-    
+
     public void focusGained(FocusEvent e) {
-        if(e.getComponent().equals(this)){
+        if (e.getComponent().equals(this)) {
             editField.requestFocus();
         }
         if (editField.isEditable()) {
-            if(!isEditing)
-            startEditing();
+            if (!isEditing)
+                startEditing();
         }
     }
 
     public void focusLost(FocusEvent e) {
 //        Component comp = e.getOppositeComponent();
 //        if(comp != null && !comp.equals(editField) && !comp.equals(this)){
-        if(willLostFocus(e)){
+        if (willLostFocus(e)) {
+            if (((GridSwing) parent).isEditing()) {
+                ((GridSwing) parent).stopEditing();
+            }
+            editField.select(0, 0);
+        }
+    }
+
+    public boolean willLostFocus(FocusEvent e) {
+        Component oComp = e.getOppositeComponent();
+        return !(oComp != null && (oComp.equals(editField) || oComp.equals(this)));
+    }
+
+    public void stopEditing() {
+        isEditing = false;
+    }
+
+    @Override
+    public int getFocusPosition() {
+        return fp.getFocusPosition();
+    }
+
+    @Override
+    public void setFocusPosition(int position) {
+        fp.setFocusPosition(position);
+    }
+
+    public void finishTheEditing() {
         if (((GridSwing) parent).isEditing()) {
             ((GridSwing) parent).stopEditing();
         }
         editField.select(0, 0);
     }
-}
 
-    public boolean willLostFocus(FocusEvent e){
-        Component oComp = e.getOppositeComponent();
-        if(oComp != null && (oComp.equals(editField) || oComp.equals(this)))
-            return false;
-        else
-            return true;
+    public void setTextOnly(Object o) {
+        try {
+            editField.setText(editColumn.valueToString(o));
+        } catch (Exception e) {
+            log.error("!", e);
+        }
     }
-    
-    public void stopEditing() {
-        isEditing  = false;
-    }
-    
-	  @Override
-	public int getFocusPosition() {
-	    return fp.getFocusPosition();
-	}
-	
-	@Override
-	public void setFocusPosition(int position) {
-	    fp.setFocusPosition(position);
-	}
-	
-	public void finishTheEditing(){
-	    if (((GridSwing) parent).isEditing()) {
-	        ((GridSwing) parent).stopEditing();
-	    }
-	    editField.select(0, 0); 
-	}
-	 
-	 public void setTextOnly(Object o){
-		 try {
-			editField.setText(editColumn.valueToString(o));
-		} catch (Exception e) {
-			log.error("!", e);
-		}
-	 }
 }

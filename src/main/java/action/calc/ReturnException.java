@@ -13,11 +13,11 @@ package action.calc;
 
 public class ReturnException extends CalcException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
-    public Object             result;
+    public Object result;
 
     public ReturnException(Object r) {
         super();

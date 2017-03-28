@@ -1,15 +1,13 @@
 package views.util;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
-import views.UTIL;
 import core.parser.Proper;
 import core.rml.RmlConstants;
+import org.apache.log4j.Logger;
+import views.UTIL;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: mvagapova

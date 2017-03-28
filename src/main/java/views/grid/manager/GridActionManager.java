@@ -1,30 +1,22 @@
 package views.grid.manager;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
+import core.rml.RmlConstants;
+import org.apache.log4j.Logger;
+import views.*;
+import views.grid.GridColumn;
+import views.grid.GridSwing;
+import views.grid.filter.GridRowFilter;
+import views.grid.filter.model.HeaderFilterListModel;
+import views.grid.filter.model.HeaderListItem;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import javax.swing.JList;
-
-import org.apache.log4j.Logger;
-
-import views.FilterDialog;
-import views.FilterStruct;
-import views.FindDialog;
-import views.MaskFilter;
-import views.StringBundle;
-import views.grid.GridColumn;
-import views.grid.GridSwing;
-import views.grid.filter.GridRowFilter;
-import views.grid.filter.model.HeaderFilterListModel;
-import views.grid.filter.model.HeaderListItem;
-import core.rml.RmlConstants;
 
 public class GridActionManager {
 
@@ -134,8 +126,8 @@ public class GridActionManager {
         if (!grid.getTableManager().isEditing()) {
             if (clipboard != null) {
                 // ¬ыбрано все
-               if (grid.getTableManager().isAllSelected()) {
-                    StringBuffer sb = new StringBuffer();
+                if (grid.getTableManager().isAllSelected()) {
+                    StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < grid.getTableManager().getRowCount(); i++) {
                         for (int j = 0; j < grid.getTableManager().getVColumnCount(); j++) {
                             sb.append(grid.getTableManager().getValueAt(i, j) != null ? grid.getTableManager().getValueAt(i, j) : "");
@@ -157,7 +149,7 @@ public class GridActionManager {
                 //¬ыбрана одна или несколько строк (в режиме multiselection),
                 // строки берутс€ из массива selection
                 else if (grid.getTableManager().getSelectionSize() > 1 && !grid.getTableManager().isAllSelected()) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < grid.getTableManager().getSelectionSize(); i++) {
                         for (int j = 0; j < grid.getTableManager().getVColumnCount(); j++) {
                             int modelRowIndex = grid.getTableManager().getSelectedRow(i);
@@ -237,7 +229,7 @@ public class GridActionManager {
                     } else {
                         for (int i = 0; i < len; i++) {
                             GridColumn vColumn = grid.getTableManager().getVColumn(grid.getTableManager().convertColumnIndexToView(currentModelColumn));
-                                    Object value = vColumn.valueToObject(s);
+                            Object value = vColumn.valueToObject(s);
                             grid.setDSValue(currentRow + i, vColumn.getTarget(), value);
                         }
                     }

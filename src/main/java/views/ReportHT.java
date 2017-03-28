@@ -9,7 +9,7 @@ public class ReportHT extends RmlObject {
     ReportForm f = null;
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         f = new ReportForm();
         f.init(prop, doc);
     }
@@ -18,9 +18,9 @@ public class ReportHT extends RmlObject {
         return f;
     }
 
-	@Override
-	public Object method(String method, Object arg) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Object method(String method, Object arg) throws Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

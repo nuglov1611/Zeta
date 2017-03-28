@@ -1,27 +1,13 @@
 package core.rml.dbi;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
+import core.document.Document;
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
 
-import core.document.Document;
+import java.sql.*;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author: vagapova.m
@@ -122,7 +108,7 @@ public class SqlManager {
     public String[] getUpTables() {
         String[] ret = new String[pkColumns.size()];
         int i = 0;
-        for (Enumeration<String> e = pkColumns.keys(); e.hasMoreElements();) {
+        for (Enumeration<String> e = pkColumns.keys(); e.hasMoreElements(); ) {
             ret[i] = e.nextElement();
             i++;
         }
@@ -265,8 +251,8 @@ public class SqlManager {
                             updateQuery = updateQuery + ",";
                             vs = true;
                         }
-                    }else{
-                    	updateQuery += "NULL";
+                    } else {
+                        updateQuery += "NULL";
                         if (i != columnNamesList.size() - 1) {
                             updateQuery = updateQuery + ",";
                             vs = true;
@@ -288,8 +274,8 @@ public class SqlManager {
                         if (i != pks.length - 1) {
                             updateQuery = updateQuery + " and ";
                         }
-                    }else{
-                    	updateQuery += "NULL";
+                    } else {
+                        updateQuery += "NULL";
                         if (i != pks.length - 1) {
                             updateQuery = updateQuery + " and ";
                         }
@@ -330,7 +316,7 @@ public class SqlManager {
                     || typeCol == Types.VARCHAR) {
                 String s1 = "'";
                 String s2 = "''";
-                StringBuffer s = new StringBuffer();
+                StringBuilder s = new StringBuilder();
                 String beg = value.toString();
                 int pos = 0;
                 int next;
@@ -368,7 +354,7 @@ public class SqlManager {
                     if (ZetaProperties.dstore_debug > 1) {
                         log.debug("INSERT executing");
                     }
-                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements();) {
+                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements(); ) {
                         table = tbl.nextElement();
                         if (pkColumns.get(table) == null) {
                             continue;
@@ -383,7 +369,7 @@ public class SqlManager {
                         log.debug("update executing");
                         log.debug("DELETE executing");
                     }
-                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements();) {
+                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements(); ) {
                         stk.push(tbl.nextElement());
                     }
                     while (!stk.empty()) {
@@ -398,7 +384,7 @@ public class SqlManager {
                     if (ZetaProperties.dstore_debug > 1) {
                         log.debug("UPDATE executing");
                     }
-                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements();) {
+                    for (Enumeration<String> tbl = tables.keys(); tbl.hasMoreElements(); ) {
                         table = tbl.nextElement();
                         query = buildUpdateQuery(model, tables, table, transaction, rowIndex);
                         if (query != null) {
@@ -427,12 +413,10 @@ public class SqlManager {
         Statement stmt = conn.createStatement();
         try {
             stmt.execute(rsql);
-        }
-        finally {
+        } finally {
             try {
                 stmt.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("!", e);
             }
         }
@@ -451,12 +435,10 @@ public class SqlManager {
             Statement stmt = conn.createStatement();
             try {
                 stmt.execute(query);
-            }
-            finally {
+            } finally {
                 try {
                     stmt.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     log.error("!", e);
                 }
             }
@@ -494,7 +476,7 @@ public class SqlManager {
         if (model.getColumnNames() == null || model.getColumnCount() == 0) {
             log.warn("COLNAME is null!!! ATTENSION!!! ");
         }
-        for (; columnNamesSql.hasMoreTokens();) {
+        for (; columnNamesSql.hasMoreTokens(); ) {
             if (is_column) {
                 have_no_table = false;
                 columnIndex++;
@@ -509,8 +491,8 @@ public class SqlManager {
             } else {
                 is_column = true;
             }
-            if (have_no_table || foo.indexOf(".") == -1
-                    || foo.indexOf("(") > -1) {
+            if (have_no_table || !foo.contains(".")
+                    || foo.contains("(")) {
                 if (model.getColumnLabel(columnIndex) != null) {
                     columnName = model.getColumnLabel(columnIndex).toUpperCase();
                 } else {
@@ -539,7 +521,7 @@ public class SqlManager {
     public boolean isSqlWord(String word) {
         String[] sqlKeys = {"+", "-", "*", "/", "(", "||"};
         for (String sqlKey : sqlKeys) {
-            if (word.indexOf(sqlKey) != -1) {
+            if (word.contains(sqlKey)) {
                 return true;
             }
         }
@@ -584,9 +566,8 @@ public class SqlManager {
             log.debug("core.rml.dbi.DATASTORE.retrieve rsql=" + rsql);
         }
         try {
-            rsql = (String) doc.calculateMacro(sql);
-        }
-        catch (Exception e) {
+            rsql = doc.calculateMacro(sql);
+        } catch (Exception e) {
             log.error("ERROR IN SQL EXPRESSION: ", e);
             if (ZetaProperties.dstore_debug > 1) {
                 log.error(" ERROR IN SQL EXPRESSION:", e);
@@ -668,21 +649,18 @@ public class SqlManager {
                     + e.getSQLState(), e);
             ErrorReader.getInstance().addMessage(e.getMessage());
             doc.clearInfo();
-        }
-        finally {
+        } finally {
             if (rset != null) {
                 try {
                     rset.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     log.error("!", e);
                 }
             }
             if (stmt != null) {
                 try {
                     stmt.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     log.error("!", e);
                 }
             }

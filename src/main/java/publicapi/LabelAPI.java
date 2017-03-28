@@ -8,17 +8,19 @@ import proguard.annotation.Keep;
 public interface LabelAPI extends VisualRmlObjectAPI {
     /**
      * Возвращает текущий текст надписи
+     *
      * @return текст
      */
     @Keep
-    public String getText();
-    
+    String getText();
+
     /**
      * Задает текст надписи. Сам элемент при этом становится видимым
+     *
      * @param text - текст надписи
      */
     @Keep
-    public void setText(String text);
+    void setText(String text);
 
 
 }
