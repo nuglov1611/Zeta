@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<properties>
+<loginAuto>off</loginAuto>
+<loginAfterExit>off</loginAfterExit>
+<reportInitZoom>125</reportInitZoom>
+<useProxy>off</useProxy>
+<proxyType>HTTP</proxyType>
+<proxyServer/>
+<proxyPort/>
+<proxyAuth>off</proxyAuth>
+<proxyLogin/>
+<proxyPassword/>
+<proxyNtlmAuth/>
+<currentSession>6292e07f-cffd-4fbe-9bf4-2a6dbbf3e7ba</currentSession>
+<session ID="6292e07f-cffd-4fbe-9bf4-2a6dbbf3e7ba">
+<dbPassword>user9</dbPassword>
+<dbName>payment</dbName>
+<rmlServer>http://zeta-cis.no-ip.org/public/ZETa-CORE/RML_DOCs/docy_payment/</rmlServer>
+<name>PaymentsDocs</name>
+<rmlServerType>http://</rmlServerType>
+<dbServer>mercury.tgc6.ru</dbServer>
+<dbUsername>user9</dbUsername>
+<dbPort>1522</dbPort>
+<rmlStartDoc>startdoc.rml</rmlStartDoc>
+</session>
+<session ID="7aa5e55c-2ebc-4c1d-bc42-e90e2add6d82">
+<dbPassword>user9</dbPassword>
+<dbName>ars2</dbName>
+<rmlServer>http://zeta-cis.no-ip.org/public/ZETa-CORE/RML_DOCs/docy_ars/</rmlServer>
+<name>TrunsRentaService</name>
+<rmlServerType>http://</rmlServerType>
+<dbServer>mercury.tgc6.ru</dbServer>
+<dbUsername>user9</dbUsername>
+<dbPort>1522</dbPort>
+<rmlStartDoc>startdoc.rml</rmlStartDoc>
+</session>
+<session ID="e25894a6-aeec-41da-81bb-dd0d4f0c4815">
+<dbPassword>user9</dbPassword>
+<dbName>ufps</dbName>
+<rmlServer>http://zeta-cis.no-ip.org/public/ZETa-CORE/RML_DOCs/docy_ufps_rmk_1.6/</rmlServer>
+<name>WCS.PostOffice</name>
+<rmlServerType>http://</rmlServerType>
+<dbServer>mercury.tgc6.ru</dbServer>
+<dbUsername>user9</dbUsername>
+<dbPort>1523</dbPort>
+<rmlStartDoc>startdoc_table.rml</rmlStartDoc>
+</session>
+<session ID="9555563c-b6e2-4f7f-8a72-eb2885474b09">
+<dbPassword>user9</dbPassword>
+<dbName>blch</dbName>
+<rmlServer>http://zeta-cis.no-ip.org/public/ZETa-CORE/RML_DOCs/docy_bigtest/</rmlServer>
+<name>TradeIndustrialEnterprise</name>
+<rmlServerType>http://</rmlServerType>
+<dbServer>mercury.tgc6.ru</dbServer>
+<dbUsername>user9</dbUsername>
+<dbPort>1523</dbPort>
+<rmlStartDoc>startdoc.rml</rmlStartDoc>
+</session>
+</properties>

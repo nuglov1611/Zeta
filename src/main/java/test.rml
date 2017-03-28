@@ -1,0 +1,43 @@
+Cp1251
+DOC
+font="Courier,plain,12"
+document_width=800
+document_height=700
+document_title="–Ã "
+
+{dataset alias=ds
+query="select id, name_file, BODY_FILE  from doc_from_file for update"
+}
+{splitpanel        percent=40       type = vertical
+
+    {button
+        left = 100 width = 200    height = 25   top = 50
+        label = "to DB"
+        action = "($X
+                    (size = ($g.ds@retrieve)+1)
+                    (file = ($g.self@FILEDIALOG 'load'))
+                    ($g.ds@setValue size 'id' size)
+                    ($g.ds@setValue size 'name_file' ($file@ 1))
+                    ($g.ds@setValue size 'body_file' ($file@ 2))
+                    (file = ($g.self@FILEDIALOG 'load'))
+                    ($g.ds@setValue size+1 'id' (size+1))
+                    ($g.ds@setValue size+1 'name_file' ($file@ 1))
+                    ($g.ds@setValue size+1 'body_file' ($file@ 2))
+                    ($g.ds@update)
+                    ($ret '')
+                  )"
+    }
+    {button
+        left = 200 width = 200    height = 25   top = 50
+        label = "from DB"
+        action = "($X
+                    (rows = ($g.ds@retrieve))
+                    ($g.ds@setcurrow rows)
+		    (filedlg = ($g.self@FILEDIALOG 'save'))
+		    (file = ($g.ds@getValue 'body_file'))
+                    ($g.self@saveFile ($filedlg@ 2) file)
+                    ($ret '')
+                  )"
+    }
+} // end of split
+
