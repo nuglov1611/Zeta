@@ -8,54 +8,7 @@
 
 package core.document;
 
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-
-import javax.swing.FocusManager;
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-
-import loader.Loader;
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import properties.PropertyConstants;
-import properties.SessionManager;
-import publicapi.DocumentAPI;
-import publicapi.RetrieveableAPI;
-import views.focuser.Focusable;
-import views.focuser.Focuser;
-import action.api.ARGV;
-import action.api.GlobalValuesObject;
-import action.api.HaveMethod;
-import action.api.RTException;
-import action.api.ScriptApi;
+import action.api.*;
 import action.calc.Nil;
 import action.calc.objects.class_type;
 import core.browser.DocumentContainer;
@@ -77,25 +30,54 @@ import core.rml.dbi.ErrorReader;
 import core.rml.dbi.exception.UpdateException;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZPanel;
+import loader.Loader;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import properties.PropertyConstants;
+import properties.SessionManager;
+import publicapi.DocumentAPI;
+import publicapi.RetrieveableAPI;
+import views.focuser.Focusable;
+import views.focuser.Focuser;
+
+import javax.swing.FocusManager;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 //import devices.DBF_JDBC1.FileControllerLoad;
 //import devices.DBF_JDBC1.FileControllerSave;
 
 public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, class_type, PropertyChangeListener {
-	
+
     protected static final Logger log = Logger.getLogger(Document.class);
-    
+
     public final static String PROGERSS = "progress";
-    
+
     private final ScriptExecutor worker = new ScriptExecutor(this);
-    
+
     private final Container children = new Container(this);
-    
+
     private final JFileChooser chooser = new JFileChooser();
-    
+
     private final ArrayList<JMenu> docMenu = new ArrayList<JMenu>();
-    
+
     private final MenuListener mListener = new MenuListener();
-    
+
     private JMenuBar mainMenu = null;
 
     class MenuListener implements ActionListener {
@@ -103,8 +85,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             String command = e.getActionCommand();
             try {
                 doAction(command, null);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 log.error("Shit happens", ex);
             }
 //            if (e.getSource() instanceof views.Item) {
@@ -116,8 +97,8 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 //            }
         }
     }
-    
-    
+
+
     class FL extends FocusAdapter {
 
         @Override
@@ -130,37 +111,36 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
     class HandlerList {
         public HandlerList next;
 
-        public Closeable   handler;
+        public Closeable handler;
 
         public HandlerList(Closeable c, HandlerList h) {
             handler = c;
             next = h;
         }
     }
-    
-    /** */
-    final public static int                         ACT_CANCEL = 0;
 
     /** */
-    final public static int                         ACT_DOK    = 1;
+    final public static int ACT_CANCEL = 0;
 
     /** */
-    final public static int                         ACT_HOK    = 2;
+    final public static int ACT_DOK = 1;
 
     /** */
-    final public static int                         ACT_NEW    = 3;
+    final public static int ACT_HOK = 2;
 
     /** */
-    final public static int                         ACT_SAVE   = 4;
-    
+    final public static int ACT_NEW = 3;
 
-    
-    public static boolean                           resetIt    = false;
+    /** */
+    final public static int ACT_SAVE = 4;
 
-    public static final Hashtable<String, Document> hashable   = new Hashtable<String, Document>();
 
-    private Parser                                  parser     = null;
-    
+    public static boolean resetIt = false;
+
+    public static final Hashtable<String, Document> hashable = new Hashtable<String, Document>();
+
+    private Parser parser = null;
+
     private boolean creatingDocument = true;
 
     public Hashtable<String, Object> getAliases() {
@@ -171,7 +151,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
      * загрузить и открыть документ в новом окне
      */
     public synchronized void callDocumentNewWindow(String doc_name,
-            Object[] args, Actioner actor) throws Exception {
+                                                   Object[] args, Actioner actor) throws Exception {
 
         container.loadDocument(doc_name, args, true);
 
@@ -183,15 +163,15 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
      * зарегистрировать Actor.
      */
     public synchronized void callDocumentSomeWindow(String doc_name,
-            Object[] args, Actioner actor) throws Exception {
+                                                    Object[] args, Actioner actor) throws Exception {
         container.loadDocument(doc_name, args, false);
 
         actor.notifyActioner();
     }
 
     public static Document getDocumentFromHash(String docName, Document parent, Object[] args, DocumentContainer cnt) {
-        Document doc = hashable.get(docName); 
-        if(doc != null){
+        Document doc = hashable.get(docName);
+        if (doc != null) {
             doc.setParent(parent);
             doc.setArguments(args);
             doc.setContainer(cnt);
@@ -202,26 +182,25 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
     public Document getDocumentFromLHash(String docName) {
         return lhashable.get(docName);
     }
-    
-    
+
+
     /**
      * Конструктор
-     * 
+     *
      * @param DocName
      * @param args
      * @param parent
-     * 
      * @throws LoadDocumentException
      */
     public Document(String DocName, Object[] args, Document parent,
-            DocumentContainer cnt) throws LoadDocumentException {
+                    DocumentContainer cnt) throws LoadDocumentException {
 
         container = cnt;
 
         parentDocument = parent;
 
         parser = new Parser(this);
-        
+
 
         try {
             DocName = DocName.trim();
@@ -231,21 +210,18 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                     prop = (Proper) parent.aliases.get(DocName.substring(1));
                     myname = (String) prop.hash.get("###file###");
                     mypath = (String) prop.hash.get("###path###");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Shit happens", e);
                     throw new RTException("CastException", "&ALIAS <"
                             + DocName.substring(1)
                             + "> must containt Proper!!!!");
                 }
-            }
-            else {
+            } else {
                 int foo = DocName.lastIndexOf('/');
                 if (foo != -1) {
                     myname = DocName.substring(foo + 1);
                     mypath = DocName.substring(0, foo);
-                }
-                else
+                } else
                     myname = DocName;
                 char[] text = Loader.getInstanceRml().loadByName_chars(DocName,
                         true);
@@ -253,7 +229,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             }
 
             //панель документа
-            LayoutMng.setLayout(panel, prop, new GridLayout(1,1));
+            LayoutMng.setLayout(panel, prop, new GridLayout(1, 1));
 
             aliases = new Hashtable<String, Object>();
             aliases.put(AliasesKeys.DOCUMENT, this);
@@ -270,27 +246,27 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 version = "...";
 
             aliases.put(AliasesKeys.DOCUMENT_VERSION, version);
-            try{
-            	executeScript((String) prop.get("PRELOADSCRIPT"), true);
-            }catch(Exception e){
-            	log.error("Preload Script FAILED!", e);
+            try {
+                executeScript((String) prop.get("PRELOADSCRIPT"), true);
+            } catch (Exception e) {
+                log.error("Preload Script FAILED!", e);
             }
-            
+
             children.addChildren(prop, this);
-            
+
             //очищаем описание дерева объектов за ненадобностью, и сохраняем проперти на всякий случай
             prop.content = null;
             prop.next = null;
             System.gc();
-            
+
             aliases.put(AliasesKeys.DOCUMENT_PROPERTIES, prop);
-            
-        	try{
-        		executeScript((String) prop.get("POSTLOADSCRIPT"), true);
-            }catch(Exception e){
-            	log.error("Postload Script FAILED!", e);
+
+            try {
+                executeScript((String) prop.get("POSTLOADSCRIPT"), true);
+            } catch (Exception e) {
+                log.error("Postload Script FAILED!", e);
             }
-        		
+
 
             final String script = (String) prop.get("CLOSESCRIPT");
             if (script != null) {
@@ -303,77 +279,75 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                         && (h.trim().toUpperCase().compareTo("YES") == 0)) {
                     lhashable.put(DocName, this);
                 }
-            }
-            else if ((h != null)
+            } else if ((h != null)
                     && (h.trim().toUpperCase().compareTo("YES") == 0)) {
                 hashable.put(DocName, this);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Can not load the core.document! BadDocument!", e);
             ZetaUtility.message("Произошла внутренняя ошибка при загрузке документа, обратитесь к программисту.");
             // notifyHandlers(hl);
             throw new LoadDocumentException(mypath + "/" + myname);
         }
-        
+
         creatingDocument = false;
     }
 
-    
-    public Object                                   actionMutex      = new Object();
 
-    private ScriptApi                                    closescript      = null;
+    public Object actionMutex = new Object();
 
-    public String                                   myname           = "";
+    private ScriptApi closescript = null;
 
-    public String                                   mypath           = "";
+    public String myname = "";
 
-    public String                                   version          = new String(
-                                                                             "...");
+    public String mypath = "";
 
-    /** */
-    private Document                                parentDocument   = null;
+    public String version = new String(
+            "...");
 
     /** */
-    private Hashtable<String, Object>               aliases          = null;
+    private Document parentDocument = null;
 
     /** */
-    public final Hashtable<String, Document> lhashable        = new Hashtable<String, Document>();
+    private Hashtable<String, Object> aliases = null;
 
     /** */
-    private DocumentContainer                       container        = null;
+    public final Hashtable<String, Document> lhashable = new Hashtable<String, Document>();
 
     /** */
-    private Actioner                                actor            = null;
+    private DocumentContainer container = null;
 
     /** */
-    private ZPanel                                  panel = ZPanelImpl.create();
+    private Actioner actor = null;
 
     /** */
-    private core.rml.dbi.DSCollection                        collection       = null;
+    private ZPanel panel = ZPanelImpl.create();
+
+    /** */
+    private core.rml.dbi.DSCollection collection = null;
 
     /* обработка shortcut'ов и пересылки кнопок в определенный компонент*/
-    private Hashtable<ShortcutInfo, Shortcutter>    shorts           = new Hashtable<ShortcutInfo, Shortcutter>();
+    private Hashtable<ShortcutInfo, Shortcutter> shorts = new Hashtable<ShortcutInfo, Shortcutter>();
 
-    private Hashtable<Integer, Object>              catchers         = new Hashtable<Integer, Object>();
+    private Hashtable<Integer, Object> catchers = new Hashtable<Integer, Object>();
 
-    private int                                     keyNum           = 0;
+    private int keyNum = 0;
 
-    private KeyCatcher                              nowCatcher       = null;
+    private KeyCatcher nowCatcher = null;
 
-    private Hashtable<Integer, Object>              nowList          = catchers;
+    private Hashtable<Integer, Object> nowList = catchers;
 
-    private Vector<Integer>                         keyBuf           = new Vector<Integer>();
+    private Vector<Integer> keyBuf = new Vector<Integer>();
 
-    private KeyCatcherInfo                          nowCheck         = null;
+    private KeyCatcherInfo nowCheck = null;
 
-    private HandlerList                             hl               = null;
+    private HandlerList hl = null;
 
     /**
      * Requestors which needs to be notified when window events occurs,
      * i.e. windowsOpened and other
      */
-    private Vector<WindowListener>                  windowRequestors = new Vector<WindowListener>();
+    private Vector<WindowListener> windowRequestors = new Vector<WindowListener>();
 
     public void addWindowRequestor(WindowListener newRequestor) {
         if (!windowRequestors.contains(newRequestor)) {
@@ -410,8 +384,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 hash.put(key, inf);
                 log.debug("keyCatcher = " + inf + " on " + key);
                 break;
-            }
-            else if (obj instanceof KeyCatcherInfo) {
+            } else if (obj instanceof KeyCatcherInfo) {
                 KeyCatcherInfo inf2 = (KeyCatcherInfo) obj;
                 if (num != inf2.keys.length - 1) {
                     Hashtable<Integer, KeyCatcherInfo> hash2 = new Hashtable<Integer, KeyCatcherInfo>();
@@ -421,8 +394,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                     log.debug("keyCatcher = " + inf + " on " + keys[num]);
                 }
                 break;
-            }
-            else {
+            } else {
                 hash = (Hashtable<Integer, Object>) obj;
                 num++;
             }
@@ -457,12 +429,10 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             try {
                 inf.key = parseKey(name);
                 shorts.put(inf, com);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -473,12 +443,11 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
         try {
             if (closescript != null) {
                 Object close_ret = closescript.eval(aliases);
-                if(close_ret != null && !close_ret.toString().trim().equals("")){
+                if (close_ret != null && !close_ret.toString().trim().equals("")) {
                     return false;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         showProgress(30);
@@ -503,8 +472,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             title = (String) ((Proper) aliases
                     .get(AliasesKeys.DOCUMENT_PROPERTIES))
                     .get("DOCUMENT_TITLE");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             title = ZetaUtility.pr(ZetaProperties.TITLE_MAINWINDOW, "MainWindow");
         }
@@ -578,17 +546,14 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             if (nowCheck.keys[keyNum] != e.getKeyCode()) {
                 scrollKeys();
             }
-        }
-        else {
+        } else {
             Object obj = nowList.get(new Integer(e.getKeyCode()));
             if (obj == null) {
                 scrollKeys();
-            }
-            else if (obj instanceof KeyCatcherInfo) {
+            } else if (obj instanceof KeyCatcherInfo) {
                 nowCheck = (KeyCatcherInfo) obj;
                 nowList = catchers;
-            }
-            else {
+            } else {
                 nowList = (Hashtable<Integer, Object>) obj;
             }
         }
@@ -596,8 +561,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
         if (nowList == catchers && nowCheck == null) {
             keyNum = 0;
             keyBuf.removeAllElements();
-        }
-        else {
+        } else {
             keyNum++;
         }
         if (nowCheck != null && nowCheck.keys.length == keyNum) {
@@ -612,44 +576,35 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("PATH")) {
             return mypath;
-        }
-        else if (method.equals("NAME"))
+        } else if (method.equals("NAME"))
         /*
          * if ( arg!=null ) throw new RTException("CastException",
          * "DOCUMENT@NAME must called with out arguments");
-        */{
+        */ {
             return myname;
-        }
-        else if (method.equals("ACTSAVE")) {
+        } else if (method.equals("ACTSAVE")) {
             return new Double(actSave());
-        }
-        else if (method.equals("ACTCANCEL")) {
+        } else if (method.equals("ACTCANCEL")) {
             return new Double(actCancel());
-        }
-        else if (method.equals("ACTDOK")) {
+        } else if (method.equals("ACTDOK")) {
             return new Double(actDoc());
-        }
-        else if (method.equals("ACTHOK")) {
+        } else if (method.equals("ACTHOK")) {
             return new Double(actHok());
-        }
-        else if (method.equals("ACTNEW")) {
+        } else if (method.equals("ACTNEW")) {
             return new Double(actNew());
-        }
-        else if (method.equals("CALCULATE")) {
+        } else if (method.equals("CALCULATE")) {
             if (!(arg instanceof String)) {
                 throw new RTException("CastException",
                         "DOCUMENT@DOACTION must called with one String argument");
             }
             try {
-            	return calculate((String) arg);
-            }
-            catch (Exception e) {
+                return calculate((String) arg);
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("EXCEPTION", e.toString());
             }
-            
-        }
-        else if (method.equalsIgnoreCase("runInBackground")) {
+
+        } else if (method.equalsIgnoreCase("runInBackground")) {
             if (!(arg instanceof String)) {
                 throw new RTException("CastException",
                         "DOCUMENT@DOACTION must called with one String argument");
@@ -657,33 +612,29 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             try {
                 runInBackground((String) arg);
                 return null;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("EXCEPTION", e.toString());
             }
-            
-        }
-        else if (method.equals("DOACTION")) {
+
+        } else if (method.equals("DOACTION")) {
             if (!(arg instanceof String)) {
                 throw new RTException("CastException",
                         "DOCUMENT@DOACTION must called with one String argument");
             }
             try {
                 doAction((String) arg, null);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("EXCEPTION", e.toString());
             }
             return new Nil();
-        }
-        else if (method.equals("SERVERPATH"))
+        } else if (method.equals("SERVERPATH"))
             return getServerParth();
         else if (method.equals("GETALIASES"))
             return aliases;
         else if (method.equals("GETOBJECT"))
-        	return getObject((String) arg);
+            return getObject((String) arg);
         else if (method.equals("LOAD")) {
             if (!(arg instanceof String)) {
                 throw new RTException("CastException",
@@ -691,32 +642,26 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             }
             try {
                 return loadRml((String) arg);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("LoadException", "Error load core.document");
             }
-        }
-        else if (method.equals("PARSE")) {
+        } else if (method.equals("PARSE")) {
             if (!(arg instanceof String))
                 throw new RTException("CastException",
                         "DOCUMENT@PARSE must called with one String argument");
             try {
                 return parse((String) arg);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("LoadException", "" + e);
             }
-        }
-        else if (method.equals("OPENFILE")){
+        } else if (method.equals("OPENFILE")) {
             return openFileDlg();
-        }
-        else if (method.equals("READFILE"))
+        } else if (method.equals("READFILE"))
             try {
-                return readFile((String)arg);
-            }
-            catch (Exception e) {
+                return readFile((String) arg);
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
@@ -725,8 +670,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 Vector<Object> v = (Vector<Object>) arg;
                 writeToFile((String) v.elementAt(0), (byte[]) v.elementAt(1));
                 return new Double(0);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
@@ -734,16 +678,14 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             try {
                 shell((String) arg);
                 return new Double(0);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
         else if (method.equals("SHELLWAIT"))
             try {
-                return shellWait((String)arg);
-            }
-            catch (Exception e) {
+                return shellWait((String) arg);
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
@@ -751,33 +693,29 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             try {
                 int returnVal = -1;
                 if (((String) arg).equalsIgnoreCase("load"))
-                	returnVal = chooser.showOpenDialog(container);
+                    returnVal = chooser.showOpenDialog(container);
                 else
-                	returnVal = chooser.showSaveDialog(container);
-                if(returnVal == JFileChooser.APPROVE_OPTION) {
-                       //return chooser.getSelectedFile().getAbsoluteFile();
-                       File f = chooser.getSelectedFile();
-                       Object s[] = {f.getAbsolutePath(), f.getName(), f.getAbsoluteFile()};
-                       return s;
+                    returnVal = chooser.showSaveDialog(container);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    //return chooser.getSelectedFile().getAbsoluteFile();
+                    File f = chooser.getSelectedFile();
+                    return new Object[]{f.getAbsolutePath(), f.getName(), f.getAbsoluteFile()};
                 }
                 return null;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
         else if (method.equals("RUSER"))
             try {
                 return new Double(0);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
                 throw new RTException("RunTime", e.getMessage());
             }
-        else if (method.equals("EXTSURE")){
-            return ZetaUtility.extSure((String)arg);
-        }
-        else if (method.equals("SURE")) {
+        else if (method.equals("EXTSURE")) {
+            return ZetaUtility.extSure((String) arg);
+        } else if (method.equals("SURE")) {
             Vector<Object> v = (Vector<Object>) arg;
             String msg = (String) v.elementAt(0);
             Double val = (Double) v.elementAt(1);
@@ -794,7 +732,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             else if (val.intValue() == ZetaProperties.MESSAGE_ERROR) {
                 b = true;
                 ZetaUtility.message(msg, ZetaProperties.MESSAGE_ERROR, font);
-            //warning
+                //warning
             } else {
                 b = true;
                 ZetaUtility.message(msg, ZetaProperties.MESSAGE_WARN, font);
@@ -817,8 +755,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 ((Focusable) arg).focusThis();
             }
             return new Double(0);
-        }
-        else if (method.equals("ERROR")) {
+        } else if (method.equals("ERROR")) {
             if (!(arg instanceof String)) {
                 throw new RTException("WrongParams",
                         "Wrong parameters of error <string>");
@@ -842,17 +779,16 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 //        } 
         else if (method.equals("INPUT")) {
             if (arg instanceof String) {
-                return ZetaUtility.input((String)arg);
-            }
-            else if (arg instanceof Vector) {
-            Vector v = (Vector) arg;
-            String msg = (String) v.elementAt(0);
+                return ZetaUtility.input((String) arg);
+            } else if (arg instanceof Vector) {
+                Vector v = (Vector) arg;
+                String msg = (String) v.elementAt(0);
                 String val = String.valueOf(v.elementAt(1));
                 return ZetaUtility.input(msg, val);
             } else {
                 throw new RTException("HasMethodException",
                         "object DOCUMENT has not method " + method);
-        }
+            }
         } else {
             throw new RTException("HasMethodException",
                     "object DOCUMENT has not method " + method);
@@ -866,8 +802,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             }
             try {
                 hl.handler.closeNotify();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -877,25 +812,24 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
         try {
             Field f = KeyEvent.class.getField("VK_" + s);
             return f.getInt(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return Integer.parseInt(s);
         }
     }
 
-    private void setParent(Document parent){
+    private void setParent(Document parent) {
         parentDocument = parent;
     }
 
-    private void setArguments(Object[] args){
+    private void setArguments(Object[] args) {
         aliases.put(AliasesKeys.DOCUMENT_ARGUMENTS, new ARG(args));
     }
 
-    private void setContainer(DocumentContainer cnt){
+    private void setContainer(DocumentContainer cnt) {
         container = cnt;
     }
-    
-    
+
+
     public int[] parseKeys(String s) throws IllegalArgumentException {
         if (s == null) {
             return null;
@@ -913,12 +847,10 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 
             return ret;
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (ar != null && i < ar.length) {
                 throw new IllegalArgumentException("Wrong key " + ar[i]);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Wrong keys: " + e);
             }
         }
@@ -929,95 +861,88 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
         log.debug("process Action " + action);
         int success = 1;
         switch (action) {
-        case ACT_CANCEL:
-            // известить всех кто того желает , о том что документ
-            // закрывается
-            notifyHandlers(hl);
-            container.closeDocument();
-            break;
-        case ACT_DOK: /* */
-            try {
-                //((RetrieveableAPI) maincomponent).toDS();
-            	final RmlObject[] objs = children.getChildren();
-            	for(RmlObject child : objs){
-            		if(child instanceof VisualRmlObject && child instanceof RetrieveableAPI){
-            			((RetrieveableAPI) child).toDS();
-            		}
-            	}
-            	
-                if (collection != null) {
-                    collection.update();
-                }
-                else {
-                    updateAllStore();
-                }
-                // известить всех кто того желает , о том что документ закрывается
+            case ACT_CANCEL:
+                // известить всех кто того желает , о том что документ
+                // закрывается
                 notifyHandlers(hl);
                 container.closeDocument();
-            }
-            catch (Exception e) {
-                log.error("Shit happens", e);
-                ErrorReader.getInstance().addMessage(e.getMessage());
-                success = 0;
-            }
-            break;
-        case ACT_HOK: /* */
-            try {
+                break;
+            case ACT_DOK: /* */
                 try {
+                    //((RetrieveableAPI) maincomponent).toDS();
+                    final RmlObject[] objs = children.getChildren();
+                    for (RmlObject child : objs) {
+                        if (child instanceof VisualRmlObject && child instanceof RetrieveableAPI) {
+                            ((RetrieveableAPI) child).toDS();
+                        }
+                    }
+
+                    if (collection != null) {
+                        collection.update();
+                    } else {
+                        updateAllStore();
+                    }
                     // известить всех кто того желает , о том что документ закрывается
                     notifyHandlers(hl);
-                    if (parentDocument != null && aliases != null && aliases.get(AliasesKeys.RETURNSTORE) != null && parentDocument.getAliases() != null) {
-                        parentDocument.getAliases().put(AliasesKeys.STORE,
-                                aliases.get(AliasesKeys.RETURNSTORE));
-                    }
-                }
-                catch (NullPointerException e) {
+                    container.closeDocument();
+                } catch (Exception e) {
                     log.error("Shit happens", e);
-                    parentDocument.getAliases().remove(AliasesKeys.STORE);
+                    ErrorReader.getInstance().addMessage(e.getMessage());
+                    success = 0;
                 }
-                container.closeDocument();
-            }
-            catch (Exception e) {
-                log.error("Shit happens", e);
-                ErrorReader.getInstance().addMessage(e.getMessage());
-                success = 0;
-            }
-            break;
-        case ACT_SAVE: /* */
-            try {
-                //((RetrieveableAPI) maincomponent).toDS();
-            	final RmlObject[] objs = children.getChildren();
-            	for(RmlObject child : objs){
-            		if(child instanceof VisualRmlObject && child instanceof RetrieveableAPI){
-            			((RetrieveableAPI) child).toDS();
-            		}
-            	}
-            	            	
-                if (collection != null) {
-                    collection.update();
+                break;
+            case ACT_HOK: /* */
+                try {
+                    try {
+                        // известить всех кто того желает , о том что документ закрывается
+                        notifyHandlers(hl);
+                        if (parentDocument != null && aliases != null && aliases.get(AliasesKeys.RETURNSTORE) != null && parentDocument.getAliases() != null) {
+                            parentDocument.getAliases().put(AliasesKeys.STORE,
+                                    aliases.get(AliasesKeys.RETURNSTORE));
+                        }
+                    } catch (NullPointerException e) {
+                        log.error("Shit happens", e);
+                        parentDocument.getAliases().remove(AliasesKeys.STORE);
+                    }
+                    container.closeDocument();
+                } catch (Exception e) {
+                    log.error("Shit happens", e);
+                    ErrorReader.getInstance().addMessage(e.getMessage());
+                    success = 0;
                 }
-                else {
-                    updateAllStore();
+                break;
+            case ACT_SAVE: /* */
+                try {
+                    //((RetrieveableAPI) maincomponent).toDS();
+                    final RmlObject[] objs = children.getChildren();
+                    for (RmlObject child : objs) {
+                        if (child instanceof VisualRmlObject && child instanceof RetrieveableAPI) {
+                            ((RetrieveableAPI) child).toDS();
+                        }
+                    }
+
+                    if (collection != null) {
+                        collection.update();
+                    } else {
+                        updateAllStore();
+                    }
+                } catch (Exception e) {
+                    log.error("Shit happens", e);
+                    ErrorReader.getInstance().addMessage(e.getMessage());
+                    success = 0;
                 }
-            }
-            catch (Exception e) {
-                log.error("Shit happens", e);
-                ErrorReader.getInstance().addMessage(e.getMessage());
-                success = 0;
-            }
-            break;
-        case ACT_NEW: /* */
-            try {
-                reset();
-            }
-            catch (Exception e) {
-                log.error("Shit happens", e);
-                ErrorReader.getInstance().addMessage(e.getMessage());
-                success = 0;
-            }
-            break;
-        default:
-            break;
+                break;
+            case ACT_NEW: /* */
+                try {
+                    reset();
+                } catch (Exception e) {
+                    log.error("Shit happens", e);
+                    ErrorReader.getInstance().addMessage(e.getMessage());
+                    success = 0;
+                }
+                break;
+            default:
+                break;
         }
         return success;
     }
@@ -1032,15 +957,14 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 //            else {
 //                ((RetrieveableAPI) maincomponent).fromDS();
 //            }
-        	final RmlObject[] objs = children.getChildren();
-        	for(RmlObject child : objs){
-        		if(child instanceof VisualRmlObject && child instanceof RetrieveableAPI){
-        			((RetrieveableAPI) child).fromDS();
-        		}
-        	}
-            
-        }
-        else {
+            final RmlObject[] objs = children.getChildren();
+            for (RmlObject child : objs) {
+                if (child instanceof VisualRmlObject && child instanceof RetrieveableAPI) {
+                    ((RetrieveableAPI) child).fromDS();
+                }
+            }
+
+        } else {
             throw new Exception();
         }
     }
@@ -1059,8 +983,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                         if (obj == null) {
                             break;
                         }
-                    }
-                    else if (((KeyCatcherInfo) obj).keys[num2 - num] != key
+                    } else if (((KeyCatcherInfo) obj).keys[num2 - num] != key
                             .intValue()) {
                         break;
                     }
@@ -1073,8 +996,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                     if (obj instanceof KeyCatcherInfo) {
                         nowCheck = (KeyCatcherInfo) obj;
                         nowList = catchers;
-                    }
-                    else {
+                    } else {
                         nowCheck = null;
                         nowList = (Hashtable<Integer, Object>) obj;
                     }
@@ -1106,27 +1028,28 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
     }
 
     /**
-     * @throws SQLException 
-     * @throws BadPasswordException 
-     * @throws UpdateException  */
-    void updateAllStore() throws UpdateException, BadPasswordException, SQLException {
-    	Enumeration<Object> e = aliases.elements();
-    	while(e.hasMoreElements()){
-    		final Object tmp = e.nextElement();
-    		if(tmp instanceof Datastore){
-    			((Datastore) tmp).update();
-    		}
-    	}
+     * @throws SQLException
+     * @throws BadPasswordException
+     * @throws UpdateException
+     */
+    void updateAllStore() throws SQLException {
+        Enumeration<Object> e = aliases.elements();
+        while (e.hasMoreElements()) {
+            final Object tmp = e.nextElement();
+            if (tmp instanceof Datastore) {
+                ((Datastore) tmp).update();
+            }
+        }
     }
 
     public void setFirstFocus(Component comp) {
         ((Focuser) aliases.get(AliasesKeys.FOCUSER)).setFirsFocus(comp);
     }
 
-    public String getName(){
+    public String getName() {
         return myname;
     }
-    
+
 //    public Object executeJavaScript(String script) throws Exception{
 //        ScriptEngineManager m = new ScriptEngineManager();
 //        ScriptEngine engine = m.getEngineByName("js");
@@ -1146,15 +1069,15 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 //            return null; 
 //        }
 //    }    
-    
+
     public void doAction(String action, NotifyInterface ni) throws Exception {
-    	if(creatingDocument){
-    		final ACTION a = new ACTION(this);
-    		a.prepareAction(action, aliases, ni);
-    		a.runAction();
-    	}else{
-    		worker.doAction(action, ni);
-    	}
+        if (creatingDocument) {
+            final ACTION a = new ACTION(this);
+            a.prepareAction(action, aliases, ni);
+            a.runAction();
+        } else {
+            worker.doAction(action, ni);
+        }
     }
 
     public void doBgAction(String action, NotifyInterface ni) throws Exception {
@@ -1167,7 +1090,7 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
 
             public void run() {
                 try {
-                	act.runAction();
+                    act.runAction();
                 } catch (Exception ex) {
                     log.error("!", ex);
                 }
@@ -1177,51 +1100,48 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
     }
 
     public void executeScript(String script, boolean block_mode) throws Exception {
-    	if(script == null || script.trim().length() == 0)
-    		return;
-    	
-    	if(creatingDocument || block_mode){
-    	    final ScriptApi c = ScriptApi.getAPI(script);
-    	   
-    		c.eval(aliases);
-    	}else{
-    		worker.executeScript(script);
-    	}
+        if (script == null || script.trim().length() == 0)
+            return;
+
+        if (creatingDocument || block_mode) {
+            final ScriptApi c = ScriptApi.getAPI(script);
+
+            c.eval(aliases);
+        } else {
+            worker.executeScript(script);
+        }
     }
 
-    @Override
     public void runInBackground(String script) throws Exception {
-    	if(script == null || script.trim().length() == 0)
-    		return;
-    	
-    	final ScriptApi c = ScriptApi.getAPI(script);
+        if (script == null || script.trim().length() == 0)
+            return;
+
+        final ScriptApi c = ScriptApi.getAPI(script);
         final Thread bgThread = new Thread() {
 
             public void run() {
                 try {
                     c.eval(aliases);
                 } catch (Exception ex) {
-                	log.error("", ex);
+                    log.error("", ex);
                 }
             }
         };
         bgThread.start();
     }
 
-    @Override
     public Object calculate(String script) throws Exception {
-        if(script == null || script.trim().length() == 0)
+        if (script == null || script.trim().length() == 0)
             return null;
-        
+
         final ScriptApi c = ScriptApi.getAPI(script);
         return c.eval(aliases);
     }
-    
+
     public String calculateMacro(String script) throws Exception {
         return ScriptApi.macro(script, aliases);
     }
-    
-    
+
 
     public void showInfo(String info) {
         container.showInfo(info);
@@ -1239,23 +1159,23 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
             BadPasswordException {
         return container.getConnection();
     }
-    
-    public DocumentContainer getDocContainer(){
+
+    public DocumentContainer getDocContainer() {
         return container;
     }
 
-	public RmlObject findObject(String alias) {
-		return (RmlObject) aliases.get(alias);
-	}
+    public RmlObject findObject(String alias) {
+        return (RmlObject) aliases.get(alias);
+    }
 
-	public void registrate(RmlObject rmlObject) {
-		if(rmlObject.getAlias() != null)
-			aliases.put(rmlObject.getAlias().toUpperCase(), rmlObject);
-	}
+    public void registrate(RmlObject rmlObject) {
+        if (rmlObject.getAlias() != null)
+            aliases.put(rmlObject.getAlias().toUpperCase(), rmlObject);
+    }
 
-	
+
     public void addMenuActionListener(JMenuItem item) {
-        if(item instanceof JMenu){
+        if (item instanceof JMenu) {
             JMenu menu = (JMenu) item;
             int item_count = menu.getItemCount(); // getItemCount();
             JMenuItem cur_itm = null;
@@ -1264,114 +1184,105 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 if (cur_itm != null) {
                     if (cur_itm instanceof JMenu) {
                         addMenuActionListener(cur_itm);
-                    }else if (cur_itm instanceof JMenuItem) {
-                        ((JMenuItem) cur_itm).addActionListener(mListener);
+                    } else if (cur_itm instanceof JMenuItem) {
+                        cur_itm.addActionListener(mListener);
                     }
-                 }
+                }
+            }
+        } else if (item instanceof JMenuItem) {
+            item.addActionListener(mListener);
+        }
+    }
+
+    public void setDocumentMenu() {
+        if (mainMenu == null) {
+            initDocumentMenu();
+        } else {
+            paintMenu();
+        }
+    }
+
+    private void paintMenu() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            container.setMenuBar(mainMenu);
+        } else {
+            Runnable shell = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        container.setMenuBar(mainMenu);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            };
+            try {
+                SwingUtilities.invokeAndWait(shell);
+            } catch (InvocationTargetException e) {
+            } catch (InterruptedException e) {
             }
         }
-        else if (item instanceof JMenuItem) {
-            ((JMenuItem) item).addActionListener(mListener);
+        mainMenu.repaint();
+    }
+
+
+    public void initDocumentMenu() {
+        ArrayList<JMenu> documentMenu = null;
+        if (docMenu.size() > 0) {
+            documentMenu = new ArrayList<JMenu>();
+            for (JMenu menu_item : docMenu) {
+                documentMenu.add(menu_item);
+            }
         }
-    }
-	
-    public void setDocumentMenu(){
-    	if (mainMenu == null) {
-    		initDocumentMenu();
-    	}
-    	else{
-    		paintMenu();
-    	}
+
+        mainMenu = container.createMenuBar(documentMenu);
+
+        paintMenu();
     }
 
-    private void paintMenu(){
-	    if (SwingUtilities.isEventDispatchThread()) {
-		    container.setMenuBar(mainMenu);
-	    } else {
-	        Runnable shell = new Runnable() {
-	            @Override
-	            public void run() {
-	                try {
-	            	    container.setMenuBar(mainMenu);
-	                } catch (Exception ex) {
-	                    throw new RuntimeException(ex);
-	                }
-	            }
-	        };
-	        try {
-				SwingUtilities.invokeAndWait(shell);
-			} catch (InvocationTargetException e) {
-			} catch (InterruptedException e) {
-			}
-	    }
-	    mainMenu.repaint();
+    public void addMenu(JMenu item) {
+        addMenuActionListener(item);
+        docMenu.add(item);
     }
-    
 
-    
-    
-	public void initDocumentMenu(){
-		ArrayList<JMenu> documentMenu = null;
-	    if(docMenu.size() > 0){
-		    documentMenu = new ArrayList<JMenu>();
-	        for(JMenu menu_item : docMenu){
-	            documentMenu.add(menu_item);
-	        }
-	    }
-
-	    mainMenu = container.createMenuBar(documentMenu);
-	    
-    	paintMenu();
-	}
-	
-	public void addMenu(JMenu item){
-	    addMenuActionListener(item);
-	    docMenu.add(item);
-	}
-	
-	@Override
-	public void addChild(RmlObject child) {
+    public void addChild(RmlObject child) {
         children.addChildToCollection(child);
         if (child instanceof DSCollection) {
             collection = (DSCollection) child;
         }
         if (child instanceof VisualRmlObject) {
             //panel.add(((VisualRmlObject)child).getVisualComponent());
-        	LayoutMng.add(panel, (VisualRmlObject) child);
-        }
-        else if (child instanceof Focuser) {
+            LayoutMng.add(panel, (VisualRmlObject) child);
+        } else if (child instanceof Focuser) {
             aliases.put(AliasesKeys.FOCUSER, child);
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return children.getChildren();
-	}
+    public RmlObject[] getChildren() {
+        return children.getChildren();
+    }
 
-	@Override
-	public Container getContainer() {
-		return children;
-	}
+    public Container getContainer() {
+        return children;
+    }
 
-	@Override
-	public void initChildren() throws Exception {
+    public void initChildren() throws Exception {
 
-		showInfo("Инициализация документа.");
-        
+        showInfo("Инициализация документа.");
+
         try {
             ((Focuser) aliases.get(AliasesKeys.FOCUSER)).activateFocusers();
 
             // если в документе нет коллекц
             if (collection == null)
                 collection = new DSCollection(this);
-            
+
             aliases.put(AliasesKeys.DSCOLLECTION, collection);
 
             try {
                 Vector<Object> v = new Vector<Object>();
                 for (Enumeration<Object> e = aliases.elements(); e
-                        .hasMoreElements();) {
+                        .hasMoreElements(); ) {
                     Object o = e.nextElement();
                     if ((o instanceof core.rml.dbi.Datastore) && (o != collection)) {
                         v.addElement(o);
@@ -1380,113 +1291,95 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
                 core.rml.dbi.Datastore[] dss = new core.rml.dbi.Datastore[v.size()];
                 v.copyInto(dss);
                 collection.setDatastores(dss);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 log.error("Shit happens", ex);
             }
 
             if (resetIt) {
                 resetIt = false;
                 reset();
+            } else {
+                final RmlObject[] o = children.getChildren();
+                for (RmlObject child : o) {
+                    if (child instanceof VisualRmlObject && child instanceof RetrieveableAPI) {
+                        ((RetrieveableAPI) child).retrieve();
+                    }
+                }
             }
-            else {
-            	final RmlObject[] o = children.getChildren();
-            	for(RmlObject child : o){
-            		if(child instanceof VisualRmlObject && child instanceof RetrieveableAPI){
-            			((RetrieveableAPI) child).retrieve();
-            		}
-            	}
-            }
-        }
-        finally {
+        } finally {
             clearInfo();
         }
-	}
+    }
 
-	public void setProgress(int progress) {
-		worker.setProgress(progress);
-	}
+    public void setProgress(int progress) {
+        worker.setProgress(progress);
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return false;
-	}
+    public boolean addChildrenAutomaticly() {
+        return false;
+    }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getPropertyName().equals(PROGERSS)){
-			container.showProgress((Integer) evt.getNewValue());
-		}
-	}
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PROGERSS)) {
+            container.showProgress((Integer) evt.getNewValue());
+        }
+    }
 
-    @Override
     public String getPath() {
         return mypath;
     }
 
-    @Override
     public int actSave() {
         return processAction(ACT_SAVE);
     }
 
-    @Override
     public int actCancel() {
         return processAction(ACT_CANCEL);
     }
 
-    @Override
     public int actDoc() {
         return processAction(ACT_DOK);
     }
 
-    @Override
     public int actHok() {
         return processAction(ACT_HOK);
     }
 
-    @Override
     public int actNew() {
         return processAction(ACT_NEW);
     }
 
-    @Override
     public void doAction(String action) throws Exception {
         doAction(action, null);
     }
 
-    @Override
     public String getServerParth() {
         return SessionManager.getIntance().getCurrentSession().getProperty(
                 PropertyConstants.RML_SERVER);
     }
 
-    @Override
     public Object getObject(String alias) {
         return aliases.get(alias.toUpperCase());
     }
 
-    @Override
     public Proper loadRml(String file) throws Exception {
         char[] text = Loader.getInstanceRml().loadByName_chars(file, true);
         return parser.createProper(text, null);
     }
 
-    @Override
     public Proper parse(String rml) throws Exception {
         return parser.createProper(rml.toCharArray(), null);
     }
 
-    @Override
     public File openFileDlg() {
         JFileChooser chooser = new JFileChooser();
         int returnVal = chooser.showOpenDialog(container);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-               return chooser.getSelectedFile().getAbsoluteFile();
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile().getAbsoluteFile();
         }
         return null;
     }
 
-    @Override
     public String readFile(String file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
         byte[] b = new byte[fis.available()];
@@ -1495,20 +1388,17 @@ public class Document implements DocumentAPI, GlobalValuesObject, HaveMethod, cl
         return new String(b);
     }
 
-    @Override
     public void writeToFile(String file, byte[] value) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(value);
         fos.close();
     }
 
-    @Override
     public void shell(String cmd) throws IOException {
         Runtime rt = Runtime.getRuntime();
         rt.exec(cmd);
     }
 
-    @Override
     public int shellWait(String cmd) throws IOException, InterruptedException {
         Runtime rt = Runtime.getRuntime();
         Process p = rt.exec(cmd);

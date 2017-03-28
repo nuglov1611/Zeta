@@ -1,41 +1,32 @@
 package views.grid.editor;
 
-import java.awt.Component;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-
 import views.grid.GridColumn;
 import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class ArrayCellEditor extends DefaultCellEditor implements KeyListener, FocusListener, ItemListener {
 
     private GridSwing parentGrid;
     private GridColumn currColumn;
     private JComboBox currField;
-    
-    
+
+
     public ArrayCellEditor(GridSwing parentGrid) {
         super(new JComboBox());
         this.parentGrid = parentGrid;
         this.setClickCountToStart(1);
     }
 
-    
-    
+
     public Object getCellEditorValue() {
-        if(currField == null)
+        if (currField == null)
             return super.getCellEditorValue();
 
         currColumn.calcHandbookDep();
-        
+
         currColumn.setDSRow(currField.getSelectedIndex());
         return currField.getSelectedItem();
     }
@@ -50,20 +41,19 @@ public class ArrayCellEditor extends DefaultCellEditor implements KeyListener, F
                                                  boolean isSelected, int rowIndex, int columnIndex) {
         columnIndex = parentGrid.convertColumnIndexToModel(columnIndex);
         currColumn = parentGrid.getVColumn(columnIndex);
-        
+
         currField = new JComboBox(currColumn.getItems());
-        
+
         currField.setSelectedItem(value);
         currColumn.setDSRow(currField.getSelectedIndex());
 
         currField.addKeyListener(this);
         currField.addFocusListener(this);
         currField.addItemListener(this);
-        
-        parentGrid.toDSSaved = false;
-        return (Component) currField;
-    }
 
+        parentGrid.toDSSaved = false;
+        return currField;
+    }
 
 
     @Override
@@ -81,11 +71,9 @@ public class ArrayCellEditor extends DefaultCellEditor implements KeyListener, F
     }
 
 
-
     @Override
     public void keyReleased(KeyEvent e) {
     }
-
 
 
     @Override
@@ -94,7 +82,7 @@ public class ArrayCellEditor extends DefaultCellEditor implements KeyListener, F
 
     @Override
     public void focusGained(FocusEvent e) {
-        ((JComboBox)e.getSource()).showPopup();
+        ((JComboBox) e.getSource()).showPopup();
     }
 
     @Override

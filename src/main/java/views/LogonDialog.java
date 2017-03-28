@@ -1,41 +1,24 @@
 package views;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JRootPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class LogonDialog extends JDialog {
 
-    static String          userLabel = "Имя пользователя";
+    static String userLabel = "Имя пользователя";
 
-    static String          passLabel = "Пароль";
+    static String passLabel = "Пароль";
 
-    public int             result    = 2;                    // cancel;
+    public int result = 2;                    // cancel;
 
-    private JTextField     user      = new JTextField();
+    private JTextField user = new JTextField();
 
-    private JPasswordField pass      = new JPasswordField();
+    private JPasswordField pass = new JPasswordField();
 
-    JButton                ok        = new JButton("OK");
+    JButton ok = new JButton("OK");
 
-    JButton                cancel    = new JButton("Отмена");
+    JButton cancel = new JButton("Отмена");
 
     public LogonDialog(Frame parent, String title) {
         super(parent, title, true);
@@ -107,8 +90,7 @@ public class LogonDialog extends JDialog {
                 result = 1;
                 // dispose();
                 setVisible(false);
-            }
-            else if (e.getSource().equals(cancel)) {
+            } else if (e.getSource().equals(cancel)) {
                 result = 2;
                 // dispose();
                 setVisible(false);
@@ -131,14 +113,11 @@ public class LogonDialog extends JDialog {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 if (e.getSource() == user) {
                     pass.requestFocus();
-                }
-                else if (e.getSource() == pass) {
+                } else if (e.getSource() == pass) {
                     new AL().actionPerformed(new ActionEvent(ok,
                             ActionEvent.ACTION_PERFORMED, ""));
                 }
-                return;
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 new AL().actionPerformed(new ActionEvent(cancel,
                         ActionEvent.ACTION_PERFORMED, ""));
             }

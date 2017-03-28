@@ -1,9 +1,9 @@
 package views.grid.listener;
 
+import views.grid.manager.GridTableManager;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import views.grid.manager.GridTableManager;
 
 public class GridHeaderMouseListener extends MouseAdapter {
 
@@ -12,6 +12,7 @@ public class GridHeaderMouseListener extends MouseAdapter {
     public GridHeaderMouseListener(GridTableManager tableManager) {
         this.tableManager = tableManager;
     }
+
     public void mousePressed(MouseEvent e) {
         maybeShowPopup(e);
     }
@@ -29,8 +30,8 @@ public class GridHeaderMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-        tableManager.toggleNextSortMode(e.getX());
-        tableManager.requestFocusThis();
+            tableManager.toggleNextSortMode(e.getX());
+            tableManager.requestFocusThis();
+        }
     }
-}
 }

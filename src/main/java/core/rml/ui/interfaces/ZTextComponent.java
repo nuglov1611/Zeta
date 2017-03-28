@@ -1,24 +1,24 @@
 package core.rml.ui.interfaces;
 
-import javax.swing.Action;
-import javax.swing.text.Keymap;
-
 import core.rml.ui.RequiresEDT;
 import core.rml.ui.RequiresEDTPolicy;
 
+import javax.swing.*;
+import javax.swing.text.Keymap;
+
 public interface ZTextComponent extends ZComponent {
 
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	void setText(String svalue);
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    void setText(String svalue);
 
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	void selectAll();
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    void selectAll();
 
-	String getText();
+    String getText();
 
-	Keymap getKeymap();
+    Keymap getKeymap();
 
-	Action[] getActions();
+    Action[] getActions();
 
-	void setEditable(boolean b);
+    void setEditable(boolean b);
 }

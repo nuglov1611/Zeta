@@ -6,38 +6,38 @@ import core.rml.RmlObject;
 
 
 public class ColumnTemplate extends RmlObject {
-    private String  title_font_face;     // ="Dialog";
+    private String title_font_face;     // ="Dialog";
 
     private Integer title_font_size;     // =12;
 
     private Integer title_font_family;   // =0;
 
-    String          title_font_color;    // = Color.black;
+    String title_font_color;    // = Color.black;
 
-    private String  font_face = "Dialog";
+    private String font_face = "Dialog";
 
-    Integer         font_size;           // =10;
+    Integer font_size;           // =10;
 
-    Integer         font_family;         // =0;
+    Integer font_family;         // =0;
 
-    String          font_color;          // = Color.black;
+    String font_color;          // = Color.black;
 
-    String          halignment;          // = "LEFT";
+    String halignment;          // = "LEFT";
 
-    String          valignment;          // = "CENTER";
+    String valignment;          // = "CENTER";
 
-    String          bg_color;            // = Color.white;
+    String bg_color;            // = Color.white;
 
-    String          editable  = "HAND";
+    String editable = "HAND";
 
-    Integer         size;                // = 50;
+    Integer size;                // = 50;
 
-    String          editMask;
+    String editMask;
 
-    int             type      = -1;      // not defined
+    int type = -1;      // not defined
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         Integer ip;
         if (prop == null) {
@@ -196,9 +196,9 @@ public class ColumnTemplate extends RmlObject {
         return type;
     }
 
-	@Override
-	public Object method(String method, Object arg) throws Exception {
-		return null;
-	}
+    @Override
+    public Object method(String method, Object arg) throws Exception {
+        return null;
+    }
 
 }

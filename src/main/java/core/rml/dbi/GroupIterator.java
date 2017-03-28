@@ -17,11 +17,11 @@ import action.calc.objects.base_iterator;
 public class GroupIterator extends base_iterator {
     GroupReport ds;
 
-    Group       gr;
+    Group gr;
 
-    Group[]     grs;
+    Group[] grs;
 
-    int         count;
+    int count;
 
     public GroupIterator(GroupReport ds, Group gr) {
         super();
@@ -30,8 +30,7 @@ public class GroupIterator extends base_iterator {
             grs = gr.getSubgroups();
             if (grs == null) {
                 count = 0;
-            }
-            else {
+            } else {
                 count = grs.length;
             }
             super.init(count - 1);
@@ -45,8 +44,7 @@ public class GroupIterator extends base_iterator {
         }
         if (grs == null) {
             return new DsRow(gr.begrow + cursor, ds);
-        }
-        else {
+        } else {
             grs[cursor].setReport(ds);
             return grs[cursor];
         }

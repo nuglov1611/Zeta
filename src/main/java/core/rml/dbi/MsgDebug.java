@@ -1,38 +1,21 @@
 package core.rml.dbi;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
-
 import loader.ZetaProperties;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.*;
 
 public class MsgDebug extends JFrame {
 
-    JPanel    p        = new JPanel();
+    JPanel p = new JPanel();
 
-    JButton   ButClose = new JButton("Закрыть");
+    JButton ButClose = new JButton("Закрыть");
 
-    JButton   ButClear = new JButton("Очистить");
+    JButton ButClear = new JButton("Очистить");
 
-    boolean   ok       = false;
+    boolean ok = false;
 
     JTextArea ta;
 
@@ -49,8 +32,7 @@ public class MsgDebug extends JFrame {
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 setVisible(false);
-            }
-            else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 clear();
                 setVisible(false);
             }
@@ -62,8 +44,7 @@ public class MsgDebug extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == ButClose) {
                 ok = true;
-            }
-            else if (e.getSource() == ButClear) {
+            } else if (e.getSource() == ButClear) {
                 clear();
                 return;
             }
@@ -119,9 +100,10 @@ public class MsgDebug extends JFrame {
     public void addMessage(String msg) {
         ta.append(msg);
         Rectangle r = new Rectangle(1, ta.getHeight(), 1, 20);
-        ta.scrollRectToVisible(r);    }
-    
-    public void clear(){
+        ta.scrollRectToVisible(r);
+    }
+
+    public void clear() {
         ta.setText("");
     }
 }

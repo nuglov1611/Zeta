@@ -6,20 +6,19 @@ package views.grid.model.cross.converter;
  */
 public class StringToDoubleConverter extends DataConverter {
 
-  /**
-   * @param value data to convert
-   * @return converted value
-   */
-  public final Object decodeValue(Object value) throws Exception {
-    if (value==null)
-      return null;
-    try {
-      return new Double(value.toString());
+    /**
+     * @param value data to convert
+     * @return converted value
+     */
+    public final Object decodeValue(Object value) throws Exception {
+        if (value == null)
+            return null;
+        try {
+            return new Double(value.toString());
+        } catch (NumberFormatException ex) {
+            throw new Exception(ex);
+        }
     }
-    catch (NumberFormatException ex) {
-      throw new Exception(ex);
-    }
-  }
 
 
 }

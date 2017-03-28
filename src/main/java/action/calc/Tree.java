@@ -15,7 +15,7 @@ package action.calc;
  * Класс для построения дервьев разбора
  */
 public class Tree {
-    public Object left  = null;
+    public Object left = null;
 
     public Object right = null;
 

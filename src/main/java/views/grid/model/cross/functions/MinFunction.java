@@ -6,28 +6,27 @@ package views.grid.model.cross.functions;
  */
 public class MinFunction extends GenericFunction {
 
-  private Double minValue;
+    private Double minValue;
 
 
-  public MinFunction() {
-  }
-
-
-  public void processValue(Object value) {
-    if (minValue==null) {
-      if (value!=null && value instanceof Number)
-      minValue = new Double( ((Number)value).doubleValue());
+    public MinFunction() {
     }
-    else if (value!=null &&
-             value instanceof Number &&
-             ((Number)value).doubleValue()<minValue.doubleValue())
-      minValue = new Double( ((Number)value).doubleValue() );
-  }
 
 
-  public Double getValue() {
-    return minValue;
-  }
+    public void processValue(Object value) {
+        if (minValue == null) {
+            if (value != null && value instanceof Number)
+                minValue = new Double(((Number) value).doubleValue());
+        } else if (value != null &&
+                value instanceof Number &&
+                ((Number) value).doubleValue() < minValue.doubleValue())
+            minValue = new Double(((Number) value).doubleValue());
+    }
+
+
+    public Double getValue() {
+        return minValue;
+    }
 
 
 }

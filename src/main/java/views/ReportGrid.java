@@ -1,16 +1,5 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-import javax.swing.border.Border;
-
-import publicapi.RmlContainerAPI;
-import views.grid.GridColumn;
 import action.api.Calc;
 import action.api.ScriptApi;
 import core.document.Document;
@@ -21,89 +10,98 @@ import core.rml.RmlObject;
 import core.rml.VisualRmlObject;
 import core.rml.ui.EDTInvocationHandler;
 import core.rml.ui.interfaces.ZComponent;
+import publicapi.RmlContainerAPI;
+import views.grid.GridColumn;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.util.Vector;
 
 public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
-	
-	private class RGrid extends JComponent implements ZComponent{
 
-		@Override
-		public JComponent getJComponent() {
-			return this;
-		}
-		@Override
-		public Component add(ZComponent component) {
-			return super.add(component.getJComponent());
-		}
+    private class RGrid extends JComponent implements ZComponent {
 
-		@Override
-		public Component add(String positionForBorder, ZComponent component) {
-			return super.add(positionForBorder, component.getJComponent());
-		}
+        @Override
+        public JComponent getJComponent() {
+            return this;
+        }
 
-		@Override
-		public void add(ZComponent component, Object constraints) {
-			super.add(component.getJComponent(), constraints);
-		}
-		@Override
-		public void remove(ZComponent component) {
-			super.remove(component.getJComponent());
-		}
-		
-	}
-	
-	private Container container = new Container(this);
-	
-	private ZComponent reportGrid = (ZComponent) java.lang.reflect.Proxy.newProxyInstance(RGrid.class.getClassLoader(),
+        @Override
+        public Component add(ZComponent component) {
+            return super.add(component.getJComponent());
+        }
+
+        @Override
+        public Component add(String positionForBorder, ZComponent component) {
+            return super.add(positionForBorder, component.getJComponent());
+        }
+
+        @Override
+        public void add(ZComponent component, Object constraints) {
+            super.add(component.getJComponent(), constraints);
+        }
+
+        @Override
+        public void remove(ZComponent component) {
+            super.remove(component.getJComponent());
+        }
+
+    }
+
+    private Container container = new Container(this);
+
+    private ZComponent reportGrid = (ZComponent) java.lang.reflect.Proxy.newProxyInstance(RGrid.class.getClassLoader(),
             new Class[]{ZComponent.class}, new EDTInvocationHandler(new RGrid()));
 
-    int                               sizeRow    = 20;
+    int sizeRow = 20;
 
 //    int                               left       = 1;    // смещение грида по оси X(<1 нельзя!)
 //
 //    int                               top        = 0;    // смещение грида по оси Y
 
-    public core.rml.dbi.Datastore              ds;
+    public core.rml.dbi.Datastore ds;
 
-    GridColumn[]                      columns;
+    GridColumn[] columns;
 
-    int[]                             helpArray;
+    int[] helpArray;
 
-    int[]                             calcArray;
+    int[] calcArray;
 
-    int                               offset     = 0;    // смещение в пикселах для текущей страницы,
+    int offset = 0;    // смещение в пикселах для текущей страницы,
 
     // по которому будет идти отрисовка строк ReportGrid
     // int numRows = 0;
-    public int                        beginRow   = 0;    // начальная строка в Datastore - источнике данных
+    public int beginRow = 0;    // начальная строка в Datastore - источнике данных
 
-    public int                        endRow     = 0;    // конечная строка в Datastore - источнике данных
+    public int endRow = 0;    // конечная строка в Datastore - источнике данных
 
     // Group group=null;//группа, к которой принадлежит даннный ReportGrid
     // Dimension freePageSize = null;
 
-    int                               freeHeight = 0;
+    int freeHeight = 0;
 
     // Размер свободной части страницы
     // (часть пространства может быть занята, например, колонтитулами),
     // в которой производится отрисовка
-    boolean                           drawIt     = false;
+    boolean drawIt = false;
 
-    boolean                           isPrint    = false;
+    boolean isPrint = false;
 
     // определяет, каким образом будет нарисована сетка в гриде
     // 0 бит (1) - обрамляющий Rectangle
     // 1 бит (2) - вертикальные лин
     // 2 бит (4) - горизонтальные лин
-    int                               drawGrid   = 0;
+    int drawGrid = 0;
 
-    private Report                    parent     = null;
+    private Report parent = null;
 
-    private Font[]                    fonts      = null;
+    private Font[] fonts = null;
 
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
-    	
+        super.init(prop, doc);
+
         Integer ip = null;
         ip = (Integer) prop.get("ROWSIZE");
         if (ip != null) {
@@ -131,20 +129,20 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
     }
 
     public void initChildren() {
-    	
-    	RmlObject[] objs = container.getChildren();
-    	
+
+        RmlObject[] objs = container.getChildren();
+
         int cc = 0;
         int vc = 0;
         try {
-            for (int i = 0; i < objs.length; i++) {
-                if (objs[i] == null) {
+            for (RmlObject obj1 : objs) {
+                if (obj1 == null) {
                     throw new Error(
                             "~views.ReportGrid::addChildren : Object views.Grid cannot be created!");
                 }
-                if (objs[i] instanceof GridColumn) {
+                if (obj1 instanceof GridColumn) {
                     cc++;
-                    if (((GridColumn) objs[i]).isVisible()) {
+                    if (((GridColumn) obj1).isVisible()) {
                         vc++;
                     }
                 }
@@ -153,9 +151,9 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
             helpArray = new int[vc];
             cc = 0;
             vc = 0;
-            for (int i = 0; i < objs.length; i++) {
-                if (objs[i] instanceof GridColumn) {
-                    columns[cc] = (GridColumn) objs[i];
+            for (RmlObject obj : objs) {
+                if (obj instanceof GridColumn) {
+                    columns[cc] = (GridColumn) obj;
                     columns[cc].setParent(this);
                     if (columns[cc].isVisible()) {
                         helpArray[vc] = cc;
@@ -166,8 +164,7 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
             }
 
             createCalcSequence();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("~views.Grid::addChildren : " + e);
         }
@@ -179,15 +176,14 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
             Font tmp = getVColumn(i).getFontProperty(RmlConstants.FONT);
 //            fonts[i] = new Font(tmp.getName(), tmp.getStyle(), tmp.getSize()
 //                    * a / 100);
-            fonts[i] = tmp.deriveFont(tmp.getSize()*a/100);
+            fonts[i] = tmp.deriveFont(tmp.getSize() * a / 100);
         }
     }
 
     public GridColumn getVColumn(int i) {
         try {
             return columns[helpArray[i]];
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -207,27 +203,21 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         int wheight = height - 2 * col.dh;
         if (col.getStringProperty(RmlConstants.HALIGNMENT).equals("LEFT")) {
             xp = x + col.dw;
-        }
-        else if (col.getStringProperty(RmlConstants.HALIGNMENT).equals("RIGHT")) {
+        } else if (col.getStringProperty(RmlConstants.HALIGNMENT).equals("RIGHT")) {
             xp = x + col.dw + wwidth - sw;
-        }
-        else if (col.getStringProperty(RmlConstants.HALIGNMENT).equals("CENTER")) {
+        } else if (col.getStringProperty(RmlConstants.HALIGNMENT).equals("CENTER")) {
             xp = x + col.dw + (wwidth - sw) / 2;
-        }
-        else {
+        } else {
             xp = x + col.dw;
         }
 
         if (col.getStringProperty(RmlConstants.VALIGNMENT).equals("BOTTOM")) {
             yp = y + col.dh + wheight - desc;
-        }
-        else if (col.getStringProperty(RmlConstants.VALIGNMENT).equals("TOP")) {
+        } else if (col.getStringProperty(RmlConstants.VALIGNMENT).equals("TOP")) {
             yp = y + col.dh + sh - desc;
-        }
-        else if (col.getStringProperty(RmlConstants.VALIGNMENT).equals("CENTER")) {
+        } else if (col.getStringProperty(RmlConstants.VALIGNMENT).equals("CENTER")) {
             yp = y + col.dh + sh + (wheight - sh) / 2 - desc;
-        }
-        else {
+        } else {
             yp = y + col.dh + wheight - desc;
         }
 
@@ -243,14 +233,14 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
 
     public void setDatastore(core.rml.dbi.Datastore ds) {
         this.ds = ds;
-        for (int i = 0; i < columns.length; i++) {
-            if (columns[i].getTarget() == null) {
-                if (columns[i].getType() == Integer.MIN_VALUE) {
+        for (GridColumn column : columns) {
+            if (column.getTarget() == null) {
+                if (column.getType() == Integer.MIN_VALUE) {
                     System.out
                             .println("views.Grid.addChildren says : type for computed column not defined!");
                     continue;
                 }
-                columns[i].setTarget(ds.addColumn(columns[i].getType()));
+                column.setTarget(ds.addColumn(column.getType()));
             }
         }
     }
@@ -288,12 +278,7 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         }
         int colw = getColumnsSize();
         SmartLine line = new SmartLine(g);
-        if (parent.isPrint) {
-            line.isPrint = true;
-        }
-        else {
-            line.isPrint = false;
-        }
+        line.isPrint = parent.isPrint;
         // createFonts(a);
         if ((drawGrid & 2) != 0) {
             for (int i = 0; i < helpArray.length; i++) {
@@ -411,12 +396,10 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
                 // System.out.println("validator type = "+columns[c].validator.
                 // type);
                 return getVColumn(c).getValidator().toString(value);
-            }
-            else {
+            } else {
                 return "";
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("~views.Grid::getSourceText() : " + e);
             return "";
@@ -431,27 +414,26 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         }
         Vector<String> names = new Vector<String>();
         Vector<Vector<String>> Bn = new Vector<Vector<String>>();
-        for (int i = 0; i < columns.length; i++) {
-            String alias = columns[i].getAlias();
-            if (alias != null && columns[i].getStringProperty(RmlConstants.EXP) != null) { // кладем его в
+        for (GridColumn column : columns) {
+            String alias = column.getAlias();
+            if (alias != null && column.getStringProperty(RmlConstants.EXP) != null) { // кладем его в
                 // вектор names
                 names.addElement(alias);
                 Vector<String> bi = new Vector<String>();
-                String cc = columns[i].getCalc();
+                String cc = column.getCalc();
                 String[] als = null;
                 try {
                     if (cc != null) {
-                        als = ((Calc)ScriptApi.getAPI(cc)).getAliases();
+                        als = ((Calc) ScriptApi.getAPI(cc)).getAliases();
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (als != null) {
-                    for (int j = 0; j < als.length; j++) {
-                        if (als[j] != null
-                                && (!als[j].equals(columns[i].getAlias()))) {
-                            bi.addElement(als[j]);
+                    for (String al : als) {
+                        if (al != null
+                                && (!al.equals(column.getAlias()))) {
+                            bi.addElement(al);
                         }
                     }
                 }
@@ -463,8 +445,7 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         if (names.size() > 0) {
             try {
                 ret = UTIL.createSequence(names, Bn);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("views.ReportGrid::createCalcSequence() : "
                         + e);
@@ -474,13 +455,12 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         if (ret != null) {
             if (ret.size() > 0) {
                 calcArray = new int[ret.size()];
-            }
-            else {
+            } else {
                 return;
             }
 
             for (int i = 0; i < ret.size(); i++) {
-                String name = (String) ret.elementAt(i);
+                String name = ret.elementAt(i);
                 int index = 0;
                 index = getColumnNumByAlias(name);
                 if (index != -1) {
@@ -490,40 +470,40 @@ public class ReportGrid extends VisualRmlObject implements RmlContainerAPI {
         }
     } // end of create sequence
 
-	@Override
-	public void focusThis() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void focusThis() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return reportGrid;
-	}
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return reportGrid;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public void addChild(RmlObject child) {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
+
+    @Override
+    protected Border getDefaultBorder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -1,16 +1,14 @@
 package views.grid;
 
-import java.util.Vector;
-
-import javax.swing.JFileChooser;
-
-import org.apache.log4j.Logger;
-
-import views.grid.listener.GridPopupActionListener;
 import action.api.RTException;
 import action.calc.Nil;
 import core.rml.RmlConstants;
 import core.rml.dbi.Datastore;
+import org.apache.log4j.Logger;
+import views.grid.listener.GridPopupActionListener;
+
+import javax.swing.*;
+import java.util.Vector;
 
 /**
  * @author mmylnikova
@@ -33,141 +31,141 @@ public class GridRmlMethodInvoker {
             return rowMethod(method, arg);
         } else {
             //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ CurrentValue
-        if (method.equalsIgnoreCase("CURRENTVALUE") && (arg instanceof String)) {
-            return parentGrid.getCurrentValue((String) arg);
-        } else if (method.equalsIgnoreCase("GETVALUE")) {
-            return getValue(arg);
-        } else if (method.equalsIgnoreCase("SELECTIONVALUES")) {
-            //обработка вызова метода CurrentValue
-            if ((arg instanceof String) && parentGrid.getTableManager().getSelectionSize() > 0 /*by pavel: && selection.width()>0*/) {
-                Object[] ret = null;
-                GridColumn column = parentGrid.getTableManager().getColumnByAlias(((String) arg).toUpperCase());
-                if (column == null) {
+            if (method.equalsIgnoreCase("CURRENTVALUE") && (arg instanceof String)) {
+                return parentGrid.getCurrentValue((String) arg);
+            } else if (method.equalsIgnoreCase("GETVALUE")) {
+                return getValue(arg);
+            } else if (method.equalsIgnoreCase("SELECTIONVALUES")) {
+                //обработка вызова метода CurrentValue
+                if ((arg instanceof String) && parentGrid.getTableManager().getSelectionSize() > 0 /*by pavel: && selection.width()>0*/) {
+                    Object[] ret = null;
+                    GridColumn column = parentGrid.getTableManager().getColumnByAlias(((String) arg).toUpperCase());
+                    if (column == null) {
+                        return ret;
+                    }
+                    ret = new Object[parentGrid.getTableManager().getSelectionSize()];
+                    log.debug("inside processing SELECTIONVALUES");
+                    for (int i = 0; i < parentGrid.getTableManager().getSelectionSize(); i++) {
+                        ret[i] = parentGrid.getSourceValueByTarget(parentGrid.getTableManager().getSelectedRow(i), column.getTarget());
+                    }
                     return ret;
                 }
-                ret = new Object[parentGrid.getTableManager().getSelectionSize()];
-                log.debug("inside processing SELECTIONVALUES");
-                for (int i = 0; i < parentGrid.getTableManager().getSelectionSize(); i++) {
-                    ret[i] = parentGrid.getSourceValueByTarget(parentGrid.getTableManager().getSelectedRow(i), column.getTarget());
+            } else if (method.equalsIgnoreCase("SELECTIONINDEXES")) {
+                //обработка вызова метода CurrentValue
+                if ((arg instanceof String) && parentGrid.getTableManager().getSelectionSize() > 0 /*by pavel: && selection.width()>0*/) {
+                    GridColumn column = parentGrid.getTableManager().getColumnByAlias(((String) arg).toUpperCase());
+                    if (column == null) {
+                        return null;
+                    }
+                    Object[] ret = new Object[parentGrid.getTableManager().getSelectionSize()];
+                    log.debug("inside processing SELECTIONINDEXES");
+                    for (int i = 0; i < parentGrid.getTableManager().getSelectionSize(); i++) {
+                        ret[i] = parentGrid.getTableManager().getSelectedRow(i);
+                    }
+                    return ret;
                 }
-                return ret;
-            }
-        } else if (method.equalsIgnoreCase("SELECTIONINDEXES")) {
-            //обработка вызова метода CurrentValue
-            if ((arg instanceof String) && parentGrid.getTableManager().getSelectionSize() > 0 /*by pavel: && selection.width()>0*/) {
+            } else if (method.equalsIgnoreCase("RETRIEVE")) {
+                return retrieve(arg);
+            } else if (method.equalsIgnoreCase("EDITIT")) {
+                parentGrid.getTableManager().startEditAtCell(parentGrid.getTableManager().getSelectedRow(), parentGrid.getTableManager().getSelectedColumn());
+                return null;
+            } else if (method.equalsIgnoreCase("SETDATASTORE")) {
+                if (arg instanceof core.rml.dbi.Datastore) {
+                    parentGrid.getDatastore().removeHandler();
+                    parentGrid.getParentDatastore().removeHandler();
+
+                    parentGrid.setParentDatastore((core.rml.dbi.Datastore) arg);
+                    parentGrid.setDatastore((core.rml.dbi.Datastore) arg);
+                    parentGrid.retrieve();
+                } else {
+                    throw new RTException("CASTEXCEPTION", "(grid@SETDATASTORE String)");
+                }
+            } else if (method.equalsIgnoreCase("GETDATASTORE")) {
+                return parentGrid.getDatastore();
+            } else if (method.equalsIgnoreCase("GETALLDATASTORE")) {
+                return parentGrid.getParentDatastore();
+            } else if (method.equalsIgnoreCase("SUM")) {
+                if (parentGrid.getDatastore() == null || parentGrid.getDatastore().getRowCount() == 0) {
+                    return (double) 0;
+                }
                 GridColumn column = parentGrid.getTableManager().getColumnByAlias(((String) arg).toUpperCase());
                 if (column == null) {
-                    return null;
+                    return (double) 0;
                 }
-                Object[] ret = new Object[parentGrid.getTableManager().getSelectionSize()];
-                log.debug("inside processing SELECTIONINDEXES");
+                if (!(column.getValue() instanceof Double)) {
+                    return (double) 0;
+                }
+                Double sum = 0.0;
                 for (int i = 0; i < parentGrid.getTableManager().getSelectionSize(); i++) {
-                    ret[i] = parentGrid.getTableManager().getSelectedRow(i);
+                    sum += (Double) parentGrid.getSourceValueByTarget(parentGrid.getTableManager().getSelectedRow(i), column.getTarget());
                 }
-                return ret;
-            }
-        } else if (method.equalsIgnoreCase("RETRIEVE")) {
-            return retrieve(arg);
-        } else if (method.equalsIgnoreCase("EDITIT")) {
-            parentGrid.getTableManager().startEditAtCell(parentGrid.getTableManager().getSelectedRow(), parentGrid.getTableManager().getSelectedColumn());
-            return null;
-        } else if (method.equalsIgnoreCase("SETDATASTORE")) {
-            if (arg instanceof core.rml.dbi.Datastore) {
-                parentGrid.getDatastore().removeHandler();
-                parentGrid.getParentDatastore().removeHandler();
+                return sum;
+            } else if (method.equalsIgnoreCase("DUMPTOFILE")) {
+                dumpToFile();
+            } else if (method.equalsIgnoreCase("GETMENU")) {
+                return parentGrid.getMenu();
+            } else if (method.equalsIgnoreCase("SETMENU")) {
+                return setMenu(arg);
+            } else if (method.equalsIgnoreCase("REPAINT")) {
+                parentGrid.getTableManager().repaintAll();
+                return new Nil();
+            } else if (method.equalsIgnoreCase("INVERTSELECTION")) {
+                Vector<Integer> newSelection = new Vector<Integer>();
+                for (int i = 0; i < parentGrid.getSourceRows(); i++) {
+                    if (!parentGrid.getTableManager().containsSelectedRow(i)) {
+                        newSelection.addElement(i);
+                    }
+                }
+                parentGrid.getTableManager().setSelection(newSelection);
 
-                parentGrid.setParentDatastore((core.rml.dbi.Datastore) arg);
-                parentGrid.setDatastore((core.rml.dbi.Datastore) arg);
-                parentGrid.retrieve();
-            } else {
-                throw new RTException("CASTEXCEPTION", "(grid@SETDATASTORE String)");
-            }
-        } else if (method.equalsIgnoreCase("GETDATASTORE")) {
-            return parentGrid.getDatastore();
-        } else if (method.equalsIgnoreCase("GETALLDATASTORE")) {
-            return parentGrid.getParentDatastore();
-        } else if (method.equalsIgnoreCase("SUM")) {
-            if (parentGrid.getDatastore() == null || parentGrid.getDatastore().getRowCount() == 0) {
-                return (double) 0;
-            }
-            GridColumn column = parentGrid.getTableManager().getColumnByAlias(((String) arg).toUpperCase());
-            if (column == null) {
-                return (double) 0;
-            }
-            if (!(column.getValue() instanceof Double)) {
-                return (double) 0;
-            }
-            Double sum = 0.0;
-            for (int i = 0; i < parentGrid.getTableManager().getSelectionSize(); i++) {
-                sum += (Double) parentGrid.getSourceValueByTarget(parentGrid.getTableManager().getSelectedRow(i), column.getTarget());
-            }
-            return sum;
-        } else if (method.equalsIgnoreCase("DUMPTOFILE")) {
-            dumpToFile();
-        } else if (method.equalsIgnoreCase("GETMENU")) {
-            return parentGrid.getMenu();
-        } else if (method.equalsIgnoreCase("SETMENU")) {
-            return setMenu(arg);
-        } else if (method.equalsIgnoreCase("REPAINT")) {
-            parentGrid.getTableManager().repaintAll();
-            return new Nil();
-        } else if (method.equalsIgnoreCase("INVERTSELECTION")) {
-            Vector<Integer> newSelection = new Vector<Integer>();
-            for (int i = 0; i < parentGrid.getSourceRows(); i++) {
-                if (!parentGrid.getTableManager().containsSelectedRow(i)) {
+            } else if (method.equalsIgnoreCase("FASTSETSELECTION")) {
+                if (arg instanceof Double) {
+                    Double d = (Double) arg;
+                    Integer i = d.intValue();
+                    if (!parentGrid.getTableManager().containsSelectedRow(i)) {
+                        parentGrid.getTableManager().addSelecteRow(i);
+                    }
+                } else {
+                    throw new RTException("CASTEXCEPTION", "grid@fastsetselection have one number parameter");
+                }
+            } else if (method.equalsIgnoreCase("SETSELECTION")) {
+                if (arg instanceof Double) {
+                    Double d = (Double) arg;
+                    Integer i = d.intValue();
+                    parentGrid.getTableManager().setCurrentRow(i, true, true);
+                } else {
+                    throw new RTException("CASTEXCEPTION", "grid@setselection have one number parameter");
+                }
+            } else if (method.equalsIgnoreCase("SELECTALL")) {
+                Vector<Integer> newSelection = new Vector<Integer>();
+                for (int i = 0; i < parentGrid.getSourceRows(); i++) {
                     newSelection.addElement(i);
                 }
-            }
-            parentGrid.getTableManager().setSelection(newSelection);
-
-        } else if (method.equalsIgnoreCase("FASTSETSELECTION")) {
-            if (arg instanceof Double) {
-                Double d = (Double) arg;
-                Integer i = d.intValue();
-                if (!parentGrid.getTableManager().containsSelectedRow(i)) {
-                    parentGrid.getTableManager().addSelecteRow(i);
-                }
-            } else {
-                throw new RTException("CASTEXCEPTION", "grid@fastsetselection have one number parameter");
-            }
-        } else if (method.equalsIgnoreCase("SETSELECTION")) {
-            if (arg instanceof Double) {
-                Double d = (Double) arg;
-                Integer i = d.intValue();
-                parentGrid.getTableManager().setCurrentRow(i, true, true);
-            } else {
-                throw new RTException("CASTEXCEPTION", "grid@setselection have one number parameter");
-            }
-        } else if (method.equalsIgnoreCase("SELECTALL")) {
-            Vector<Integer> newSelection = new Vector<Integer>();
-            for (int i = 0; i < parentGrid.getSourceRows(); i++) {
-                newSelection.addElement(i);
-            }
-            parentGrid.getTableManager().setSelection(newSelection);
-        } else if (method.equalsIgnoreCase("SIZE")) {
-            return (double) parentGrid.getTableManager().getRowCount();
-        } else if (method.equalsIgnoreCase("ALLIGN")) {
-            parentGrid.getTableManager().allign();
+                parentGrid.getTableManager().setSelection(newSelection);
+            } else if (method.equalsIgnoreCase("SIZE")) {
+                return (double) parentGrid.getTableManager().getRowCount();
+            } else if (method.equalsIgnoreCase("ALLIGN")) {
+                parentGrid.getTableManager().allign();
             } else if (method.equalsIgnoreCase("SETCELLBGCOLOR")) {
-            if (arg instanceof Vector) {
+                if (arg instanceof Vector) {
                     Integer rowIndex = ((Double) ((Vector) arg).elementAt(0)).intValue();
                     Integer columnIndex = ((Double) ((Vector) arg).elementAt(1)).intValue();
                     String color = (String) ((Vector) arg).elementAt(2);
                     parentGrid.getTableManager().getUIManager().setCellBgColor(rowIndex, columnIndex, color);
-            } else {
+                } else {
                     throw new RTException("CASTEXCEPTION", "Bad arguments in Grid@setCellBgColor");
-            }
+                }
             } else if (method.equalsIgnoreCase("SETCELLFGCOLOR")) {
-            if (arg instanceof Vector) {
+                if (arg instanceof Vector) {
                     Integer rowIndex = ((Double) ((Vector) arg).elementAt(0)).intValue();
                     Integer columnIndex = ((Double) ((Vector) arg).elementAt(1)).intValue();
                     String color = (String) ((Vector) arg).elementAt(2);
                     parentGrid.getTableManager().getUIManager().setCellFgColor(rowIndex, columnIndex, color);
-            } else {
+                } else {
                     throw new RTException("CASTEXCEPTION", "Bad arguments in Grid@setCellFgColor");
-            }
+                }
             } else if (method.equalsIgnoreCase("SETCELLFONT")) {
-            if (arg instanceof Vector) {
+                if (arg instanceof Vector) {
                     Integer rowIndex = ((Double) ((Vector) arg).elementAt(0)).intValue();
                     Integer columnIndex = ((Double) ((Vector) arg).elementAt(1)).intValue();
                     String font = (String) ((Vector) arg).elementAt(2);
@@ -193,7 +191,7 @@ public class GridRmlMethodInvoker {
             }
         }
         return new Nil();
-            }
+    }
 
     private Object rowMethod(String method, Object arg) throws RTException {
         if (method.equalsIgnoreCase("SETCURRENTROW") && (arg instanceof Double)) {
@@ -251,9 +249,9 @@ public class GridRmlMethodInvoker {
         } else if (method.equalsIgnoreCase("GETCURRENTROW")) {
             return parentGrid.getCurrentRowIndex();
         }
-        
+
         return new Nil();
-            }
+    }
 
     private Object columnMethod(String method, Object arg) throws RTException {
         if (method.equalsIgnoreCase("RETRIEVECOLUMN")) {
@@ -287,7 +285,7 @@ public class GridRmlMethodInvoker {
         } else if (method.equalsIgnoreCase("GETCURCOLUMNALIAS")) {
             return getCurrentColumnAlias();
         } else if (method.equalsIgnoreCase("GETCURCOLUMNINDEX")) {
-        	return getCurrentColumnIndex();
+            return getCurrentColumnIndex();
         } else if (method.equalsIgnoreCase("SETCURRENTCOLUMN") && (arg instanceof Double)) {
             setCurrentColumn((Double) arg);
         } else if (method.equalsIgnoreCase("DELETECOLUMN")) {
@@ -333,31 +331,31 @@ public class GridRmlMethodInvoker {
     }
 
     private void setCurrentColumn(Double arg) {
-        int viewColumn = parentGrid.getTableManager().convertColumnIndexToView(((Double) arg).intValue());
+        int viewColumn = parentGrid.getTableManager().convertColumnIndexToView(arg.intValue());
         parentGrid.getTableManager().setCurrentColumn(viewColumn, true);
     }
 
-    private Object getCurrentColumnIndex(){
-    	return new Double(parentGrid.getTableManager().getCurrentColumn());
+    private Object getCurrentColumnIndex() {
+        return new Double(parentGrid.getTableManager().getCurrentColumn());
     }
-    
-    
+
+
     private Object getCurrentColumnAlias() throws RTException {
-            try {
+        try {
             Object aliasToReturn = new Nil();
-                GridColumn column = parentGrid.getTableManager().getColumn(parentGrid.getTableManager().getCurrentColumn());
-                if (column != null) {
+            GridColumn column = parentGrid.getTableManager().getColumn(parentGrid.getTableManager().getCurrentColumn());
+            if (column != null) {
                 if (column.getAlias() != null) {
                     aliasToReturn = column.getAlias();
                 } else {
                     aliasToReturn = column.getTarget();
                 }
-                }
-            return aliasToReturn;
-            } catch (Exception e) {
-                log.error("Bad arguments", e);
-                throw new RTException("", "Bad arguments in Grid.getValue");
             }
+            return aliasToReturn;
+        } catch (Exception e) {
+            log.error("Bad arguments", e);
+            throw new RTException("", "Bad arguments in Grid.getValue");
+        }
     }
 
     public int getRowCount() {
@@ -373,11 +371,11 @@ public class GridRmlMethodInvoker {
     }
 
     private Object isColumnVisible(Object arg) throws RTException {
-    	GridColumn column = null;
+        GridColumn column = null;
         if (arg instanceof String) {
             String columnAlias = (String) arg;
             column = parentGrid.getTableManager().getColumnByAlias(columnAlias);
-        }else if(arg instanceof Double){
+        } else if (arg instanceof Double) {
             Integer columnIndex = ((Double) arg).intValue();
             column = parentGrid.getTableManager().getColumn(columnIndex);
         } else {
@@ -411,10 +409,10 @@ public class GridRmlMethodInvoker {
                     isVisible = true;
                 }
             } else if (((Vector) arg).elementAt(1) instanceof Double) {
-            int visible = ((Double) ((Vector) arg).elementAt(1)).intValue();
-            if (visible == 1) {
-                isVisible = true;
-            }
+                int visible = ((Double) ((Vector) arg).elementAt(1)).intValue();
+                if (visible == 1) {
+                    isVisible = true;
+                }
             }
             parentGrid.getTableManager().setColumnVisible(column, isVisible);
         } else {
@@ -557,7 +555,7 @@ public class GridRmlMethodInvoker {
                 int colIndex = ((Double) arg).intValue();
                 column = parentGrid.getTableManager().getColumn(colIndex);
             } else {
-            String colal = arg.toString();
+                String colal = arg.toString();
                 column = parentGrid.getTableManager().getColumnByAlias(colal);
             }
             if (column != null) {
@@ -736,7 +734,7 @@ public class GridRmlMethodInvoker {
                         throw new RTException("", "Bad arguments in Grid.setValue");
                     }
                 } else {
-                	parentGrid.getDatastore().setValue(rowNum, column.getTarget(), value);
+                    parentGrid.getDatastore().setValue(rowNum, column.getTarget(), value);
 //                    log.error("Can't set value for invisible colummn " + colal);
 //                    throw new RTException("", "Bad arguments in Grid.setValue");
                 }
@@ -854,10 +852,10 @@ public class GridRmlMethodInvoker {
             GridColumn column = null;
             String colal = "UNKNOWN ALIAS!";
             int col_number = -1;
-            if(((Vector) arg).elementAt(1) instanceof String){
+            if (((Vector) arg).elementAt(1) instanceof String) {
                 colal = (String) ((Vector) arg).elementAt(1);
                 column = parentGrid.getTableManager().getColumnByAlias(colal);
-            }else if (((Vector) arg).elementAt(1) instanceof Double){
+            } else if (((Vector) arg).elementAt(1) instanceof Double) {
                 col_number = ((Double) ((Vector) arg).elementAt(0)).intValue();
                 column = parentGrid.getTableManager().getColumn(col_number);
             }
@@ -866,11 +864,11 @@ public class GridRmlMethodInvoker {
                 String target = column.getTarget();
                 return parentGrid.getDatastore().getValue(rownum, target);
             } else {
-                if(col_number == -1)
+                if (col_number == -1)
                     log.error("Can't find column with alias " + colal);
                 else
-                    log.error("Can't find column with alias " + colal + " and column number "+col_number);
-                    
+                    log.error("Can't find column with alias " + colal + " and column number " + col_number);
+
                 throw new RTException("", "Bad arguments in Grid.setValue");
             }
         } catch (Exception e) {

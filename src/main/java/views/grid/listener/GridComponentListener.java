@@ -1,10 +1,10 @@
 package views.grid.listener;
 
-import java.awt.Dimension;
+import views.grid.manager.GridTableManager;
+
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
-import views.grid.manager.GridTableManager;
 
 public class GridComponentListener extends ComponentAdapter {
 

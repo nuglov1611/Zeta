@@ -11,11 +11,11 @@
 
 package action.calc.functions;
 
-import java.util.Hashtable;
-
 import action.calc.ExternFunction;
 import action.calc.OP;
 import action.calc.Parser;
+
+import java.util.Hashtable;
 
 
 public abstract class BaseExternFunction implements ExternFunction {

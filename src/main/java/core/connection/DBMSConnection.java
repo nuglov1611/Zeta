@@ -1,33 +1,33 @@
 /**
- * 
+ *
  */
 package core.connection;
+
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
-
 /*
  * @author nuglov
  */
 public class DBMSConnection {
-    private static final Logger                    log         = Logger
-                                                                       .getLogger(DBMSConnection.class);
+    private static final Logger log = Logger
+            .getLogger(DBMSConnection.class);
 
-    protected static String                        host;
+    protected static String host;
 
-    protected static String                        port;
+    protected static String port;
 
-    protected static String                        name;
+    protected static String name;
 
-    protected static String                        user;
+    protected static String user;
 
-    protected static String                        pwd;
+    protected static String pwd;
 
-    protected static String                        connStr     = "";
+    protected static String connStr = "";
 
     protected static Hashtable<Object, Connection> connections = new Hashtable<Object, Connection>();
 
@@ -55,8 +55,7 @@ public class DBMSConnection {
             return;
         try {
             connections.get(owner).close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Can't close core.connection!", e);
         }
         connections.remove(owner);
@@ -64,13 +63,12 @@ public class DBMSConnection {
 
     public static synchronized void closeAll() {
         Iterator<Connection> iter = connections.values().iterator();
-        for (; iter.hasNext();) {
+        for (; iter.hasNext(); ) {
             try {
                 Connection conn = iter.next();
                 //conn.rollback();
                 conn.close();
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.error("Can't close core.connection!", e);
             }
         }
@@ -81,11 +79,9 @@ public class DBMSConnection {
         closeConnection(owner);
         try {
             return getConnection(owner);
-        }
-        catch (ConnectException e) {
+        } catch (ConnectException e) {
             log.error("!", e);
-        }
-        catch (BadPasswordException e) {
+        } catch (BadPasswordException e) {
             log.error("!", e);
         }
         return null;

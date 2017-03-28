@@ -1,29 +1,13 @@
 package views.field;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import views.grid.editor.DateField;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-
-import views.grid.editor.DateField;
 
 public class DateCalendar extends JFrame {
 
@@ -50,8 +34,7 @@ public class DateCalendar extends JFrame {
         Date dt = (Date) parField.getValue();
         if (dt != null) {
             cld.execute(dt);
-        }
-        else {
+        } else {
             cld.execute(new Date(System.currentTimeMillis()));
         }
         return cld;
@@ -84,7 +67,7 @@ public class DateCalendar extends JFrame {
     private int curNum = 0;
 
     private BaseField parField = null;
-    
+
     private JPanel cPanel = new JPanel();
 
 
@@ -102,13 +85,13 @@ public class DateCalendar extends JFrame {
 
     private void execute(Date initial) {
 //        setBackground(Color.lightGray);
-        setLayout(new GridLayout(1,1));
-    	add(cPanel);
-    	cPanel.setLayout(null);
-    	cPanel.setBackground(Color.WHITE);
-    	cPanel.add(bDownYear);
-    	cPanel.add(bDownMonth);
-    	cPanel.add(lCaption);
+        setLayout(new GridLayout(1, 1));
+        add(cPanel);
+        cPanel.setLayout(null);
+        cPanel.setBackground(Color.WHITE);
+        cPanel.add(bDownYear);
+        cPanel.add(bDownMonth);
+        cPanel.add(lCaption);
         lCaption.setBackground(Color.lightGray);
         cPanel.add(bUpMonth);
         cPanel.add(bUpYear);
@@ -339,12 +322,12 @@ public class DateCalendar extends JFrame {
 //                        parField.setValue(curDate.getTime());
 //                        parField.finishTheEditing();
 //                    }
-                    if (parField instanceof DateField){ 
-                    	if(parField.isEditable()) 
-                    		parField.setValue(curDate.getTime());
-                    }else{
-                		parField.setTextOnly(curDate.getTime());
-                		parField.finishTheEditing();
+                    if (parField instanceof DateField) {
+                        if (parField.isEditable())
+                            parField.setValue(curDate.getTime());
+                    } else {
+                        parField.setTextOnly(curDate.getTime());
+                        parField.finishTheEditing();
                     }
                     dispose();
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -412,12 +395,12 @@ public class DateCalendar extends JFrame {
             } else {
                 owner.curDate.set(Calendar.DAY_OF_MONTH, Integer
                         .parseInt(((JLabel) e.getComponent()).getText()));
-                if (owner.parField instanceof DateField){ 
-                	if(owner.parField.isEditable()) 
-                		owner.parField.setValue(curDate.getTime());
-                }else{
-            		owner.parField.setTextOnly(curDate.getTime());
-            		owner.parField.finishTheEditing();
+                if (owner.parField instanceof DateField) {
+                    if (owner.parField.isEditable())
+                        owner.parField.setValue(curDate.getTime());
+                } else {
+                    owner.parField.setTextOnly(curDate.getTime());
+                    owner.parField.finishTheEditing();
                 }
                 owner.dispose();
             }

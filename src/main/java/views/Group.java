@@ -1,8 +1,5 @@
 package views;
 
-import java.util.Vector;
-
-import publicapi.RmlContainerAPI;
 import action.api.Calc;
 import action.api.RTException;
 import action.api.ScriptApi;
@@ -12,27 +9,30 @@ import core.reflection.rml.REPORTHEADER;
 import core.reflection.rml.REPORTTRAILER;
 import core.rml.Container;
 import core.rml.RmlObject;
+import publicapi.RmlContainerAPI;
 
-public class Group extends RmlObject implements RmlContainerAPI  {
-	
+import java.util.Vector;
 
-	private Container container = new Container(this);
-	
-	ReportForm                rHeader      = null;
+public class Group extends RmlObject implements RmlContainerAPI {
 
-    ReportForm                rTrailer     = null;
 
-    ReportGrid                rGrid        = null;
+    private Container container = new Container(this);
 
-    Group                     group        = null;
+    ReportForm rHeader = null;
 
-    public core.rml.dbi.Group          currentGroup = null; // используется при вычислении
+    ReportForm rTrailer = null;
+
+    ReportGrid rGrid = null;
+
+    Group group = null;
+
+    public core.rml.dbi.Group currentGroup = null; // используется при вычислении
 
     // групповых ф-ций
 
-    public int                curpos       = -1;
+    public int curpos = -1;
 
-    Vector<String>            seq          = null; // здесь будет хранится последовательность
+    Vector<String> seq = null; // здесь будет хранится последовательность
 
 
     public void setValue(Object o) {
@@ -83,14 +83,13 @@ public class Group extends RmlObject implements RmlContainerAPI  {
     public void createFonts(int a) {
         if (rGrid != null) {
             rGrid.createFonts(a);
-        }
-        else if (group != null) {
+        } else if (group != null) {
             group.createFonts(a);
         }
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
     }
 
     public void initChildren() {
@@ -118,23 +117,22 @@ public class Group extends RmlObject implements RmlContainerAPI  {
         Vector<String> names = new Vector<String>();
         Vector<Vector<String>> Bn = new Vector<Vector<String>>();
         if (hfs != null) {
-            for (int i = 0; i < hfs.length; i++) {
-                if ((hfs[i] != null) && hfs[i].isComputed()) {
-                    names.addElement(hfs[i].getAlias());
+            for (Field hf : hfs) {
+                if ((hf != null) && hf.isComputed()) {
+                    names.addElement(hf.getAlias());
                     String[] exps = null;
                     try {
-                        if (hfs[i].getCalc() != null) {
-                            exps = ((Calc)hfs[i].getCalc()).getAliases();
+                        if (hf.getCalc() != null) {
+                            exps = ((Calc) hf.getCalc()).getAliases();
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     Vector<String> bi = new Vector<String>();
                     if (exps != null) {
-                        for (int j = 0; j < exps.length; j++) {
-                            if (!exps[j].equals(hfs[i].getAlias())) {
-                                bi.addElement(exps[j]);
+                        for (String exp : exps) {
+                            if (!exp.equals(hf.getAlias())) {
+                                bi.addElement(exp);
                             }
                         }
                     }
@@ -143,23 +141,22 @@ public class Group extends RmlObject implements RmlContainerAPI  {
             }
         }
         if (tfs != null) {
-            for (int i = 0; i < tfs.length; i++) {
-                if ((tfs[i] != null) && tfs[i].isComputed()) {
-                    names.addElement(tfs[i].getAlias());
+            for (Field tf : tfs) {
+                if ((tf != null) && tf.isComputed()) {
+                    names.addElement(tf.getAlias());
                     String[] exps = null;
                     try {
-                        if (tfs[i].getCalc() != null) {
-                            exps = ((Calc)tfs[i].getCalc()).getAliases();
+                        if (tf.getCalc() != null) {
+                            exps = ((Calc) tf.getCalc()).getAliases();
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     Vector<String> bi = new Vector<String>();
                     if (exps != null) {
-                        for (int j = 0; j < exps.length; j++) {
-                            if (!exps[j].equals(tfs[i].getAlias())) {
-                                bi.addElement(exps[j]);
+                        for (String exp : exps) {
+                            if (!exp.equals(tf.getAlias())) {
+                                bi.addElement(exp);
                             }
                         }
                     }
@@ -173,8 +170,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
         try {
             seq = UTIL.createSequence(names, Bn); // получаем
             // "магическую последовательность"
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("~views.Group::addChildren : " + e);
         }
@@ -186,8 +182,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
         }
         if (group != null) {
             return group.getGrid();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -197,7 +192,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
             double summa = 0;
 
             void obhod(core.rml.dbi.Group dgr, views.Group vgr, int worklevel,
-                    int level, ScriptApi cc) {
+                       int level, ScriptApi cc) {
                 if (dgr == null) {
                     return;
                 }
@@ -220,15 +215,14 @@ public class Group extends RmlObject implements RmlContainerAPI  {
                             summa += d.doubleValue();
                         }
 
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return;
                 }
                 if (subgr != null) {
-                    for (int i = 0; i < subgr.length; i++) {
-                        obhod(subgr[i], vgr.group, worklevel + 1, level, cc);
+                    for (core.rml.dbi.Group aSubgr : subgr) {
+                        obhod(aSubgr, vgr.group, worklevel + 1, level, cc);
                     }
                 }
             }
@@ -240,12 +234,11 @@ public class Group extends RmlObject implements RmlContainerAPI  {
 
         if (method.equals("SUM")) {
             if (arg instanceof String) {
-            	ScriptApi cc = ScriptApi.getAPI((String) arg);
+                ScriptApi cc = ScriptApi.getAPI((String) arg);
                 String[] names = null;
                 try {
-                    names = ((Calc)cc).getAliases();
-                }
-                catch (Exception e) {
+                    names = ((Calc) cc).getAliases();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (names == null) {
@@ -256,8 +249,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
                 int result = 0;
                 try {
                     result = find(this, names, 0);
-                }
-                catch (RTException e) {
+                } catch (RTException e) {
                     e.printStackTrace();
                     throw e;
                 }
@@ -265,8 +257,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
                     Object objs = null;
                     try {
                         objs = cc.eval(document.getAliases());
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         throw new RTException("Any", e.getMessage());
                     }
@@ -274,15 +265,13 @@ public class Group extends RmlObject implements RmlContainerAPI  {
                         Double d = null;
                         try {
                             d = (Double) objs;
-                        }
-                        catch (ClassCastException e) {
+                        } catch (ClassCastException e) {
                             e.printStackTrace();
                             throw new RTException("CastException", e
                                     .getMessage());
                         }
                         return d;
-                    }
-                    else {
+                    } else {
                         return null;
                     }
 
@@ -300,8 +289,7 @@ public class Group extends RmlObject implements RmlContainerAPI  {
                                         try {
                                             Double d = (Double) objs;
                                             summa += d.doubleValue();
-                                        }
-                                        catch (ClassCastException e) {
+                                        } catch (ClassCastException e) {
                                             e.printStackTrace();
                                             throw new RTException("", e
                                                     .getMessage());
@@ -337,38 +325,25 @@ public class Group extends RmlObject implements RmlContainerAPI  {
         boolean intrail = true;
         boolean res = true;
         for (int i = 0; i < names.length; i++) {
-            if (vgr.rHeader != null && vgr.rHeader.fields != null
-                    && vgr.rHeader.fields.get(names[i]) != null) {
-                inhead = true;
-            }
-            else {
-                inhead = false;
-            }
+            inhead = vgr.rHeader != null && vgr.rHeader.fields != null
+                    && vgr.rHeader.fields.get(names[i]) != null;
 
-            if (vgr.rTrailer != null && vgr.rTrailer.fields != null
-                    && vgr.rTrailer.fields.get(names[i]) != null) {
-                intrail = true;
-            }
-            else {
-                intrail = false;
-            }
+            intrail = vgr.rTrailer != null && vgr.rTrailer.fields != null
+                    && vgr.rTrailer.fields.get(names[i]) != null;
 
             if (i == 0) {
                 res = inhead || intrail;
-            }
-            else if (inhead || intrail != res) {
+            } else if (inhead || intrail != res) {
                 throw new RTException("Syntax",
                         "Aliases must be in same level!");
             }
         }
         if (res) { // значит, все алиасы функции SUM принадлежат группе vgr
             return level;
-        }
-        else {
+        } else {
             if (vgr.group != null) {
                 return find(vgr.group, names, level + 1);
-            }
-            else {
+            } else {
                 return -1; // говорит о том ,что ни в одной из подгрупп данной
                 // группы
             }
@@ -381,34 +356,31 @@ public class Group extends RmlObject implements RmlContainerAPI  {
         return "VIEWS_GROUP";
     }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         if (child instanceof REPORTHEADER) {
             rHeader = ((REPORTHEADER) child).getForm();
-        }
-        else if (child instanceof REPORTTRAILER) {
+        } else if (child instanceof REPORTTRAILER) {
             rTrailer = ((REPORTTRAILER) child).getForm();
-        }
-        else if (child instanceof Group) {
+        } else if (child instanceof Group) {
             group = (Group) child;
-        }
-        else if (child instanceof ReportGrid) {
+        } else if (child instanceof ReportGrid) {
             rGrid = (ReportGrid) child;
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 }

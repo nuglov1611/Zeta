@@ -6,13 +6,13 @@ package views.grid.model.cross.converter;
  */
 public class DataConverter {
 
-  /**
-   * @param value data to convert
-   * @return converted value
-   */
-  public Object decodeValue(Object value) throws Exception {
-    return value;
-  }
+    /**
+     * @param value data to convert
+     * @return converted value
+     */
+    public Object decodeValue(Object value) throws Exception {
+        return value;
+    }
 
 
 }

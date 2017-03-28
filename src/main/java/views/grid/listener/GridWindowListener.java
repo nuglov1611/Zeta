@@ -1,10 +1,10 @@
 package views.grid.listener;
 
-import java.awt.Dimension;
+import views.grid.manager.GridTableManager;
+
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import views.grid.manager.GridTableManager;
 
 public class GridWindowListener extends WindowAdapter {
 
@@ -30,7 +30,7 @@ public class GridWindowListener extends WindowAdapter {
         if (tableManager.needAllign()) {
             Dimension newSize = e.getComponent().getSize();
             if ((currentSize != null && currentSize.width != newSize.width) || currentSize == null) {
-                tableManager.allign(); 
+                tableManager.allign();
             }
             currentSize = newSize;
         }

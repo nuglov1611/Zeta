@@ -1,34 +1,32 @@
 package core.rml.dbi;
 
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.sql.Types;
 import java.util.List;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 public class Sorter {
-    protected final static Logger log  = Logger.getLogger(Sorter.class);
+    protected final static Logger log = Logger.getLogger(Sorter.class);
 
-    private int                   x, y, j, k, n;
+    private int x, y, j, k, n;
 
-    public static final int       ASC  = 1;
+    public static final int ASC = 1;
 
-    public static final int       DESC = -1;
+    public static final int DESC = -1;
 
-    private int[]                 directions;
+    private int[] directions;
 
-    private List<Integer>         keys;
+    private List<Integer> keys;
 
-    private VMatrix               vm;
+    private VMatrix vm;
 
-    private int                   cols;
+    private int cols;
 
     public Sorter(VMatrix vm) {
         if (vm != null) {
             this.vm = vm;
-        }
-        else {
+        } else {
             log.debug("core.rml.dbi.Sorter.Sorter: VMatrix is null!");
             return;
         }
@@ -55,8 +53,7 @@ public class Sorter {
         }
         if (vm == null) {
             return null;
-        }
-        else if (n == 0) {
+        } else if (n == 0) {
             return keys;
         }
         k = n;
@@ -76,22 +73,22 @@ public class Sorter {
         while (true) {
             y = x + x;
             switch (sign(y - k) + 2) {
-            case 1: {
-                if (compareRows(y - 1, y + 1 - 1, directions) < 0) {
-                    y++;
+                case 1: {
+                    if (compareRows(y - 1, y + 1 - 1, directions) < 0) {
+                        y++;
+                    }
                 }
-            }
-            case 2: {
-                if (compareRows(x - 1, y - 1, directions) >= 0) {
+                case 2: {
+                    if (compareRows(x - 1, y - 1, directions) >= 0) {
+                        return;
+                    }
+                    swap(keys, x - 1, y - 1);
+                    x = y;
+                    break;
+                }
+                case 3: {
                     return;
                 }
-                swap(keys, x - 1, y - 1);
-                x = y;
-                break;
-            }
-            case 3: {
-                return;
-            }
             }
         }
     }
@@ -117,8 +114,7 @@ public class Sorter {
                     return ret * directions[i];
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("", e);
         }
 
@@ -131,64 +127,57 @@ public class Sorter {
             if (o1 == null || o2 == null) {
                 if (o1 == null && o2 == null) {
                     return 0;
-                }
-                else if (o1 == null) {
+                } else if (o1 == null) {
                     return -1;
-                }
-                else {
+                } else {
                     return 1;
                 }
             }
             switch (type) {
-            case Types.NUMERIC:
-            case Types.INTEGER:
-            case Types.FLOAT:
-            case Types.REAL: {
-                if (((Double) o1).doubleValue() == ((Double) o2).doubleValue()) {
+                case Types.NUMERIC:
+                case Types.INTEGER:
+                case Types.FLOAT:
+                case Types.REAL: {
+                    if (((Double) o1).doubleValue() == ((Double) o2).doubleValue()) {
+                        return 0;
+                    }
+                    if (((Double) o1).doubleValue() < ((Double) o2).doubleValue()) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+                case Types.CHAR:
+                case Types.VARCHAR:
+                case -8: {
+                    return ((String) o1).compareTo((String) o2);
+                }
+                case Types.DATE:
+                case Types.TIMESTAMP: {
+                    java.util.Date d1 = (java.util.Date) o1;
+                    java.util.Date d2 = (java.util.Date) o2;
+                    if (d1.equals(d2)) {
+                        return 0;
+                    }
+                    if (d1.before(d2)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+                default: {
+                    log.debug("UNKNOWN TYPE!!!");
                     return 0;
                 }
-                if (((Double) o1).doubleValue() < ((Double) o2).doubleValue()) {
-                    return -1;
-                }
-                else {
-                    return 1;
-                }
             }
-            case Types.CHAR:
-            case Types.VARCHAR:
-            case -8: {
-                return ((String) o1).compareTo((String) o2);
-            }
-            case Types.DATE:
-            case Types.TIMESTAMP: {
-                java.util.Date d1 = (java.util.Date) o1;
-                java.util.Date d2 = (java.util.Date) o2;
-                if (d1.equals(d2)) {
-                    return 0;
-                }
-                if (d1.before(d2)) {
-                    return -1;
-                }
-                else {
-                    return 1;
-                }
-            }
-            default: {
-                log.debug("UNKNOWN TYPE!!!");
-                return 0;
-            }
-            }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             //e.printStackTrace();
             if (o1 == null) {
                 return -1;
-            }
-            else {
+            } else {
                 return 1;
             }
-        }
-        catch (Exception e1) {
+        } catch (Exception e1) {
             log.error("core.rml.dbi.Sorter.CompareTo:", e1);
             return 0;
         }

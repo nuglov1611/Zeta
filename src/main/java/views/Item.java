@@ -1,29 +1,28 @@
 package views;
 
-import javax.swing.JMenuItem;
-
-import loader.ZetaProperties;
-import publicapi.MenuItemAPI;
-import views.menu.ZMenuItem;
 import action.calc.Nil;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.RmlObject;
+import loader.ZetaProperties;
+import publicapi.MenuItemAPI;
+import views.menu.ZMenuItem;
+
+import javax.swing.*;
 
 /**
-* Элемент меню
-* 
-*/
+ * Элемент меню
+ */
 public class Item extends RmlObject implements MenuItemAPI {
-	
-	private ZMenuItem item = new ZMenuItem(); 
-	
+
+    private ZMenuItem item = new ZMenuItem();
+
     public Item() {
         item.setActionCommand("");
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         sp = (String) prop.get("LABEL");
         if (sp != null) {
@@ -31,14 +30,13 @@ public class Item extends RmlObject implements MenuItemAPI {
         }
         sp = (String) prop.get("ACTION");
         if (sp != null) {
-        	item.setActionCommand(sp);
+            item.setActionCommand(sp);
+        } else {
+            item.setActionCommand("");
         }
-        else {
-        	item.setActionCommand("");
-        }
-        
+
         item.setExp((String) prop.get("EXP"));
-        
+
         if (ZetaProperties.views_debug > 0) {
             System.out.println("action command is " + getAction());
         }
@@ -46,6 +44,7 @@ public class Item extends RmlObject implements MenuItemAPI {
 
     /**
      * Возвращает скрипт выполняющийся при выборе этого элемента меню
+     *
      * @return скрипт
      */
     public String getExp() {
@@ -53,7 +52,8 @@ public class Item extends RmlObject implements MenuItemAPI {
     }
 
     /**
-     * Задает скрипт выполняющийся при выборе этого элемента меню  
+     * Задает скрипт выполняющийся при выборе этого элемента меню
+     *
      * @param exp скрипт
      */
     public void setExp(String exp) {
@@ -66,12 +66,10 @@ public class Item extends RmlObject implements MenuItemAPI {
 
     public void setValueByName(String name, Object o) {
         if (name.toUpperCase().equals("LABEL")) {
-        	item.setText(o.toString());
-        }
-        else if (name.toUpperCase().equals("ACTION")) {
-        	item.setActionCommand(o.toString());
-        }
-        else if (name.toUpperCase().equals("EXP")) {
+            item.setText(o.toString());
+        } else if (name.toUpperCase().equals("ACTION")) {
+            item.setActionCommand(o.toString());
+        } else if (name.toUpperCase().equals("EXP")) {
             item.setExp((String) o);
         }
 
@@ -84,14 +82,11 @@ public class Item extends RmlObject implements MenuItemAPI {
     public Object getValueByName(String name) {
         if (name.toUpperCase().equals("LABEL")) {
             return getLabel();
-        }
-        else if (name.toUpperCase().equals("ACTION")) {
+        } else if (name.toUpperCase().equals("ACTION")) {
             return getAction();
-        }
-        else if (name.toUpperCase().equals("EXP")) {
+        } else if (name.toUpperCase().equals("EXP")) {
             return getExp();
-        }
-        else {
+        } else {
             return new Nil();
         }
 
@@ -100,6 +95,7 @@ public class Item extends RmlObject implements MenuItemAPI {
 
     /**
      * Возвращает действие документа, выполняющееся при выборе этого пункта меню
+     *
      * @return скрипт-действие (скрипт, вычисляющий действие)
      */
     public String getAction() {
@@ -108,14 +104,16 @@ public class Item extends RmlObject implements MenuItemAPI {
 
     /**
      * Задает действие документа, выполняющееся при выборе этого пункта меню
+     *
      * @param action - скрипт-действие (возможно скрипт, вычисляющий действие)
      */
     public void setAction(String action) {
         item.setActionCommand(action);
     }
-    
+
     /**
      * Возвращает название данного пункта меню
+     *
      * @return текст названия
      */
     public String getLabel() {
@@ -124,27 +122,29 @@ public class Item extends RmlObject implements MenuItemAPI {
 
     /**
      * Задает название элемента
+     *
      * @param label - текст названия
      */
-    public void setLabel(String label ) {
+    public void setLabel(String label) {
         item.setText(label);
     }
 
-    
+
     public String type() {
         return "SVR_ITEM";
     }
 
-	@Override
-	public Object method(String method, Object arg) throws Exception {
-		if(method.equalsIgnoreCase("setEnabled")){
-			setEnabled(((String)arg).equalsIgnoreCase("yes"));
-		}
-		return null;
-	}
+    @Override
+    public Object method(String method, Object arg) throws Exception {
+        if (method.equalsIgnoreCase("setEnabled")) {
+            setEnabled(((String) arg).equalsIgnoreCase("yes"));
+        }
+        return null;
+    }
 
     /**
-     * Управляет состоянием элемента (делает активным/не активным) 
+     * Управляет состоянием элемента (делает активным/не активным)
+     *
      * @param enabled true - активный, false - не активный (серый)
      */
     public void setEnabled(boolean enabled) {
@@ -152,7 +152,8 @@ public class Item extends RmlObject implements MenuItemAPI {
     }
 
     /**
-     * Возвращает состояние элемента 
+     * Возвращает состояние элемента
+     *
      * @return true если элемент активный, false если не активный (серый)
      */
     public boolean isEnabled() {
@@ -160,11 +161,11 @@ public class Item extends RmlObject implements MenuItemAPI {
     }
 
     public String getText() {
-		return getLabel();
-	}
+        return getLabel();
+    }
 
-	public JMenuItem getItem() {
-		return item;
-	}
+    public JMenuItem getItem() {
+        return item;
+    }
 
 }

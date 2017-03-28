@@ -12,5 +12,5 @@
 package core.document.worker;
 
 public interface Actioner {
-    public void notifyActioner();
+    void notifyActioner();
 }

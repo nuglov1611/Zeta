@@ -11,14 +11,12 @@
 
 package core.reflection.functions;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.calc.Alias;
 import action.calc.OP;
 import action.calc.ResonException;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
 
 public class ALIAS extends BaseExternFunction {
     protected final static Logger log = Logger.getLogger(ALIAS.class);
@@ -33,8 +31,7 @@ public class ALIAS extends BaseExternFunction {
 
         if (o instanceof String) {
             return new Alias(((String) o).trim().toUpperCase()).getValue();
-        }
-        else {
+        } else {
             throw new ResonException(
                     "~calc.functions.I::eval\n\ttype of args is't String \n\t"
                             + reson);

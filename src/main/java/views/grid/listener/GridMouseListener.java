@@ -1,15 +1,12 @@
 package views.grid.listener;
 
+import core.rml.RmlConstants;
+import org.apache.log4j.Logger;
+import views.grid.GridSwing;
+
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
-import org.apache.log4j.Logger;
-
-import views.grid.GridSwing;
-import core.rml.RmlConstants;
 
 public class GridMouseListener extends MouseAdapter {
 
@@ -36,7 +33,7 @@ public class GridMouseListener extends MouseAdapter {
             }
         } else if (e.getClickCount() == 1 && e.getSource() instanceof JScrollPane &&
                 e.getButton() == MouseEvent.BUTTON3) {
-            grid.showPopup((JScrollPane)e.getSource(), e.getX(), e.getY());
+            grid.showPopup((JScrollPane) e.getSource(), e.getX(), e.getY());
         }
     }
 

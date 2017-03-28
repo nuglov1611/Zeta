@@ -21,8 +21,7 @@ public class EXCEPTION extends NullExternFunction {
         if (o != null) {
             return ((Exception) ((GlobalValuesObject) o).getValue())
                     .getMessage();
-        }
-        else {
+        } else {
             return "No Exception";
         }
     }

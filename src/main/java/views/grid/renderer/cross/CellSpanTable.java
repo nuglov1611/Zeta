@@ -1,14 +1,11 @@
 package views.grid.renderer.cross;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.Enumeration;
-
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.util.Enumeration;
 
 public class CellSpanTable extends JTable {
 
@@ -73,8 +70,7 @@ public class CellSpanTable extends JTable {
                 TableColumn aColumn = (TableColumn) enumeration.nextElement();
                 cellFrame.width += aColumn.getWidth() + columnMargin;
             }
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
         if (!includeSpacing) {
             Dimension spacing = getIntercellSpacing();
@@ -149,13 +145,21 @@ public class CellSpanTable extends JTable {
         cellSpanModel.combine(rowSpans, columnSpans);
     }
 
-    public void split(int row, int column) {cellSpanModel.split(row, column);}
+    public void split(int row, int column) {
+        cellSpanModel.split(row, column);
+    }
 
-    public void addRow() {cellSpanModel.addRow();}
+    public void addRow() {
+        cellSpanModel.addRow();
+    }
 
-    public void addColumn() {cellSpanModel.addColumn();}
+    public void addColumn() {
+        cellSpanModel.addColumn();
+    }
 
-    public void insertRow(int row) {cellSpanModel.insertRow(row);}
+    public void insertRow(int row) {
+        cellSpanModel.insertRow(row);
+    }
 
     public int getColumnSpan(int row, int column) {
         return cellSpanModel.getColumnSpan(row, column);

@@ -1,20 +1,17 @@
 package core.rml.ui;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
-import javax.swing.SwingUtilities;
-
+import core.rml.ui.interfaces.ZComponent;
 import org.jfree.util.Log;
 
-import core.rml.ui.interfaces.ZComponent;
+import javax.swing.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * EDT invocation handler. Intercepts calls to the interface and invokes methods in EDT
  * according to the {@link RequiresEDTPolicy}
  *
  * @author Eugene Matyushkin aka Skipy
- *   
  * @since 13.08.2010
  */
 public class EDTInvocationHandler implements InvocationHandler {
@@ -51,10 +48,10 @@ public class EDTInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
         invocationResult = null;
-    	
+
         RequiresEDT mark = method.getAnnotation(RequiresEDT.class);
-        if(method.getName().equals("add")){
-        	Log.debug("");
+        if (method.getName().equals("add")) {
+            Log.debug("");
         }
         if (mark != null) {
             if (SwingUtilities.isEventDispatchThread()) {

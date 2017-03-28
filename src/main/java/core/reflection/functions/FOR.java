@@ -11,30 +11,24 @@
 
 package core.reflection.functions;
 
-import java.util.Hashtable;
-
+import action.calc.*;
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
 
-import action.calc.COMA;
-import action.calc.ExternFunction;
-import action.calc.Lexemator;
-import action.calc.OP;
-import action.calc.Parser;
+import java.util.Hashtable;
 
 public class FOR implements ExternFunction {
-    protected final static Logger log       = Logger.getLogger(FOR.class);
+    protected final static Logger log = Logger.getLogger(FOR.class);
 
-    static final String           mesg      = "~clac.funcions.FOR::";
+    static final String mesg = "~clac.funcions.FOR::";
 
-    OP                            init_expr = null;
+    OP init_expr = null;
 
-    OP                            do_expr   = null;
+    OP do_expr = null;
 
-    OP                            expr      = null;
+    OP expr = null;
 
-    OP                            doing     = null;
+    OP doing = null;
 
     public Object eval() throws Exception {
         if (ZetaProperties.calc_debug > 2) {
@@ -54,22 +48,19 @@ public class FOR implements ExternFunction {
                     }
                     f = (((Double) result).doubleValue() == 1);
 
-                }
-                else if (result instanceof String) {
+                } else if (result instanceof String) {
                     if (ZetaProperties.calc_debug > 2) {
                         log.debug(mesg + "eval string result " + result);
                     }
                     f = (((String) result).trim().toUpperCase().compareTo(
                             "TRUE") == 0);
-                }
-                else {
+                } else {
                     throw new Exception();
                 }
             }
             if (f) {
                 doing.eval();
-            }
-            else {
+            } else {
                 break;
             }
             if (do_expr != null) {
@@ -108,16 +99,13 @@ public class FOR implements ExternFunction {
                 if ((expr != null) && (expr instanceof COMA)) {
                     init_expr = (OP) expr.left;
                     expr = (OP) expr.right;
-                }
-                else {
+                } else {
                     throw new Exception(mesg + " Expression Syntax error");
                 }
-            }
-            else {
+            } else {
                 throw new Exception(mesg + " Expression Syntax error");
             }
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -126,8 +114,7 @@ public class FOR implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             doing = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         if (ZetaProperties.calc_debug > 2) {

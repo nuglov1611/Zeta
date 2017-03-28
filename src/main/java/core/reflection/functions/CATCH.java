@@ -11,31 +11,24 @@
 
 package core.reflection.functions;
 
-import java.util.Hashtable;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.api.ARGV;
 import action.api.GlobalValuesObject;
 import action.api.RTException;
-import action.calc.CalcException;
-import action.calc.ExternFunction;
-import action.calc.Func;
-import action.calc.Lexemator;
-import action.calc.OP;
-import action.calc.Parser;
+import action.calc.*;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 
 public class CATCH implements ExternFunction {
-    private static final Logger log     = Logger.getLogger(CATCH.class);
+    private static final Logger log = Logger.getLogger(CATCH.class);
 
-    OP                          expr    = null;
+    OP expr = null;
 
-    OP                          doing   = null;
+    OP doing = null;
 
-    OP                          catcher = null;
+    OP catcher = null;
 
     public Object eval() throws Exception {
         Object rets = new Double(0);
@@ -63,16 +56,14 @@ public class CATCH implements ExternFunction {
                                     + doing.expr());
                         }
                         rets = doing.eval();
-                    }
-                    catch (CalcException e) {
+                    } catch (CalcException e) {
                         if (ZetaProperties.calc_debug > 2) {
                             log.error("doing CalcException", e);
                         }
                         GlobalValuesObject gvo = new ARGV();
                         OP.getAliases().put("##return_exception##", gvo);
                         gvo.setValue(e);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         if (ZetaProperties.calc_debug > 2) {
                             log.error("doing Exception\n\t", e);
                         }
@@ -82,8 +73,7 @@ public class CATCH implements ExternFunction {
                 }
                 if (catcher != null) {
                     return OP.doOP(catcher);
-                }
-                else {
+                } else {
                     o = OP.getAliases().get("##exception##");
                     if (o != null) {
                         throw (Exception) ((GlobalValuesObject) o).getValue();
@@ -93,22 +83,18 @@ public class CATCH implements ExternFunction {
                         throw (Exception) ((GlobalValuesObject) o).getValue();
                     }
                 }
-            }
-            else if (catcher != null) {
+            } else if (catcher != null) {
                 return OP.doOP(catcher);
-            }
-            else {
+            } else {
                 o = OP.getAliases().get("##return_exception##");
                 if (o != null) {
                     throw (Exception) ((GlobalValuesObject) o).getValue();
-                }
-                else {
+                } else {
                     o = ((ARGV) OP.getAliases().get("##return_value##")).getValue();
                     return o;
                 }
             }
-        }
-        else {
+        } else {
             throw new Exception();
         }
         return rets;
@@ -130,8 +116,7 @@ public class CATCH implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             expr = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -140,8 +125,7 @@ public class CATCH implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             doing = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -149,13 +133,13 @@ public class CATCH implements ExternFunction {
             log.debug("~clac.funcions.CATCH::init LED/LTAG");
         }
         switch (lex.type()) {
-        case Lexemator.LEND:
-            break;
-        case Lexemator.LTAG:
-            catcher = new Func(lex.as_string(), lex.args());
-            break;
-        default:
-            throw new Exception();
+            case Lexemator.LEND:
+                break;
+            case Lexemator.LTAG:
+                catcher = new Func(lex.as_string(), lex.args());
+                break;
+            default:
+                throw new Exception();
         }
         if (ZetaProperties.calc_debug > 2) {
             log.debug("~clac.funcions.CATCH::init end of parse");

@@ -22,8 +22,7 @@ public class DEBUGOFF extends DEBUGING implements ExternFunction {
         debuging = false;
         try {
             return OP.doOP(expr);
-        }
-        finally {
+        } finally {
             debuging = dbg;
         }
     }

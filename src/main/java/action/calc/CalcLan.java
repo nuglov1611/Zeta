@@ -8,23 +8,22 @@
 
 package action.calc;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-
+import action.api.RTException;
 import org.apache.log4j.Logger;
 
-import action.api.RTException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /*
  * ~~~~ calc.language.calc = xyz.chen.calc.CalcLan
  */
 
 public class CalcLan implements __calc__ {
-    protected final static Logger log  = Logger.getLogger(CalcLan.class);
+    protected final static Logger log = Logger.getLogger(CalcLan.class);
 
-    char[]                        text = null;
+    char[] text = null;
 
-    OP                            expr = null;
+    OP expr = null;
 
     public CalcLan() {
     }
@@ -35,42 +34,35 @@ public class CalcLan implements __calc__ {
         try {
             try {
                 a = expr.eval(aliases);
-            }
-            catch (ReturnException e) {
+            } catch (ReturnException e) {
 //                log.error("Shit happens!", e);
                 throw new RTException("ReturnException",
                         "return without X function");
-            }
-            catch (BreakException e) {
+            } catch (BreakException e) {
 //                log.error("Shit happens!!!", e);
                 throw new RTException("BreakException", "break out from loop");
-            }
-            catch (ContinueException e) {
+            } catch (ContinueException e) {
 //                log.error("Shit happens", e);
                 throw new RTException("CountinueException",
                         "continue out from loop");
-            }
-            catch (GotoException e) {
+            } catch (GotoException e) {
 //                log.error("Shit happens", e);
                 throw new RTException("GotoException", "goto " + e.label
                         + " out from X function");
-            }
-            catch (CalcException e) {
+            } catch (CalcException e) {
 //                log.error("Shit happens", e);
                 throw new RTException("CalcException", e.getMessage());
-            }
-            catch (NullPointerException e) {
+            } catch (NullPointerException e) {
 //                log.error("Shit happens", e);
                 throw new RTException("NullException",
                         "may be not initializet any alement? ");
             }
-        }
-        catch (RTException e) {
+        } catch (RTException e) {
             log.error("Shit happens", e);
             String s = new String(text);
             s = ((s.length() > 80) ? s.substring(0, 80) : s).replace('\n', ' ');
             log.debug("!------\n" + s + "\n!------");
-            log.debug("Calculator RunTime Exception:\n\t"+"TYPE: " + e.type + "\n\t"
+            log.debug("Calculator RunTime Exception:\n\t" + "TYPE: " + e.type + "\n\t"
                     + "RESON: " + e.getMessage() + "\ntrap______________"
                     + e.trap);
             throw new Exception(e.getMessage());
@@ -105,8 +97,7 @@ public class CalcLan implements __calc__ {
         if (expr == null) {
             try {
                 expr = Parser.parse(text);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 String s = new String(text);
                 s = ((s.length() > 80) ? s.substring(0, 80) : s).replace('\n',
                         ' ');
@@ -115,8 +106,7 @@ public class CalcLan implements __calc__ {
                 throw new Exception("Parser exception");
             }
             return expr;
-        }
-        else {
+        } else {
             return expr;
         }
     }

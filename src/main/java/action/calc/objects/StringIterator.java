@@ -30,8 +30,7 @@ public class StringIterator extends base_iterator {
     public Object value() throws Exception {
         if (cursor != -1) {
             return "" + arr[cursor];
-        }
-        else {
+        } else {
             throw new RTException("IteratorException",
                     "iterator must be posited on any element");
         }

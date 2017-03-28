@@ -14,9 +14,9 @@ package action.calc;
 import java.util.Hashtable;
 
 public interface ExternFunction {
-    public Object eval() throws Exception;
+    Object eval() throws Exception;
 
-    public void getAliases(Hashtable<String, Object> h) throws Exception;
+    void getAliases(Hashtable<String, Object> h) throws Exception;
 
-    public void init(String arg) throws Exception;
+    void init(String arg) throws Exception;
 }

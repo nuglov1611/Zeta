@@ -1,14 +1,12 @@
 package views.grid.model;
 
-import java.util.Date;
-
-import javax.swing.table.AbstractTableModel;
-
+import core.reflection.objects.VALIDATOR;
 import org.apache.log4j.Logger;
-
 import views.grid.GridColumn;
 import views.grid.GridSwing;
-import core.reflection.objects.VALIDATOR;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.Date;
 
 /**
  * Класс для представления табличной модели, использует в качестве столбцов
@@ -53,8 +51,7 @@ public class GridModel extends AbstractTableModel {
                     value = parentGrid.getSourceValue(rowIndex, columnIndex);
 //                    value = parentGrid.getVColumn(columnIndex).valueToString(value);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -71,8 +68,7 @@ public class GridModel extends AbstractTableModel {
                 parentGrid.setSavedFieldValue(newValue);
                 parentGrid.toDS();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -104,7 +100,7 @@ public class GridModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         GridColumn visibleColumn = parentGrid.getVColumn(columnIndex);
         if (visibleColumn != null) {
-            if(visibleColumn.isArray()){
+            if (visibleColumn.isArray()) {
                 return Object[].class;
             }
             int type = GridSwing.getJType(visibleColumn.getType());
@@ -114,7 +110,7 @@ public class GridModel extends AbstractTableModel {
                 case 1:
                     return String.class;
                 case 2:
-                    return Date.class;                    
+                    return Date.class;
                 case VALIDATOR.ARRAY_DATE_TYPE:
                 case VALIDATOR.ARRAY_STRING_TYPE:
                 case VALIDATOR.ARRAY_NUMERIC_TYPE:
@@ -126,5 +122,5 @@ public class GridModel extends AbstractTableModel {
             }
         }
         return Object.class;
-    }            
+    }
 }

@@ -1,19 +1,5 @@
 package views;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.SwingWorker;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
-
-import publicapi.ButtonAPI;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
 import action.api.RTException;
 import core.document.Document;
 import core.document.Shortcutter;
@@ -23,14 +9,28 @@ import core.rml.VisualRmlObject;
 import core.rml.ui.impl.ZButtonImpl;
 import core.rml.ui.interfaces.ZButton;
 import core.rml.ui.interfaces.ZComponent;
+import org.apache.log4j.Logger;
+import publicapi.ButtonAPI;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 /**
  * Графический компонент "кнопка"
- * @author nick
  *
+ * @author nick
  */
 public class Button extends VisualRmlObject implements Focusable, Shortcutter, ButtonAPI {
+    static final Logger LOG = Logger.getLogger(Button.class);
+
     class AL implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -42,29 +42,26 @@ public class Button extends VisualRmlObject implements Focusable, Shortcutter, B
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if (document.executeShortcut(e)) {
-                return;
-            }
-
+            document.executeShortcut(e);
         }
 
     }
 
-    private FocusPosition     fp               = new FocusPosition();
+    private FocusPosition fp = new FocusPosition();
 
-    private String                    aAction = null;
+    private String aAction = null;
 
-    private String                    action             = null;
+    private String action = null;
 
     private String icon = null;
-    
+
 
     ZButton button = ZButtonImpl.create();
 
-	private boolean iconScaled = false;
+    private boolean iconScaled = false;
 
     public void focusThis() {
-    	button.requestFocus();
+        button.requestFocus();
     }
 
     public Object getValue() {
@@ -76,10 +73,10 @@ public class Button extends VisualRmlObject implements Focusable, Shortcutter, B
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String s = (String) prop.get("LABEL");
         if (s != null) {
-        	button.setText(s);
+            button.setText(s);
         }
         action = (String) prop.get("ACTION");
         aAction = (String) prop.get("AACTION");
@@ -91,99 +88,94 @@ public class Button extends VisualRmlObject implements Focusable, Shortcutter, B
                 for (String element : ar) {
                     document.addShortcut(element, this);
                 }
-            }
-            catch (Exception e) {
-                System.out.println(e);
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOG.error("", e);
             }
         }
 
-        ((JButton)button.getJComponent()).addActionListener(new AL());
+        ((JButton) button.getJComponent()).addActionListener(new AL());
         button.getJComponent().addKeyListener(new KL());
-        
+
         icon = (String) prop.get(RmlConstants.ICON);
-        
+
         iconScaled = ((String) prop.get(RmlConstants.ICONSCALED, RmlConstants.NO)).equalsIgnoreCase(RmlConstants.YES);
-        
+
         setIcon((String) prop.get("LABEL"));
-        
+
     }
 
-	private void setIcon(final String description) {
-		if(icon != null){
+    private void setIcon(final String description) {
+        if (icon != null) {
 //        	button.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 //        	button.setAlignmentY(JComponent.CENTER_ALIGNMENT);
-        	
+
 //        	ImageIcon im = createImageIcon(icon, description); 
 //        	if(iconScaled)
 //        		button.setIcon(new ImageIcon(getScaledImage(im.getImage(), width, height)));
 //        	else
 //        		button.setIcon(im);
-        	
-        	new SwingWorker<Void, Void>(){
-        		ImageIcon im = null;
-				@Override
-				protected Void doInBackground() throws Exception {
-					im = createImageIcon(icon, description);
-		        	if(iconScaled)
-		        		im = new ImageIcon(getScaledImage(im.getImage(), width, height));
-					return null;
-				}
-				
-				protected void done(){
-					if(im != null){
-						button.setIcon(im);
-					}
-				}
-        	}.execute();
+
+            new SwingWorker<Void, Void>() {
+                ImageIcon im = null;
+
+                @Override
+                protected Void doInBackground() throws Exception {
+                    im = createImageIcon(icon, description);
+                    if (iconScaled)
+                        im = new ImageIcon(getScaledImage(im.getImage(), width, height));
+                    return null;
+                }
+
+                protected void done() {
+                    if (im != null) {
+                        button.setIcon(im);
+                    }
+                }
+            }.execute();
         }
-	}
+    }
 
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("SETCAPTION")) {
             if (arg instanceof String) {
                 setCaption((String) arg);
                 return null;
-            }
-            else {
+            } else {
                 throw new RTException("ClassCastException",
                         "Wrong paramter of setEnabled number");
             }
-        }
-        else if (method.equals("DOACTION")) {
+        } else if (method.equals("DOACTION")) {
             doAction();
             return null;
-        }
-        else {
+        } else {
             return super.method(method, arg);
         }
     }
 
     /**
      * Задать текст надписи на кнопке
+     *
      * @param caption текст надписи
      */
     public void setCaption(String caption) {
-        button.setText((String) caption);
+        button.setText(caption);
     }
 
     /**
      * Выполнить действие ассоциированное с кнопкой
      */
-    public void doAction(){
+    public void doAction() {
         if (action != null) {
             try {
-                    document.executeScript(action, false);
-            }
-            catch (Exception e) {
+                document.executeScript(action, false);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if (aAction != null) {
             try {
                 document.doAction(aAction, null);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -215,18 +207,18 @@ public class Button extends VisualRmlObject implements Focusable, Shortcutter, B
         fp.setFocusPosition(position);
     }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return button;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return button;
+    }
 
-	@Override
-	public void setFocusable(boolean focusable) {
-		button.setFocusable(focusable);
-	}
+    @Override
+    public void setFocusable(boolean focusable) {
+        button.setFocusable(focusable);
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return BasicBorders.getButtonBorder();
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return BasicBorders.getButtonBorder();
+    }
 }

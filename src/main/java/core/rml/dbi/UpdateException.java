@@ -14,7 +14,7 @@ public class UpdateException extends SQLException {
     /**
      * обьект, в котором произошла ошибка
      */
-    int ds     = -1;
+    int ds = -1;
 
     UpdateException(String msg, int br) {
         super(msg);

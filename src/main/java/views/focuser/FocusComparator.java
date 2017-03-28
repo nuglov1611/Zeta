@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 package views.focuser;
 
-import java.awt.Component;
+import java.awt.*;
 import java.util.Comparator;
 
 /*
@@ -31,15 +31,12 @@ public class FocusComparator implements Comparator<Component> {
             int pos2 = f2.getFocusPosition();
             if (pos1 > pos2) {
                 return 1;
-            }
-            else if (pos1 < pos2) {
+            } else if (pos1 < pos2) {
                 return -1;
-            }
-            else {
+            } else {
                 return 0;
             }
-        }
-        else {
+        } else {
             return default_comparator.compare(o1, o2);
         }
 

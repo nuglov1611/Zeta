@@ -2,51 +2,51 @@ package core.rml;
 
 public final class RmlConstants {
 
-    public static final String ON_VALUE       = "ONVALUE";
+    public static final String ON_VALUE = "ONVALUE";
 
-    public static final String OFF_VALUE      = "OFFVALUE";
+    public static final String OFF_VALUE = "OFFVALUE";
 
-    public static final String LABEL          = "LABEL";
+    public static final String LABEL = "LABEL";
 
-    public static final String FONT_SIZE      = "FONT_SIZE";
+    public static final String FONT_SIZE = "FONT_SIZE";
 
     public static final String ALIAS_DOCUMENT = "###core.document###";
 
-    public static final String FIRST_FOCUS    = "FIRSTFOCUS";
+    public static final String FIRST_FOCUS = "FIRSTFOCUS";
 
-    public static final String GET_VALUE      = "GETVALUE";
+    public static final String GET_VALUE = "GETVALUE";
 
-    public static final String SET_VALUE      = "SETVALUE";
+    public static final String SET_VALUE = "SETVALUE";
 
-    public static final String ALIAS          = "ALIAS";
+    public static final String ALIAS = "ALIAS";
 
-    public static final String LEFT           = "LEFT";
+    public static final String LEFT = "LEFT";
 
-    public static final String TOP            = "TOP";
+    public static final String TOP = "TOP";
 
-    public static final String ALIGNMENT      = "ALIGNMENT";
+    public static final String ALIGNMENT = "ALIGNMENT";
 
-    public static final String HORIZONTAL     = "HORIZONTAL";
+    public static final String HORIZONTAL = "HORIZONTAL";
 
-    public static final String BG_COLOR       = "BG_COLOR";
+    public static final String BG_COLOR = "BG_COLOR";
 
-    public static final String VALUE          = "VALUE";
+    public static final String VALUE = "VALUE";
 
-    public static final String CHECK          = "CHECK";
+    public static final String CHECK = "CHECK";
 
-    public static final String SHORTCUT       = "SHORTCUT";
+    public static final String SHORTCUT = "SHORTCUT";
 
-    public static final String FIRSTFOCUS     = "FIRSTFOCUS";
+    public static final String FIRSTFOCUS = "FIRSTFOCUS";
 
-    public static final String YES            = "YES";
+    public static final String YES = "YES";
 
-    public static final String WIDTH          = "WIDTH";
-    
-    public static final String HEIGHT		  = "HEIGHT";
+    public static final String WIDTH = "WIDTH";
 
-    public static final String GET_QUERY      = "GETQUERY";
+    public static final String HEIGHT = "HEIGHT";
 
-    public static final String SET_QUERY      = "SETQUERY";
+    public static final String GET_QUERY = "GETQUERY";
+
+    public static final String SET_QUERY = "SETQUERY";
 
     public static final String IS_CHECKED = "isChecked";
 
@@ -190,22 +190,22 @@ public final class RmlConstants {
 
     public static final String FUNCTION = "FUNCTION";
 
-	public static final String POSITION = "POSITION";
+    public static final String POSITION = "POSITION";
 
-	public static final String BACKGROUND = "BACKGROUND";
-	public static final String FOREGROUND = "FOREGROUND";
+    public static final String BACKGROUND = "BACKGROUND";
+    public static final String FOREGROUND = "FOREGROUND";
 
-	public static final String ICON = "ICON";
+    public static final String ICON = "ICON";
 
-	public static final String ICONSCALED = "ICONSCALED";
+    public static final String ICONSCALED = "ICONSCALED";
 
-	public static final String TOOLTIPTEXT = "TOOLTIPTEXT";
+    public static final String TOOLTIPTEXT = "TOOLTIPTEXT";
 
-	public static final String BORDER = "BORDER";
+    public static final String BORDER = "BORDER";
 
     public static final String DESCRIPTION_REQUIRED = "DESCRIPTION_REQUIRED";
 
-	public static final String DS = "DATASTORE";
+    public static final String DS = "DATASTORE";
 
     public static final String DYNAMIC = "DYNAMIC";
 }

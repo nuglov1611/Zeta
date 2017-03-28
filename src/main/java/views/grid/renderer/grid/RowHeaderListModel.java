@@ -1,8 +1,8 @@
 package views.grid.renderer.grid;
 
-import javax.swing.AbstractListModel;
-
 import views.grid.GridSwing;
+
+import javax.swing.*;
 
 public class RowHeaderListModel extends AbstractListModel {
 

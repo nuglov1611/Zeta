@@ -1,23 +1,5 @@
 package views;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
-
-import publicapi.EditorAPI;
 import action.api.RTException;
 import core.document.Document;
 import core.parser.Proper;
@@ -29,11 +11,28 @@ import core.rml.ui.impl.ZTabbedPaneImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZPanel;
 import core.rml.ui.interfaces.ZTabbedPane;
+import org.apache.log4j.Logger;
+import publicapi.EditorAPI;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
-* Графический компонент "Редактор"   
-*/
+ * Графический компонент "Редактор"
+ */
 public class Editor extends VisualRmlObject implements EditorAPI {
+
+    private static final Logger LOG = Logger.getLogger(Editor.class);
 
     class DefaultAL implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -45,23 +44,20 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                     tabPanel.add("" + (tabPanel.getTabCount() + 1), be.getVisualComponent());
                 }
             }
-            if (e.getActionCommand().equals("###remove_tab###"))
-            {
+            if (e.getActionCommand().equals("###remove_tab###")) {
                 if (tabPanel != null) {
                     if (tabPanel.getTabCount() > 1) {
                         int current = tabPanel.getSelectedIndex();
                         int old = current;
                         if (current > 0) {
                             current--;
-                        }
-                        else {
+                        } else {
                             current++;
                         }
                         try {
                             tabPanel.setSelectedIndex(current);
                             tabPanel.remove(old);
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -71,8 +67,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 if (exp != null) {
                     try {
                         document.executeScript(exp, false);
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -86,8 +81,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
             if (command != null && !command.equals("")) {
                 try {
                     document.doAction(command, null);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     System.out
                             .println("exception inside core.document.ACTION:doAction : "
@@ -98,8 +92,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 String script = ((views.Item) e.getSource()).getExp();
                 try {
                     document.executeScript(script, false);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     System.out
                             .println("views.Editor$MenuAL::actionPerformed() : "
@@ -114,11 +107,10 @@ public class Editor extends VisualRmlObject implements EditorAPI {
             if (e.getPropertyName().equals("CurrentTab")) {
                 if (((Integer) e.getOldValue()).intValue() != -1
                         && ((Integer) e.getOldValue()).intValue() != ((Integer) e
-                                .getNewValue()).intValue()) {
+                        .getNewValue()).intValue()) {
                     try {
                         document.executeScript(tabExp, false);
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         System.out
                                 .println("views.Editor$PCL::propertyChange() : "
@@ -130,9 +122,9 @@ public class Editor extends VisualRmlObject implements EditorAPI {
     }
 
     class ShortcutStruct {
-        int  key;
+        int key;
 
-        int  modifiers;
+        int modifiers;
 
         String expr;
 
@@ -152,42 +144,37 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 return false;
             }
             ShortcutStruct s = (ShortcutStruct) o;
-            if (key == s.key && modifiers == s.modifiers) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return key == s.key && modifiers == s.modifiers;
         }
     }
 
     /**
-     * 
+     *
      */
 
     private Container container = new Container(this);
-    
-    String                         exp;
-    
+
+    String exp;
+
     String tabExp;
 
-    String                         multiWindow      = "NO";
+    String multiWindow = "NO";
 
-    views.Menu                     menu             = null;
+    views.Menu menu = null;
 
-    Proper                         baseProper       = null;
+    Proper baseProper = null;
 
-    Vector<Object>                 baseEditors      = new Vector<Object>();
+    Vector<Object> baseEditors = new Vector<Object>();
 
-    ZTabbedPane                    tabPanel;
-    
+    ZTabbedPane tabPanel;
+
     private HashMap<Integer, BaseEditor> editors = new HashMap<Integer, BaseEditor>();
-    
+
     ZPanel panel = ZPanelImpl.create();
 
     // Методы интерфейса GlobalValuesObject
 
-    private Vector<ShortcutStruct> shortcuts        = new Vector<ShortcutStruct>();
+    private Vector<ShortcutStruct> shortcuts = new Vector<ShortcutStruct>();
 
     public Editor() {
         super();
@@ -200,12 +187,10 @@ public class Editor extends VisualRmlObject implements EditorAPI {
         if (multiWindow.equals("YES")) {
             if (tabPanel != null) {
                 return editors.get(tabPanel.getSelectedIndex());
-            }
-            else {
+            } else {
                 return null;
             }
-        }
-        else {
+        } else {
             return editors.get(0);
         }
     }
@@ -218,27 +203,27 @@ public class Editor extends VisualRmlObject implements EditorAPI {
         return this;
     }
 
-    private void addEditor(Proper prop, int tab){
+    private void addEditor(Proper prop, int tab) {
         BaseEditor be = new BaseEditor();
         be.init(prop, document);
         be.parent = this;
-        if(tab > -1){
-        	tabPanel.add(""+tab, be.getVisualComponent());
-        	editors.put(tab, be);
-        }else{
+        if (tab > -1) {
+            tabPanel.add("" + tab, be.getVisualComponent());
+            editors.put(tab, be);
+        } else {
             panel.add(be.getVisualComponent());
-        	editors.put(tab, be);
+            editors.put(tab, be);
         }
-        
-        
+
+
     }
-    
+
     public Object getValueByName(String name) {
         return getValue();
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
 
         if (prop == null) {
@@ -261,9 +246,9 @@ public class Editor extends VisualRmlObject implements EditorAPI {
             tabPanel = ZTabbedPaneImpl.create(JTabbedPane.BOTTOM,
                     JTabbedPane.SCROLL_TAB_LAYOUT /* JTabbedPane.ROUNDED */);
             tabPanel.addPropertyChangeListener(new PCL());
-            
+
             addEditor(prop, 1);
-            
+
             panel.add(tabPanel);
             menu = new views.Menu();
             JMenuItem mi = new JMenuItem("Добавить закладку");
@@ -281,9 +266,8 @@ public class Editor extends VisualRmlObject implements EditorAPI {
             mi = new JMenuItem("-");
             menu.add(mi);
 
-        }
-        else {
-        	addEditor(prop, -1);
+        } else {
+            addEditor(prop, -1);
         }
     }
 
@@ -294,12 +278,12 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 be.setText((String) arg);
             }
             return null;
-        }else if (method.equals("GETTEXT")) {
+        } else if (method.equals("GETTEXT")) {
             BaseEditor be = getBaseEditor();
             if (be != null) {
                 return be.getText();
             }
-        }else if (method.equals("SETACTION")) {
+        } else if (method.equals("SETACTION")) {
             if (arg instanceof Vector) {
                 Vector v = (Vector) arg;
                 String hotkey = null;
@@ -320,14 +304,14 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 }
                 setShortcut(hotkey, action);
             }
-        }else if (method.equals("ADDTAB")) {
+        } else if (method.equals("ADDTAB")) {
             if (!multiWindow.equals("YES")) {
                 return null;
             }
             if (tabPanel != null) {
                 addEditor(baseProper, (tabPanel.getTabCount() + 1));
             }
-        }else if (method.equals("DELTAB")) {
+        } else if (method.equals("DELTAB")) {
             if (!multiWindow.equals("YES")) {
                 return null;
             }
@@ -337,21 +321,19 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                     int old = current;
                     if (current > 0) {
                         current--;
-                    }
-                    else {
+                    } else {
                         current++;
                     }
                     try {
                         tabPanel.setSelectedIndex(current);
                         tabPanel.remove(old);
                         editors.remove(old);
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
             }
-        }else if (method.equals("SETCURRENTTAB")) {
+        } else if (method.equals("SETCURRENTTAB")) {
             if (!multiWindow.equals("YES")) {
                 return null;
             }
@@ -362,7 +344,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
             if (tabPanel != null) {
                 tabPanel.setSelectedIndex(cur);
             }
-        }else if (method.equals("GETCURRENTTAB")) {
+        } else if (method.equals("GETCURRENTTAB")) {
             if (!multiWindow.equals("YES")) {
                 return new Double(0);
             }
@@ -370,7 +352,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 return new Double(tabPanel.getSelectedIndex());
             }
             return new Double(0);
-        }else if (method.equals("SETTABLABEL")) {
+        } else if (method.equals("SETTABLABEL")) {
             if (!multiWindow.equals("YES")) {
                 return null;
             }
@@ -389,15 +371,13 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 if (tabPanel != null) {
                     tabPanel.setTitleAt(tab, label);
                 }
-            }
-            catch (Exception ex) {
-                System.out.println(ex);
-                ex.printStackTrace();
+            } catch (Exception ex) {
+                LOG.error("", ex);
                 return null;
             }
-        }else
-        	return super.method(method, arg);
-        
+        } else
+            return super.method(method, arg);
+
         return null;
     }
 
@@ -412,8 +392,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                     && s.expr != null) {
                 try {
                     document.executeScript(s.expr, false);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     System.out
                             .println("views.Editor::processShortcut() : " + e);
@@ -774,8 +753,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
                 }
                 shortcuts.addElement(sh);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -786,7 +764,7 @@ public class Editor extends VisualRmlObject implements EditorAPI {
         }
         BaseEditor be = getBaseEditor();
         if (be != null) {
-            ((JTextArea)be.getVisualComponent()).setText((String) value);
+            ((JTextArea) be.getVisualComponent()).setText((String) value);
         }
     }
 
@@ -798,47 +776,47 @@ public class Editor extends VisualRmlObject implements EditorAPI {
         return "VIEWS_GROUP";
     }
 
-	@Override
-	public void focusThis() {
-		getBaseEditor().getVisualComponent().requestFocus();
-	}
+    @Override
+    public void focusThis() {
+        getBaseEditor().getVisualComponent().requestFocus();
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return panel;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return panel;
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
-	    
+
         if (child instanceof views.Menu) {
             menu = (views.Menu) child;
             menu.addActionListenerRecursiv(new MenuAL());
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return BasicBorders.getTextFieldBorder();
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return BasicBorders.getTextFieldBorder();
+    }
 }

@@ -1,64 +1,60 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.util.StringTokenizer;
-
-import javax.swing.JLabel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
-import publicapi.LabelAPI;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.VisualRmlObject;
 import core.rml.ui.impl.ZLabelImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZLabel;
+import publicapi.LabelAPI;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.StringTokenizer;
 
 /**
  * Визуальный компонент "надпись"
  */
 public class Label extends VisualRmlObject implements LabelAPI {
-	
-	private ZLabel label = ZLabelImpl.create();
 
-    int                       dw            = 2;
+    private ZLabel label = ZLabelImpl.create();
 
-    int                       dh            = 2;
+    int dw = 2;
 
-    String                    border        = "NONE";
+    int dh = 2;
+
+    String border = "NONE";
 
 //    Font                      scaleFont     = null;    // данный фонт используется для отрисовки
 
     // с масштабированием
-    FontMetrics               fm            = null;
+    FontMetrics fm = null;
 
-    String                    svalue        = null;
+    String svalue = null;
 
-    String                    halignment    = "LEFT";
+    String halignment = "LEFT";
 
-    String                    valignment    = "CENTER";
+    String valignment = "CENTER";
 
-    String                    visible       = "YES";
+    String visible = "YES";
 
-    private Object            parent        = null;
+    private Object parent = null;
 
-    private Color             bg_color      = null;
+    private Color bg_color = null;
 
-    public boolean            needTranslate = false;
+    public boolean needTranslate = false;
 
-    boolean                   wordWrap      = false;
+    boolean wordWrap = false;
 
-    boolean                   multiLine     = false;
+    boolean multiLine = false;
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         Integer ip;
-        	
+
         fm = label.getFontMetrics(label.getFont());
 
 
@@ -67,12 +63,10 @@ public class Label extends VisualRmlObject implements LabelAPI {
             halignment = sp;
             if (halignment.equals("CENTER")) {
                 label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-            }
-            else if (halignment.equals("LEFT")) {
-            	label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-            }
-            else if (halignment.equals("RIGHT")) {
-            	label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+            } else if (halignment.equals("LEFT")) {
+                label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            } else if (halignment.equals("RIGHT")) {
+                label.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
             }
         }
 
@@ -80,13 +74,11 @@ public class Label extends VisualRmlObject implements LabelAPI {
         if (sp != null) {
             valignment = sp;
             if (valignment.equals("CENTER")) {
-            	label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
-            }
-            else if (valignment.equals("TOP")) {
-            	label.setAlignmentY(JLabel.TOP_ALIGNMENT);
-            }
-            else if (valignment.equals("BOTTOM")) {
-            	label.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+                label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
+            } else if (valignment.equals("TOP")) {
+                label.setAlignmentY(JLabel.TOP_ALIGNMENT);
+            } else if (valignment.equals("BOTTOM")) {
+                label.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
             }
         }
 
@@ -96,20 +88,10 @@ public class Label extends VisualRmlObject implements LabelAPI {
         }
 
         sp = (String) prop.get("MULTILINE");
-        if (sp != null && sp.toUpperCase().equals("YES")) {
-            multiLine = true;
-        }
-        else {
-            multiLine = false;
-        }
+        multiLine = sp != null && sp.toUpperCase().equals("YES");
 
         sp = (String) prop.get("WORDWRAP");
-        if (sp != null && sp.toUpperCase().equals("YES")) {
-            wordWrap = true;
-        }
-        else {
-            wordWrap = false;
-        }
+        wordWrap = sp != null && sp.toUpperCase().equals("YES");
 
         sp = (String) prop.get("VALUE");
         if (sp != null) {
@@ -131,11 +113,10 @@ public class Label extends VisualRmlObject implements LabelAPI {
     public void paint(Graphics g, int a) {
         // pavel patch
         try {
-            if (((String)document.calculateMacro(visible)).equalsIgnoreCase("NO")) {
+            if (document.calculateMacro(visible).equalsIgnoreCase("NO")) {
                 return;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             if (!label.isVisible()) {
                 return;
@@ -174,18 +155,12 @@ public class Label extends VisualRmlObject implements LabelAPI {
                     (height - 1) * a / 100);
             g.drawLine((width - 1) * a / 100, (height - 1) * a / 100,
                     (width - 1) * a / 100, a / 100);
-        }
-        else if (border.equals("BOX")) {
+        } else if (border.equals("BOX")) {
             g.setColor(Color.black);
             SmartLine line = new SmartLine(g);
             line.setType(0);
             if (parent instanceof ReportForm) {
-                if (((ReportForm) parent).isPrint) {
-                    line.isPrint = true;
-                }
-                else {
-                    line.isPrint = false;
-                }
+                line.isPrint = ((ReportForm) parent).isPrint;
             }
             line.draw(0, 0, width, a);
             line.draw(0, height, width, a);
@@ -202,8 +177,7 @@ public class Label extends VisualRmlObject implements LabelAPI {
                 if (wordWrap) {
                     svalue1 = UTIL.makeWrap(getText(), " ", label.getBounds().width - dw
                             - 3, fm);
-                }
-                else {
+                } else {
                     svalue1 = getText();
                 }
                 StringTokenizer st = new StringTokenizer(svalue1, "\n", true);
@@ -216,9 +190,7 @@ public class Label extends VisualRmlObject implements LabelAPI {
                     if (!next.equals("\n") && ptisnl) {
                         ptisnl = false;
                         tok[curind - 1] = next;
-                        continue;
-                    }
-                    else {
+                    } else {
                         if (next.equals("\n")) {
                             ptisnl = true;
                         }
@@ -234,8 +206,7 @@ public class Label extends VisualRmlObject implements LabelAPI {
                 if (valignment.equals("CENTER")) {
                     if (cnt % 2 == 0) {
                         y1 -= (fm.getHeight() * (cnt / 2) - (fm.getHeight() / 2));
-                    }
-                    else {
+                    } else {
                         y1 -= (fm.getHeight() * (cnt / 2));
                     }
                 }
@@ -255,8 +226,7 @@ public class Label extends VisualRmlObject implements LabelAPI {
                             * fm.getHeight())
                             * a / 100);
                 }
-            }
-            else {
+            } else {
                 int[] xy = UTIL.getOutPoint(width, height, fm, halignment,
                         valignment, dw, dh, 0, 0, getText());
                 g.setClip(0, 0, (getSize().width - dw) * a / 100,
@@ -270,19 +240,18 @@ public class Label extends VisualRmlObject implements LabelAPI {
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("SETVALUE") && (arg instanceof String)) {
             setText((String) arg);
-        }
-        else if (method.equals("GETVALUE")) {
+        } else if (method.equals("GETVALUE")) {
             return getText();
-        }
-        else {
+        } else {
             return super.method(method, arg);
         }
-        
+
         return null;
     }
 
     /**
      * Возвращает текущий текст надписи
+     *
      * @return текст
      */
     public String getText() {
@@ -291,6 +260,7 @@ public class Label extends VisualRmlObject implements LabelAPI {
 
     /**
      * Задает текст надписи. Сам элемент при этом становится видимым
+     *
      * @param text - текст надписи
      */
     public void setText(String text) {
@@ -322,22 +292,22 @@ public class Label extends VisualRmlObject implements LabelAPI {
     public void setParent(Object _parent) {
         parent = _parent;
         if (bg_color == null && _parent instanceof views.ReportForm) {
-        	label.setBackground(Color.WHITE);
+            label.setBackground(Color.WHITE);
         }
     }
 
-	@Override
-	public void focusThis() {
-		label.requestFocus();
-	}
+    @Override
+    public void focusThis() {
+        label.requestFocus();
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return label;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return label;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 }

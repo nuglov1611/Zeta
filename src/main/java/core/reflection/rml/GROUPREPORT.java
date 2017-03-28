@@ -7,13 +7,11 @@
  */
 package core.reflection.rml;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.dbi.GroupReport;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -22,7 +20,7 @@ public class GROUPREPORT extends GroupReport {
     private static final Logger log = Logger.getLogger(GROUPREPORT.class);
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         if (ZetaProperties.dstore_debug > 0)
             log.debug("rml.GROUPREPORT.doParsing called");
 
@@ -48,7 +46,6 @@ public class GROUPREPORT extends GroupReport {
             setHead(false);
         else
             setHead(true);
-        ;
 
         str = (String) prop.get("GROUPING");
         String str2 = (String) prop.get("SORTING");

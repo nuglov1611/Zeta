@@ -1,43 +1,25 @@
 package views.grid;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.MenuElement;
-import javax.swing.MenuSelectionManager;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableRowSorter;
-
+import action.api.RTException;
+import action.api.ScriptApi;
+import action.calc.objects.class_type;
+import core.document.*;
+import core.document.Closeable;
+import core.parser.Proper;
+import core.reflection.objects.VALIDATOR;
+import core.rml.Container;
+import core.rml.RmlConstants;
+import core.rml.RmlObject;
+import core.rml.VisualRmlObject;
+import core.rml.dbi.Datastore;
+import core.rml.dbi.Handler;
+import core.rml.dbi.Packer;
+import core.rml.ui.impl.ZPanelImpl;
+import core.rml.ui.interfaces.ZComponent;
+import core.rml.ui.interfaces.ZPanel;
+import core.rml.ui.interfaces.ZScrollPane;
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
-
-import proguard.annotation.Keep;
 import publicapi.GridAPI;
 import publicapi.RetrieveableAPI;
 import views.ColumnTemplate;
@@ -57,34 +39,28 @@ import views.grid.manager.GridTableManager;
 import views.grid.model.GridMetadataModel;
 import views.grid.model.cross.parameters.CrossParametersAccessor;
 import views.util.RmlPropertyContainer;
-import action.api.RTException;
-import action.api.ScriptApi;
-import action.calc.objects.class_type;
-import core.document.AliasesKeys;
-import core.document.Closeable;
-import core.document.Document;
-import core.document.ObjectNotifyInterface;
-import core.document.Shortcutter;
-import core.parser.Proper;
-import core.reflection.objects.VALIDATOR;
-import core.rml.Container;
-import core.rml.RmlConstants;
-import core.rml.RmlObject;
-import core.rml.VisualRmlObject;
-import core.rml.dbi.Datastore;
-import core.rml.dbi.Handler;
-import core.rml.dbi.Packer;
-import core.rml.ui.impl.ZPanelImpl;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZPanel;
-import core.rml.ui.interfaces.ZScrollPane;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Swing Grid realization class. Author: Marina Mylnikova
  */
 public class GridSwing extends VisualRmlObject implements GridAPI,
         ObjectNotifyInterface, RetrieveableAPI, class_type, Packer, Closeable,
-        Shortcutter, Focusable, Handler{
+        Shortcutter, Focusable, Handler {
 
     private static final Logger log = Logger.getLogger(GridSwing.class);
 
@@ -183,10 +159,10 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
             String alias = column.getAlias();
             if (alias != null
                     && column.getStringProperty(RmlConstants.EXP) != null) {// кладем
-                                                                            // его
-                                                                            // в
-                                                                            // вектор
-                                                                            // names
+                // его
+                // в
+                // вектор
+                // names
                 names.addElement(alias);
                 Vector<String> bi = new Vector<String>();
                 ScriptApi cc = ScriptApi.getAPI(column.getCalc());
@@ -203,10 +179,10 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
                     log.error("Shit happens", e);
                 }
                 if (als != null) {
-                    for (int j = 0; j < als.length; j++) {
-                        if (als[j] != null
-                                && (!als[j].equals(column.getAlias()))) {
-                            bi.addElement(als[j]);
+                    for (String al : als) {
+                        if (al != null
+                                && (!al.equals(column.getAlias()))) {
+                            bi.addElement(al);
                         }
                     }
                 }
@@ -284,7 +260,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
         rmlPropertyContainer.initProperty(prop, RmlConstants.ALIAS);
         rmlPropertyContainer.initProperty(prop, RmlConstants.DYNAMIC, "NO");
-        
+
         rmlPropertyContainer
                 .initProperty(prop, RmlConstants.BUTTONBAR_SIZE, 35);
         rmlPropertyContainer.initProperty(prop, RmlConstants.TITLEBAR_SIZE, 20);
@@ -436,23 +412,23 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
                 } else if (child instanceof ColumnTemplate) {
                     ColumnTemplate ct = (ColumnTemplate) child;
                     switch (ct.getType()) {
-                    case 0:
-                        metadataModel.setColumnTemplate(0, ct);
-                        break;
-                    case 1:
-                        metadataModel.setColumnTemplate(1, ct);
-                        break;
-                    case 2:
-                        metadataModel.setColumnTemplate(2, ct);
-                        break;
-                    default:
-                        break;
+                        case 0:
+                            metadataModel.setColumnTemplate(0, ct);
+                            break;
+                        case 1:
+                            metadataModel.setColumnTemplate(1, ct);
+                            break;
+                        case 2:
+                            metadataModel.setColumnTemplate(2, ct);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
             if (areColumnsHere || containsSets || !rmlPropertyContainer.getBooleanProperty(RmlConstants.DYNAMIC)) {
                 metadataModel = new GridMetadataModel(metadataModel);
-            } else if(rmlPropertyContainer.getBooleanProperty(RmlConstants.DYNAMIC)){
+            } else if (rmlPropertyContainer.getBooleanProperty(RmlConstants.DYNAMIC)) {
                 // если число Column'ов=0, значит, они будут добавлены после
                 // Retrieve'а
                 dynamic = true;
@@ -485,7 +461,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
     }
 
     private void addColumnSet(GridColumnSet gridColumnSet,
-            GridMetadataModel metadataModel) {
+                              GridMetadataModel metadataModel) {
         gridColumnSet.setParent(this);
         metadataModel.addColumnSet(gridColumnSet);
         setColumnSetTargets(gridColumnSet);
@@ -563,8 +539,8 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
                 if (calcArray != null) {
                     for (int j = 0; j < numRows; j++) {
                         datastore.setCurrentRow(j);
-                        for (int i = 0; i < calcArray.size(); i++) {
-                            metadataModel.getTColumn(calcArray.get(i)).calc();
+                        for (Integer aCalcArray : calcArray) {
+                            metadataModel.getTColumn(aCalcArray).calc();
                         }
                     }
                 }
@@ -667,36 +643,36 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
     public static int getJType(int sqltype) {
         switch (sqltype) {
-        case Types.BIGINT:
-        case Types.DECIMAL:
-        case Types.DOUBLE:
-        case Types.FLOAT:
-        case Types.INTEGER:
-        case Types.NUMERIC:
-        case Types.REAL:
-        case Types.SMALLINT:
-        case Types.TINYINT: {
-            return VALIDATOR.NUMERIC_TYPE;
-        }
-        case Types.CHAR:
-        case Types.VARCHAR: {
-            return VALIDATOR.STRING_TYPE;
-        }
-        case Types.TIME:
-        case Types.TIMESTAMP:
-        case Types.DATE: {
-            return VALIDATOR.DATE_TYPE;
-        }
-        case Types.OTHER: {
-            return VALIDATOR.UNKNOWN_TYPE;
-        }
-        case Types.BOOLEAN: {
-            return VALIDATOR.BOOLEAN_TYPE;
-        }
-        default: {
-            log.warn("unknown type<" + sqltype + ">");
-            return VALIDATOR.UNKNOWN_TYPE;
-        }
+            case Types.BIGINT:
+            case Types.DECIMAL:
+            case Types.DOUBLE:
+            case Types.FLOAT:
+            case Types.INTEGER:
+            case Types.NUMERIC:
+            case Types.REAL:
+            case Types.SMALLINT:
+            case Types.TINYINT: {
+                return VALIDATOR.NUMERIC_TYPE;
+            }
+            case Types.CHAR:
+            case Types.VARCHAR: {
+                return VALIDATOR.STRING_TYPE;
+            }
+            case Types.TIME:
+            case Types.TIMESTAMP:
+            case Types.DATE: {
+                return VALIDATOR.DATE_TYPE;
+            }
+            case Types.OTHER: {
+                return VALIDATOR.UNKNOWN_TYPE;
+            }
+            case Types.BOOLEAN: {
+                return VALIDATOR.BOOLEAN_TYPE;
+            }
+            default: {
+                log.warn("unknown type<" + sqltype + ">");
+                return VALIDATOR.UNKNOWN_TYPE;
+            }
         }
     }
 
@@ -716,13 +692,13 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
             dstore.setCurrentRow(i);
             int index = datastore.newRow();
             datastore.setCurrentRow(index);
-            for (int j = 0; j < parseAdd.length; j++) {
+            for (String aParseAdd : parseAdd) {
                 // String col1 = parseAdd[j][0];//имя столбца в DATASTORE грида
                 // String exp = parseAdd[j][1];
                 // Object val = Calc.macro(exp,aliases);
                 try {
-                    if (parseAdd[j] != null) {
-                        document.executeScript(parseAdd[j], true);
+                    if (aParseAdd != null) {
+                        document.executeScript(aParseAdd, true);
                     }
                 } catch (Exception e) {
                     log.error("Shit happens", e);
@@ -827,7 +803,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
     }
 
     public void notifyHandler(Object o, boolean requestFocus,
-            boolean keepSorting) {
+                              boolean keepSorting) {
         ArrayList<RowSorter.SortKey> sortKeys = null;
         if (keepSorting) {
             sortKeys = new ArrayList<RowSorter.SortKey>();
@@ -916,7 +892,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
             datastore.addHandler(this);
             notifyHandler(null);
-        }else if (rmlPropertyContainer.get(RmlConstants.ADDEXP) != null) {
+        } else if (rmlPropertyContainer.get(RmlConstants.ADDEXP) != null) {
             core.rml.dbi.Datastore ds2 = (core.rml.dbi.Datastore) document
                     .findObject(AliasesKeys.STORE);
             if (ds2 != null) {
@@ -1097,63 +1073,63 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
         int type = datastore.getType(column);
         switch (type) {
-        case Types.BIGINT:
-        case Types.DECIMAL:
-        case Types.DOUBLE:
-        case Types.FLOAT:
-        case Types.INTEGER:
-        case Types.NUMERIC:
-        case Types.REAL:
-        case Types.SMALLINT:
-        case Types.TINYINT: {
-            if (ZetaProperties.views_debug > 0) {
-                log.debug("number type");
-            }
-            Double d;
-            if (!(value instanceof Double)) {
-                // проверка, если тип - строка
-                if (value instanceof String) {
-                    // пробуем конвертить в Double, если тип не Double - ловим
-                    // исключение
-                    d = Double.parseDouble(String.valueOf(value));
+            case Types.BIGINT:
+            case Types.DECIMAL:
+            case Types.DOUBLE:
+            case Types.FLOAT:
+            case Types.INTEGER:
+            case Types.NUMERIC:
+            case Types.REAL:
+            case Types.SMALLINT:
+            case Types.TINYINT: {
+                if (ZetaProperties.views_debug > 0) {
+                    log.debug("number type");
+                }
+                Double d;
+                if (!(value instanceof Double)) {
+                    // проверка, если тип - строка
+                    if (value instanceof String) {
+                        // пробуем конвертить в Double, если тип не Double - ловим
+                        // исключение
+                        d = Double.parseDouble(String.valueOf(value));
+                        datastore.setValue(row, column, value);
+                        tableManager.setValueAt(value, row, column);
+                    } else {
+                        throw new Exception(
+                                "incompatible types in different datastores!");
+                    }
+                } else {
                     datastore.setValue(row, column, value);
                     tableManager.setValueAt(value, row, column);
-                } else {
+                }
+                break;
+            }
+            case Types.CHAR:
+            case Types.VARCHAR: {
+                if (ZetaProperties.views_debug > 0) {
+                    log.debug("string type");
+                }
+                if (!(value instanceof String)) {
                     throw new Exception(
                             "incompatible types in different datastores!");
+                } else {
+                    datastore.setValue(row, column, value);
+                    tableManager.setValueAt(value, row, column);
                 }
-            } else {
-                datastore.setValue(row, column, value);
-                tableManager.setValueAt(value, row, column);
+                break;
             }
-            break;
-        }
-        case Types.CHAR:
-        case Types.VARCHAR: {
-            if (ZetaProperties.views_debug > 0) {
-                log.debug("string type");
+            case Types.TIME:
+            case Types.TIMESTAMP:
+            case Types.DATE: {
+                break;
             }
-            if (!(value instanceof String)) {
-                throw new Exception(
-                        "incompatible types in different datastores!");
-            } else {
-                datastore.setValue(row, column, value);
-                tableManager.setValueAt(value, row, column);
+            case Types.OTHER: {
+                log.warn("Unknown type!");
+                return;
             }
-            break;
-        }
-        case Types.TIME:
-        case Types.TIMESTAMP:
-        case Types.DATE: {
-            break;
-        }
-        case Types.OTHER: {
-            log.warn("Unknown type!");
-            return;
-        }
-        default: {
-            log.warn("UNKNOWN TYPE!!!");
-        }
+            default: {
+                log.warn("UNKNOWN TYPE!!!");
+            }
         }
     }
 
@@ -1162,7 +1138,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
         if (tableManager.getCurrentRow() != GridTableManager.DEFAULT_ROW
                 && tableManager.getCurrentColumn() != GridTableManager.DEFAULT_COLUMN) {
             tableManager.startEditAtCell(tableManager
-                    .convertRowIndexToView(tableManager.getCurrentRow()),
+                            .convertRowIndexToView(tableManager.getCurrentRow()),
                     tableManager.convertColumnIndexToView(tableManager
                             .getCurrentColumn()));
         }
@@ -1349,7 +1325,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
     @Override
     public void addChild(RmlObject child) {
-    	container.addChildToCollection(child);
+        container.addChildToCollection(child);
     }
 
     @Override
@@ -1606,9 +1582,9 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
         }
         return aliasToReturn;
     }
-    
+
     @Override
-    public int getCurrentColumnIndex(){
+    public int getCurrentColumnIndex() {
         return tableManager.getCurrentColumn();
     }
 
@@ -1623,9 +1599,9 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
         GridColumn column;
         column = tableManager.getColumn(col);
         if (column != null) {
-           tableManager.deleteColumn(column);
-           return true;
-        }else{
+            tableManager.deleteColumn(column);
+            return true;
+        } else {
             return false;
         }
     }
@@ -1635,9 +1611,9 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
         GridColumn column;
         column = tableManager.getColumnByAlias(col);
         if (column != null) {
-           tableManager.deleteColumn(column);
-           return true;
-        }else{
+            tableManager.deleteColumn(column);
+            return true;
+        } else {
             return false;
         }
     }
@@ -1665,7 +1641,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
     @Override
     public void deleteRow() {
-        doAction(rmlPropertyContainer.getStringProperty(RmlConstants.DEL));    
+        doAction(rmlPropertyContainer.getStringProperty(RmlConstants.DEL));
     }
 
     @Override
@@ -1763,7 +1739,7 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
 
     @Override
     public void edit() {
-        tableManager.startEditAtCell(tableManager.getSelectedRow(), tableManager.getSelectedColumn());    
+        tableManager.startEditAtCell(tableManager.getSelectedRow(), tableManager.getSelectedColumn());
     }
 
     @Override
@@ -1887,9 +1863,9 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
                 int colIndex = tableManager.getTableColumnModelIndex(column);
                 if (colIndex != -1) {
                     tableManager.insertValueAt(row, colIndex, value);
-                } 
-            } 
-        } 
+                }
+            }
+        }
     }
 
     @Override
@@ -1900,9 +1876,9 @@ public class GridSwing extends VisualRmlObject implements GridAPI,
                 int colIndex = tableManager.getTableColumnModelIndex(column);
                 if (colIndex != -1) {
                     tableManager.insertValueAt(row, colIndex, value);
-                } 
-            } 
-        } 
+                }
+            }
+        }
     }
 
     @Override

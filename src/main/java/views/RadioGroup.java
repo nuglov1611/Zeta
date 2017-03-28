@@ -1,20 +1,5 @@
 package views;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.util.Vector;
-
-import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-
-import org.apache.log4j.Logger;
-
-import publicapi.RadioGroupAPI;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.Container;
@@ -24,35 +9,44 @@ import core.rml.VisualRmlObject;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZPanel;
+import org.apache.log4j.Logger;
+import publicapi.RadioGroupAPI;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.Vector;
 /**
  * Объединени RadioButton
- * @author uglov
  *
+ * @author uglov
  */
+
 /**
  * Визуальный компонент - объединение RadioButton. В один момент времени в группе может быть включена только одна кнопка.
- * @author 
+ * @author
  *
  */
-public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
+public class RadioGroup extends VisualRmlObject implements RadioGroupAPI {
     private static final Logger log = Logger.getLogger(RadioGroup.class);
 
-	private Container container = new Container(this);
-	
-	private ZPanel btnPanel = ZPanelImpl.create();
+    private Container container = new Container(this);
 
-    private static final int  GAP                 = 5;
+    private ZPanel btnPanel = ZPanelImpl.create();
 
-    public final static int   DEFAULT_FONT_SIZE   = 12;
+    private static final int GAP = 5;
 
-    private Vector<RadioButton>    buttons             = new Vector<RadioButton>();
+    public final static int DEFAULT_FONT_SIZE = 12;
+
+    private Vector<RadioButton> buttons = new Vector<RadioButton>();
 
     // выравнивать кнопки по горизонтали или по вертикали k
-    private boolean           horisontalAlignment = false;
-//TODO : Переделать на вызов через прокси!
-    private ButtonGroup       buttonGroup;
+    private boolean horisontalAlignment = false;
+    //TODO : Переделать на вызов через прокси!
+    private ButtonGroup buttonGroup;
 
-    private int               fontSize;
+    private int fontSize;
 
 
     private void setButtonFont(RadioButton button, int fontSize) {
@@ -62,34 +56,28 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         Integer ip;
 
         buttonGroup = new ButtonGroup();
 
         sp = (String) prop.get(RmlConstants.ALIGNMENT);
-        if (sp != null && sp.equals(RmlConstants.HORIZONTAL)) {
-            horisontalAlignment = true;
-        }
-        else {
-            horisontalAlignment = false;
-        }
+        horisontalAlignment = sp != null && sp.equals(RmlConstants.HORIZONTAL);
 
         ip = (Integer) prop.get(RmlConstants.FONT_SIZE);
         if (ip != null && ip > 0) {
             fontSize = ip;
-        }
-        else {
+        } else {
             fontSize = DEFAULT_FONT_SIZE;
         }
-        
+
         try {
-			container.addChildren(prop, doc);
-		} catch (Exception e) {
-			log.error("!", e);
-		}
-        
+            container.addChildren(prop, doc);
+        } catch (Exception e) {
+            log.error("!", e);
+        }
+
     }
 
     public void initChildren() {
@@ -107,16 +95,15 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
         // вернул правильное значение
         fix.setLayout(new FlowLayout());
         for (int i = 0; i < buttons.size(); i++) {
-            fix.add(((RadioButton) buttons.elementAt(i)).getVisualComponent().getJComponent());
+            fix.add(buttons.elementAt(i).getVisualComponent().getJComponent());
         }
         fix.pack();
         for (int i = 0; i < buttons.size(); i++) {
-            RadioButton button = (RadioButton) buttons.elementAt(i);
+            RadioButton button = buttons.elementAt(i);
             int buttonFontSize = button.getFontSize();
             if (buttonFontSize != RadioButton.DEFAULT_FONT_SIZE) {
                 setButtonFont(button, buttonFontSize);
-            }
-            else if (fontSize != DEFAULT_FONT_SIZE) {
+            } else if (fontSize != DEFAULT_FONT_SIZE) {
                 setButtonFont(button, fontSize);
             }
             Dimension d = button.getVisualComponent().getPreferredSize();
@@ -125,8 +112,7 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
                 if (h < d.height) {
                     h = d.height;
                 }
-            }
-            else {
+            } else {
                 if (w < d.width) {
                     w = d.width;
                 }
@@ -139,24 +125,22 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
         btnPanel.setBounds(left, top, w, h);
         if (horisontalAlignment) {
 //        	btnPanel.setLayout(new GridLayout(1, buttons.size()));
-        	btnPanel.setLayout(new BoxLayout(btnPanel.getJComponent(), BoxLayout.X_AXIS));
-        }
-        else {
+            btnPanel.setLayout(new BoxLayout(btnPanel.getJComponent(), BoxLayout.X_AXIS));
+        } else {
 //        	btnPanel.setLayout(new GridLayout(buttons.size(), 1));
-        	btnPanel.setLayout(new BoxLayout(btnPanel.getJComponent(), BoxLayout.Y_AXIS));
+            btnPanel.setLayout(new BoxLayout(btnPanel.getJComponent(), BoxLayout.Y_AXIS));
         }
 
         for (int i = 0; i < buttons.size(); i++) {
-            RadioButton button = (RadioButton) buttons.elementAt(i);
+            RadioButton button = buttons.elementAt(i);
             buttonGroup.add((AbstractButton) button.getVisualComponent().getJComponent());
             btnPanel.add(button.getVisualComponent());
         }
         for (int i = 0; i < buttons.size(); i++) {
-            RadioButton button = (RadioButton) buttons.elementAt(i);
+            RadioButton button = buttons.elementAt(i);
             if (button.isChecked()) {
                 button.setSelected(true);
-            }
-            else {
+            } else {
                 button.setSelected(false);
             }
         }
@@ -173,16 +157,15 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
     public Object method(String method, Object arg) throws Exception {
         if (method.equals(RmlConstants.GET_VALUE)) {
             return getCurrentValue();
-        }
-        else if (method.equals(RmlConstants.SET_VALUE)) {
+        } else if (method.equals(RmlConstants.SET_VALUE)) {
             final Vector args = (Vector) arg;
             final String checkValue = String.valueOf(args.get(0));
             final int buttonNumber = ((Double) args.get(1)).intValue();
             final boolean value = RmlConstants.ON_VALUE.equals(checkValue.toUpperCase());
             setSelected(buttonNumber, value);
-            return value ? 1 : 0; 
+            return value ? 1 : 0;
 //            RadioButton button = (RadioButton) (buttons.elementAt(buttonNumber.intValue()));
-            
+
 //            if (RmlConstants.ON_VALUE.equals(checkValue.toUpperCase())) {
 //                button.setSelected(true);
 //                return 1;
@@ -192,11 +175,11 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
 //            } else {
 //                throw new RTException("", "Unknown radiogroup value");
 //            }
-        }else
-        	return super.method(method, arg);
+        } else
+            return super.method(method, arg);
     }
 
-    
+
     /**
      * Включает кнопку 
      * @param buttonNumber номер кнопки в группе
@@ -204,20 +187,20 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
      */
     public void setSelected(int buttonNumber, boolean selected) {
         buttons.elementAt(buttonNumber).setSelected(selected);
-        
+
     }
 
     public int getSelected() {
         int i = -1;
-        for(RadioButton b : buttons){
-            if(b.isSelected())
+        for (RadioButton b : buttons) {
+            if (b.isSelected())
                 break;
             i++;
         }
-        
+
         return i;
     }
-    
+
     /**
      * Возвращает значение ассоциированное с текущей (включенной) кнопкой в группе
      * @return значение ассоциированное с текущей выбранной кнопкой
@@ -225,7 +208,7 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
     public Object getCurrentValue() {
         Object ret = null;
         for (int i = 0; i < buttons.size(); i++) {
-            RadioButton button = (RadioButton) (buttons.elementAt(i));
+            RadioButton button = buttons.elementAt(i);
             if (button.isSelected()) {
                 ret = button.getValue();
             }
@@ -243,42 +226,42 @@ public class RadioGroup extends VisualRmlObject implements  RadioGroupAPI {
         return "views.RadioGroup";
     }
 
-	@Override
-	public void focusThis() {
-		btnPanel.requestFocus();
-	}
+    @Override
+    public void focusThis() {
+        btnPanel.requestFocus();
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return btnPanel;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return btnPanel;
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
-	    
+
         if (child instanceof RadioButton) {
-            buttons.addElement((RadioButton)child);
+            buttons.addElement((RadioButton) child);
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return false;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return false;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 }

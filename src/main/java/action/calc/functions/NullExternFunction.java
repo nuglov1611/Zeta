@@ -11,9 +11,9 @@
 
 package action.calc.functions;
 
-import java.util.Hashtable;
-
 import action.calc.ExternFunction;
+
+import java.util.Hashtable;
 
 
 public abstract class NullExternFunction implements ExternFunction {

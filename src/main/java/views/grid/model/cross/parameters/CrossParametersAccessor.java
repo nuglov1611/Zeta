@@ -23,8 +23,7 @@ public class CrossParametersAccessor {
     public CrossParametersAccessor(CrossParameters pars) {
         if (pars != null) {
             this.pars = pars;
-        }
-        else {
+        } else {
             this.pars = new CrossParameters();
         }
     }

@@ -1,12 +1,12 @@
 package core.reflection.objects;
 
-import java.util.Vector;
-
 import action.api.HaveMethod;
 import action.api.RTException;
 import action.calc.OP;
 import action.calc.objects.class_constructor;
 import action.calc.objects.class_type;
+
+import java.util.Vector;
 
 public class STACK implements class_constructor, HaveMethod, class_type {
 
@@ -20,6 +20,7 @@ public class STACK implements class_constructor, HaveMethod, class_type {
             this.value = value;
         }
     }
+
     StackElement stack = null;
 
     public STACK() {
@@ -54,7 +55,7 @@ public class STACK implements class_constructor, HaveMethod, class_type {
 
     public String toString() {
         StackElement s = stack;
-        StringBuffer sb = new StringBuffer("<");
+        StringBuilder sb = new StringBuilder("<");
         while (s != null) {
             if (s.value instanceof Object[]) {
                 sb.append(OP.printArray((Object[]) s.value));

@@ -5,27 +5,27 @@
 
 package core.rml;
 
-import java.util.StringTokenizer;
-
-import org.apache.log4j.Logger;
-
-import publicapi.RmlContainerAPI;
-import publicapi.RmlObjectAPI;
 import action.api.GlobalValuesObject;
 import action.api.HaveMethod;
 import action.api.ScriptApi;
 import core.document.Document;
 import core.parser.Proper;
+import org.apache.log4j.Logger;
+import publicapi.RmlContainerAPI;
+import publicapi.RmlObjectAPI;
+
+import java.util.StringTokenizer;
 
 /**
  * Суперкласс для всех RML-объектов в Зете.
+ *
  * @author nick
- * {@docRoot}
+ *         {@docRoot}
  */
-public abstract class RmlObject implements HaveMethod, GlobalValuesObject, RmlObjectAPI{
-	private static final Logger log = Logger.getLogger(RmlObject.class);
-	
-	/**
+public abstract class RmlObject implements HaveMethod, GlobalValuesObject, RmlObjectAPI {
+    private static final Logger log = Logger.getLogger(RmlObject.class);
+
+    /**
      * Идентификатор объекта. Должен быть уникальным.
      */
     protected String alias = null;
@@ -43,7 +43,7 @@ public abstract class RmlObject implements HaveMethod, GlobalValuesObject, RmlOb
     //Действие, выполняемое, при изменении состояния компонента
     private ScriptApi commitExpression = null;
 
-    protected void initComminAPI(Proper prop){
+    protected void initComminAPI(Proper prop) {
 
         String dep = (String) prop.get("DEPLIST");
         if (dep != null) {
@@ -60,94 +60,91 @@ public abstract class RmlObject implements HaveMethod, GlobalValuesObject, RmlOb
             }
         }
 
-         final String comm = (String) prop.get("COMMITEXP");
-         if(comm != null){
-             commitExpression = ScriptApi.getAPI(comm);
-         }
+        final String comm = (String) prop.get("COMMITEXP");
+        if (comm != null) {
+            commitExpression = ScriptApi.getAPI(comm);
+        }
 
-         final String depExp = (String) prop.get("DEPEXP");
-         if(depExp != null){
-             depExpression =ScriptApi.getAPI(depExp);
-         }
+        final String depExp = (String) prop.get("DEPEXP");
+        if (depExp != null) {
+            depExpression = ScriptApi.getAPI(depExp);
+        }
     }
 
     private void calcDep() {
         if (dependences == null) {
             return;
         }
-        for (int i = 0; i < dependences.length; i++) {
-            RmlObject o = (RmlObject) document.findObject(dependences[i]);
+        for (String dependence : dependences) {
+            RmlObject o = document.findObject(dependence);
             if (o != null) {
                 o.onPrincipalChange();
-            }
-            else {
+            } else {
                 System.out.println("Object not found for alias "
-                                + dependences[i]);
+                        + dependence);
             }
         }
     }
 
-    private void onPrincipalChange(){
+    private void onPrincipalChange() {
         try {
             if (depExpression != null) {
                 depExpression.eval(document.getAliases());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("", e);
         }
     }
 
-    private void onCommit(){
+    private void onCommit() {
         try {
             if (commitExpression != null) {
                 commitExpression.eval(document.getAliases());
             }
-        }
-        catch (Exception e) {
-        	log.error("", e);
+        } catch (Exception e) {
+            log.error("", e);
         }
     }
 
-    protected void commit(){
+    protected void commit() {
         onCommit();
         calcDep();
     }
 
-    public void addToContainer(RmlContainerAPI container){
+    public void addToContainer(RmlContainerAPI container) {
         this.parent = container;
         document.registrate(this);
     }
 
     @Override
-    public void init(Proper prop, Document doc){
+    public void init(Proper prop, Document doc) {
         document = doc;
         if (prop == null) {
             return;
         }
         setAlias((String) prop.get("ALIAS"));
         initComminAPI(prop);
-        
-        if(this instanceof RmlContainerAPI){
-        	if(((RmlContainerAPI) this).addChildrenAutomaticly())
-				try {
-					((RmlContainerAPI) this).getContainer().addChildren(prop, doc);
-				} catch (Exception e) {
-					log.error("!", e);
-				}
+
+        if (this instanceof RmlContainerAPI) {
+            if (((RmlContainerAPI) this).addChildrenAutomaticly())
+                try {
+                    ((RmlContainerAPI) this).getContainer().addChildren(prop, doc);
+                } catch (Exception e) {
+                    log.error("!", e);
+                }
         }
     }
 
     abstract public Object method(String method, Object arg) throws Exception;
 
-    public String getAlias(){
+    public String getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias){
+    public void setAlias(String alias) {
         this.alias = alias;
-        if(alias != null && !alias.trim().equals(""))
-        	document.registrate(this);
+        if (alias != null && !alias.trim().equals(""))
+            document.registrate(this);
     }
 
     public Object getValue() throws Exception {
@@ -163,8 +160,8 @@ public abstract class RmlObject implements HaveMethod, GlobalValuesObject, RmlOb
 
     public void setValueByName(String name, Object obj) throws Exception {
     }
-    
-    public Object findObject(String alias){
-    	return document.getObject(alias);
+
+    public Object findObject(String alias) {
+        return document.getObject(alias);
     }
 }

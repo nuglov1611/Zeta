@@ -1,11 +1,5 @@
 package views;
 
-import java.awt.Graphics;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.VisualRmlObject;
@@ -13,33 +7,38 @@ import core.rml.ui.EDTInvocationHandler;
 import core.rml.ui.ZComponentImpl;
 import core.rml.ui.interfaces.ZComponent;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+
 
 public class Line extends VisualRmlObject {
-	
-	class LineComp extends ZComponentImpl{
 
-		protected LineComp(JComponent comp) {
-			super(comp);
-		}
+    class LineComp extends ZComponentImpl {
 
-	}
-	//TODO Разобраться с этим классом
-	ZComponent line = (ZComponent) java.lang.reflect.Proxy.newProxyInstance(LineComp.class.getClassLoader(),
+        protected LineComp(JComponent comp) {
+            super(comp);
+        }
+
+    }
+
+    //TODO Разобраться с этим классом
+    ZComponent line = (ZComponent) java.lang.reflect.Proxy.newProxyInstance(LineComp.class.getClassLoader(),
             new Class[]{ZComponent.class}, new EDTInvocationHandler(new LineComp(new JPanel())));
-	 
-	 
-    int        size;
+
+
+    int size;
 
     public int LINE_HORIZONTAL = 0;
 
-    public int LINE_VERTICAL   = 1;
+    public int LINE_VERTICAL = 1;
 
-    int        type            = LINE_HORIZONTAL;
+    int type = LINE_HORIZONTAL;
 
-    Object     parent;
+    Object parent;
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         Integer ip;
         String sp;
 
@@ -50,8 +49,7 @@ public class Line extends VisualRmlObject {
         sp = (String) prop.get("TYPE");
         if (sp != null && sp.equals("HORIZONTAL")) {
             type = LINE_HORIZONTAL;
-        }
-        else {
+        } else {
             type = LINE_VERTICAL;
         }
     }
@@ -60,29 +58,24 @@ public class Line extends VisualRmlObject {
         SmartLine sl = new SmartLine(g);
         sl.setType(type);
         if (parent instanceof ReportForm) {
-            if (((ReportForm) parent).isPrint) {
-                sl.isPrint = true;
-            }
-            else {
-                sl.isPrint = false;
-            }
+            sl.isPrint = ((ReportForm) parent).isPrint;
         }
         sl.draw(left, top, size, a);
     }
-    
-    
-	@Override
-	public void focusThis() {
-	}
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return line;
-	}
 
-	@Override
-	protected Border getDefaultBorder() {
-		return null;
-	}
+    @Override
+    public void focusThis() {
+    }
+
+    @Override
+    public ZComponent getVisualComponent() {
+        return line;
+    }
+
+    @Override
+    protected Border getDefaultBorder() {
+        return null;
+    }
 
 }

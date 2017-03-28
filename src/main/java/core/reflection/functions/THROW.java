@@ -11,13 +11,13 @@
 
 package core.reflection.functions;
 
-import java.util.Vector;
-
-import loader.ZetaProperties;
 import action.api.RTException;
 import action.calc.OP;
 import action.calc.ResonException;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
+
+import java.util.Vector;
 
 public class THROW extends BaseExternFunction {
     static final String fun = "FUN THROW : ";
@@ -32,13 +32,11 @@ public class THROW extends BaseExternFunction {
             try {
                 throw new RTException(((Vector<String>) a).elementAt(0),
                         ((Vector<String>) a).elementAt(1));
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 throw new ResonException(
                         "~calc.functions.THROW::eval must be String,String");
             }
-        }
-        else {
+        } else {
             throw new ResonException(
                     "~calc.functions.THROW::eval must be 2 args");
         }

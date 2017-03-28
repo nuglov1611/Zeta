@@ -1,17 +1,5 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-
-import javax.swing.border.Border;
-
-import publicapi.RmlContainerAPI;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.RmlObject;
@@ -20,31 +8,39 @@ import core.rml.dbi.Datastore;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZPanel;
+import publicapi.RmlContainerAPI;
+
+import javax.swing.border.Border;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
-	
-	ZPanel form = ZPanelImpl.create();
-	
-	core.rml.Container container = new core.rml.Container(this);
-	
-    Datastore            ds           = null;
 
-    int                      beginRow     = 0;
+    ZPanel form = ZPanelImpl.create();
 
-    core.rml.dbi.Group                currentGroup = null;
+    core.rml.Container container = new core.rml.Container(this);
 
-    Hashtable<String, Field> fields       = new Hashtable<String, Field>();
+    Datastore ds = null;
 
-    Label[]                  labels       = null;
+    int beginRow = 0;
 
-    Line[]                   lines        = null;
+    core.rml.dbi.Group currentGroup = null;
 
-    IMage[]                  images       = null;
+    Hashtable<String, Field> fields = new Hashtable<String, Field>();
 
-    public boolean           isPrint      = false;
+    Label[] labels = null;
 
-    String                   type         = null;
+    Line[] lines = null;
+
+    IMage[] images = null;
+
+    public boolean isPrint = false;
+
+    String type = null;
 
 
     public void paint(Graphics g, int a) {
@@ -55,26 +51,26 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
                 * a / 100);
         Field[] fs = getFields();
         if (fs != null) {
-            for (int i = 0; i < fs.length; i++) {
-                fs[i].setScaleFont(a);
-                fs[i].paint(g, a);
+            for (Field f : fs) {
+                f.setScaleFont(a);
+                f.paint(g, a);
             }
         }
         if (labels != null) {
-            for (int i = 0; i < labels.length; i++) {
-                labels[i].setScaleFont(a);
-                labels[i].paint(g, a);
+            for (Label label : labels) {
+                label.setScaleFont(a);
+                label.paint(g, a);
 
             }
         }
         if (lines != null) {
-            for (int i = 0; i < lines.length; i++) {
-                lines[i].paint(g, a);
+            for (Line line : lines) {
+                line.paint(g, a);
             }
         }
         if (images != null) {
-            for (int i = 0; i < images.length; i++) {
-                images[i].paint(gim, a);
+            for (IMage image : images) {
+                image.paint(gim, a);
             }
         }
     }
@@ -92,15 +88,14 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
         if (sp != null) {
             type = sp;
         }
-        
+
         sp = ((String) prop.get("BG_COLOR"));
         if (sp != null) {
             form.setBackground(UTIL.getColor(sp));
+        } else {
+            form.setBackground(Color.white);
         }
-        else {
-        	form.setBackground(Color.white);
-        }
-        
+
     }
 
     public void initChildren() {
@@ -120,20 +115,19 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
                 form.add(((Field) o).getVisualComponent().getJComponent());
 //                ((Field) o).setFieldParent(this);
                 ((Field) o).setNeedTranslate(true);
-                String alias = ((Field) o).getAlias();
+                String alias = o.getAlias();
                 if (alias == null) {
                     System.out
                             .println("alias for field "
-                                    + (Field) o
+                                    + o
                                     + " not defined.This field will not be added into ReportForm!");
-                }
-                else {
+                } else {
                     fields.put(alias, (Field) o);
                 }
                 continue;
             }
             if (o instanceof views.Label) {
-            	 form.add(((views.Label) o).getVisualComponent().getJComponent());
+                form.add(((views.Label) o).getVisualComponent().getJComponent());
                 ((Label) o).setParent(this);
                 ((Label) o).needTranslate = true;
                 continue;
@@ -205,19 +199,18 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
     public Field getField(String alias) {
         if (fields != null) {
             return fields.get(alias);
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     public Label[] getLabels() {
-    	final RmlObject[] children = container.getChildren();
-    	final ArrayList<Label> temp = new ArrayList<Label>();
-    	
+        final RmlObject[] children = container.getChildren();
+        final ArrayList<Label> temp = new ArrayList<Label>();
+
         for (RmlObject child : children) {
             if (child instanceof views.Label) {
-                temp.add((Label)child);
+                temp.add((Label) child);
             }
         }
         final Label[] ret = new Label[temp.size()];
@@ -229,22 +222,21 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
         if (fs == null) {
             return;
         }
-        for (int i = 0; i < fs.length; i++) {
-            if (!fs[i].isComputed()) {
+        for (Field f : fs) {
+            if (!f.isComputed()) {
                 Object val = ds
-                        .getValue(currentGroup.begrow, fs[i].gettarget());
+                        .getValue(currentGroup.begrow, f.gettarget());
                 // System.out.println("---value="+val);
-                fs[i].setType(ds.getType(fs[i].gettarget()));
-                fs[i].needSetString = true;
-                fs[i].setValue(val);
-            }
-            else {
+                f.setType(ds.getType(f.gettarget()));
+                f.needSetString = true;
+                f.setValue(val);
+            } else {
                 if (currentGroup == null) {
                     return;
                 }
-                Object o = currentGroup.getValueByName(fs[i].getAlias());
-                fs[i].needSetString = true;
-                fs[i].setValue(o);
+                Object o = currentGroup.getValueByName(f.getAlias());
+                f.needSetString = true;
+                f.setValue(o);
             }
         }
     }
@@ -254,72 +246,71 @@ public class ReportForm extends VisualRmlObject implements RmlContainerAPI {
         if (fs == null) {
             return;
         }
-        for (int i = 0; i < fs.length; i++) {
-            if (fs[i] != null) {
-                fs[i].needSetString = true;
+        for (Field f2 : fs) {
+            if (f2 != null) {
+                f2.needSetString = true;
             }
         }
-        for (int i = 0; i < fs.length; i++) {
-            if (!fs[i].isComputed()) {
-                Object val = ds.getValue( /* currentGroup.begrow */0, fs[i]
+        for (Field f1 : fs) {
+            if (!f1.isComputed()) {
+                Object val = ds.getValue( /* currentGroup.begrow */0, f1
                         .gettarget());
                 // System.out.println("---value="+val);
-                fs[i].setType(ds.getType(fs[i].gettarget()));
-                fs[i].needSetString = true;
-                fs[i].setValue(val);
-                fs[i].calcDep();
-            }
-            else {
-                fs[i].calc();
-                fs[i].calcDep();
+                f1.setType(ds.getType(f1.gettarget()));
+                f1.needSetString = true;
+                f1.setValue(val);
+                f1.calcDep();
+            } else {
+                f1.calc();
+                f1.calcDep();
             }
         }
-        for (int i = 0; i < fs.length; i++) {
-            if (fs[i] != null) {
-                fs[i].needSetString = false;
+        for (Field f : fs) {
+            if (f != null) {
+                f.needSetString = false;
             }
         }
 
     }
 
-	public Rectangle getBounds() {
-		return form.getBounds();
-	}
+    public Rectangle getBounds() {
+        return form.getBounds();
+    }
 
-	@Override
-	public void focusThis() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void focusThis() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return form;
-	}
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return form;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public void addChild(RmlObject child) {
+    }
 
-	@Override
-	public core.rml.Container getContainer() {
-		return container;
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public core.rml.Container getContainer() {
+        return container;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
+
+    @Override
+    protected Border getDefaultBorder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

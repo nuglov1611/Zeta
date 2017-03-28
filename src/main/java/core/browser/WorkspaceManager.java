@@ -1,30 +1,28 @@
 package core.browser;
 
-import java.util.Vector;
-
-import loader.Loader;
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import properties.PropertyConstants;
-import properties.PropertyManager;
 import boot.Boot;
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
 import core.connection.DBMSConnection;
 import core.document.exception.LoadDocumentException;
 import core.rml.dbi.ErrorReader;
+import loader.Loader;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import properties.PropertyConstants;
+import properties.PropertyManager;
+
+import java.util.Vector;
 
 public class WorkspaceManager {
-    private static final Logger log          = Logger
-                                                     .getLogger(WorkspaceManager.class);
+    private static final Logger log = Logger
+            .getLogger(WorkspaceManager.class);
 
-    protected static Vector<Workspace> workspaces   = new Vector<Workspace>();
+    protected static Vector<Workspace> workspaces = new Vector<Workspace>();
 
-    private static Workspace    curWorkspace = null;
-    
+    private static Workspace curWorkspace = null;
+
     private static WorkspaceManager instance = null;
 
     private WorkspaceManager() throws ConnectException,
@@ -32,13 +30,13 @@ public class WorkspaceManager {
         newWorkspace();
     }
 
-    public synchronized static WorkspaceManager getInstance() throws ConnectException, LoadDocumentException, BadPasswordException{
-    	if(instance == null){
-    		instance = new WorkspaceManager();
-    	}
-    	return instance;
+    public synchronized static WorkspaceManager getInstance() throws ConnectException, LoadDocumentException, BadPasswordException {
+        if (instance == null) {
+            instance = new WorkspaceManager();
+        }
+        return instance;
     }
-    
+
     public static synchronized Workspace getCurWorkspace() {
         return curWorkspace;
     }
@@ -59,8 +57,7 @@ public class WorkspaceManager {
         }
         if (workspaces.size() == 1) {
             exit();
-        }
-        else {
+        } else {
             workspaces.removeElement(ws);
             ws.getFrame().dispose();
             System.gc();
@@ -97,8 +94,7 @@ public class WorkspaceManager {
                 curWorkspace = null;
                 instance = null;
                 Boot.getInstance().showStartup(false);
-            }
-            else {
+            } else {
                 System.exit(0);
             }
         }

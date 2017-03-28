@@ -1,133 +1,143 @@
 package publicapi;
 
-import java.awt.Dimension;
-import java.awt.Point;
-
 import proguard.annotation.Keep;
+
+import java.awt.*;
 
 /**
  * Интерфейс для Rml-объектов, имеющих графическое представление.
  * Все визуалные компоненты имеют обязательный набор параметров:
- *- BACKGROUND - цвет фона
- *- FOREGROUND - цвет шрифта
- *- FONT - параметры шрифта (название, размер, стиль)
- *- либо можно задавать параметры отдельно друг от друга:
- *	- FONT_FACE
- *	- FONT_FAMILY
- *	- FONT_SIZE
- *- LEFT - Х координата левого верхнего угла
- *- TOP - Y координата левого верхнего угла
- *- WIDTH - длина
- *- HEIGHT - высота
- *- VISIBLE - (yes/no) видимость компонента
- *- FIRSTFOCUS - (yes/no) претендует на получение фокуса при создании документа
- *- POSITION - положение компонента если в контейнере выбран Border Layout (CENTER, EAST, WEST, SOUTH, NORTH)
- *- TOOLTIPTEXT - текст всплывающей подсказки
- * 
- * 
- * 
+ * - BACKGROUND - цвет фона
+ * - FOREGROUND - цвет шрифта
+ * - FONT - параметры шрифта (название, размер, стиль)
+ * - либо можно задавать параметры отдельно друг от друга:
+ * - FONT_FACE
+ * - FONT_FAMILY
+ * - FONT_SIZE
+ * - LEFT - Х координата левого верхнего угла
+ * - TOP - Y координата левого верхнего угла
+ * - WIDTH - длина
+ * - HEIGHT - высота
+ * - VISIBLE - (yes/no) видимость компонента
+ * - FIRSTFOCUS - (yes/no) претендует на получение фокуса при создании документа
+ * - POSITION - положение компонента если в контейнере выбран Border Layout (CENTER, EAST, WEST, SOUTH, NORTH)
+ * - TOOLTIPTEXT - текст всплывающей подсказки
+ *
  * @author nuglov
- * {@inheritDoc}
+ *         {@inheritDoc}
  */
 public interface VisualRmlObjectAPI extends RmlObjectAPI {
 
     /**
      * Возвращает размеры графического компонента.
+     *
      * @return массив размеров (width, height)
      */
     @Keep
-    public Dimension getSize();
-    
+    Dimension getSize();
+
     /**
      * Возвращает значение признака видимости графического компонента.
+     *
      * @return true - видимый
      */
     @Keep
-    public boolean isVisible();
-    
+    boolean isVisible();
+
     /**
      * Возвращает координаты графического компонента.
+     *
      * @return координаты верхнего левого угла
      */
     @Keep
-    public Point getPosition();
-    
+    Point getPosition();
+
     /**
      * Установить размеры объекта (ширину и высоту)
+     *
      * @param w - ширина
      * @param h - высота
      */
     @Keep
-    public void setSize(int w, int h);
-    
+    void setSize(int w, int h);
+
     /**
      * Установить высоту визуального компонента
+     *
      * @param h высота
      */
     @Keep
-    public void setHeight(int h);
-    
+    void setHeight(int h);
+
     /**
      * Установить ширину визуального компонента
-     * @param w ширина 
+     *
+     * @param w ширина
      */
     @Keep
-    public void setWidth(int w);
-  
+    void setWidth(int w);
+
     /**
-     * Получить фокус 
+     * Получить фокус
      */
     @Keep
-    public void requestFocus();
+    void requestFocus();
 
     /**
      * Поволяет узнать возможность графического компонента принимать фокус
+     *
      * @return true - если объект может принимать фокус, false - если не может
      */
     @Keep
-    public boolean isFocusable();
-   
+    boolean isFocusable();
+
     /**
      * Задать возможность графического компонента принимать фокус
+     *
      * @param focusable true - компонент может принимать фокус, false - не может принимать фокус
      */
     @Keep
-    public void setFocusable(boolean focusable);
- 
+    void setFocusable(boolean focusable);
+
     /**
      * Задать координаты графического компонента по горизонтали и вертикали
+     *
      * @param x координата по горизонтали
      * @param y координата по вертикали
      */
     @Keep
-    public void setLocation(int x, int y);
-    
+    void setLocation(int x, int y);
+
     /**
      * Задать координату графического компонента по горизонтали (координата левой границы)
+     *
      * @param x координата
      */
     @Keep
-    public void setLeft(int x);
+    void setLeft(int x);
 
     /**
      * Задать координату графического компонента по вертикали (координата верхней границы)
+     *
      * @param y координата
      */
     @Keep
-    public void setTop(int y);
-    
+    void setTop(int y);
+
     /**
      * Задать признак "активности" графического компонента
+     *
      * @param enabled признак (true - компонент активный, false - не активный("серый"))
      */
     @Keep
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
     /**
      * Задать признак видимости графического компонента
+     *
      * @param visible признак (true - видимый, false - не видимый)
      */
     @Keep
-    public void setVisible(boolean visible);
+    void setVisible(boolean visible);
 
 }

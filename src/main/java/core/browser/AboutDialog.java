@@ -1,8 +1,13 @@
 package core.browser;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import loader.ZetaProperties;
+import org.jdesktop.swingx.JXHyperlink;
+import properties.PropertyConstants;
+import properties.Session;
+import properties.SessionManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -10,31 +15,14 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.UIManager;
-
-import loader.ZetaProperties;
-
-import org.jdesktop.swingx.JXHyperlink;
-
-import properties.PropertyConstants;
-import properties.Session;
-import properties.SessionManager;
-
 public class AboutDialog extends JDialog {
-    static int width  = 350;
+    static int width = 350;
 
     static int height = 315;
 
-    JButton    ok     = new JButton("OK");
+    JButton ok = new JButton("OK");
 
-    JLabel     l;
+    JLabel l;
 
     public AboutDialog(String title, JFrame parent) {
         super(parent, title, true);
@@ -63,7 +51,7 @@ public class AboutDialog extends JDialog {
         lblLogo.setHorizontalAlignment(JLabel.CENTER);
         lblLogo.setIcon(new ImageIcon(getClass().getClassLoader()
                 .getResource(ZetaProperties.IMAGE_LOGO))); // NOI18N
-        
+
         int sw = t.getScreenSize().width;
         int sh = t.getScreenSize().height;
         setSize(width, height);
@@ -77,9 +65,9 @@ public class AboutDialog extends JDialog {
         p_labels.add(oracle_version);
         JXHyperlink site = new JXHyperlink();
         try {
-			site.setURI(new URI("http://zetacore.ru"));
-		} catch (URISyntaxException e) {
-		}
+            site.setURI(new URI("http://zetacore.ru"));
+        } catch (URISyntaxException e) {
+        }
         site.setText("Zeta Core");
         p_labels.add(site);
         p0.add("South", p_labels);

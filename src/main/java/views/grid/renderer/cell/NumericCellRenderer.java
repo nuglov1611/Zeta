@@ -1,21 +1,15 @@
 package views.grid.renderer.cell;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import core.rml.RmlConstants;
+import views.grid.GridColumn;
+import views.grid.manager.GridTableManager;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFormattedTextField;
-import javax.swing.JTable;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
-
-import views.grid.GridColumn;
-import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
+import java.awt.*;
 
 public class NumericCellRenderer extends JFormattedTextField implements TableCellRenderer {
 
@@ -80,8 +74,7 @@ public class NumericCellRenderer extends JFormattedTextField implements TableCel
         }
         try {
             setText(currColumn.valueToString(value));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (value != null) {
                 setText(String.valueOf(value));
             } else {

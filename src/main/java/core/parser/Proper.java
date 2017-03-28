@@ -7,11 +7,11 @@ package core.parser;
 /**
  */
 
+import publicapi.RmlProperties;
+
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import publicapi.RmlProperties;
 
 
 /*
@@ -30,11 +30,11 @@ public class Proper implements RmlProperties {
         }
     }
 
-    public String                    tag     = "UNKNOWN";
+    public String tag = "UNKNOWN";
 
-    public Proper                    content = null;
+    public Proper content = null;
 
-    public Proper                    next    = null;
+    public Proper next = null;
 
     public Hashtable hash;
 
@@ -43,11 +43,11 @@ public class Proper implements RmlProperties {
     }
 
     public Proper(Hashtable<String, Object> p) {
-       // hash = p;
+        // hash = p;
         hash = new Hashtable();
-    	importHash(p); 
+        importHash(p);
     }
-    
+
     public Object get(String alias) {
         Object res;
         res = hash.get(alias);
@@ -66,12 +66,12 @@ public class Proper implements RmlProperties {
     public void put(String alias, Object obj) {
         hash.put(alias, obj);
     }
-    
+
     @Override
-    public void importHash(Hashtable<String, Object> properties){
-    	Set<Entry<String, Object>> entrys =  properties.entrySet();
-    	for(Entry<String, Object> entry : entrys){
-    		hash.put(entry.getKey().toUpperCase(), entry.getValue());
-    	}
+    public void importHash(Hashtable<String, Object> properties) {
+        Set<Entry<String, Object>> entrys = properties.entrySet();
+        for (Entry<String, Object> entry : entrys) {
+            hash.put(entry.getKey().toUpperCase(), entry.getValue());
+        }
     }
 }

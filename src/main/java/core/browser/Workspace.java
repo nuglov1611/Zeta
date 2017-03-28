@@ -10,38 +10,6 @@
 
 package core.browser;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXBusyLabel;
-import org.jdesktop.swingx.JXFrame;
-
-import properties.PropertyConstants;
-import properties.Session;
-import properties.SessionManager;
-import views.Label;
 import core.browser.listener.NavigatorActionListener;
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
@@ -49,11 +17,27 @@ import core.connection.DBMSConnection;
 import core.document.Document;
 import core.document.exception.LoadDocumentException;
 import core.parser.Proper;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXFrame;
+import properties.PropertyConstants;
+import properties.Session;
+import properties.SessionManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /*
  * class Nafigator for Nafigation on Document server
  */
-public class Workspace extends DocumentContainer implements Runnable{
+public class Workspace extends DocumentContainer implements Runnable {
 
     private static final Logger log = Logger
             .getLogger(Workspace.class);
@@ -65,9 +49,9 @@ public class Workspace extends DocumentContainer implements Runnable{
     private String startDocument = null;
 
     private JXFrame window = null;
-    
+
     private JXBusyLabel bl = null;
-    
+
     public static final String CREATE_WORKSPACE = "1";
 
     public static final String DELETE_WORKSPACE = "2";
@@ -81,7 +65,7 @@ public class Workspace extends DocumentContainer implements Runnable{
     public static final String ABOUT_PROGRAM = "7";
 
     public static final String CONTENT_HELP = "5";
-    
+
 
     @Override
     public void closeDocumentWindow() {
@@ -106,7 +90,7 @@ public class Workspace extends DocumentContainer implements Runnable{
             window.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
         }
         window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-       // window.setJMenuBar(createMenuBar());
+        // window.setJMenuBar(createMenuBar());
 
         window.addWindowListener(new WL());
         window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource(ZetaProperties.IMAGE_ICON)));
@@ -167,7 +151,7 @@ public class Workspace extends DocumentContainer implements Runnable{
         loadDocument(startDocument, null, false);
     }
 
-    public JMenuBar createMenuBar(ArrayList<JMenu> documentMenu){
+    public JMenuBar createMenuBar(ArrayList<JMenu> documentMenu) {
         JMenuBar ret = new JMenuBar();
         String title = "Работа";
         String s1 = "Создать РабочееПространство";
@@ -197,11 +181,11 @@ public class Workspace extends DocumentContainer implements Runnable{
         m.add(i3);
         ret.add(m);
 
-        if(documentMenu != null){
-        	for(JMenu menu : documentMenu)
-        		ret.add(menu);
+        if (documentMenu != null) {
+            for (JMenu menu : documentMenu)
+                ret.add(menu);
         }
-        
+
         title = "Помощь";
         m = new JMenu(title);
         s1 = "Содержание";
@@ -254,10 +238,10 @@ public class Workspace extends DocumentContainer implements Runnable{
 
     @Override
     protected void setTitle(String title) {
-    	final Session ses = SessionManager.getIntance().getCurrentSession();
-    	final String user = ses.getProperty(PropertyConstants.DB_USERNAME);
-    	final String ses_name = ses.getProperty(PropertyConstants.NAME);
-        window.setTitle(title+"                    "+user+"@"+ses_name);
+        final Session ses = SessionManager.getIntance().getCurrentSession();
+        final String user = ses.getProperty(PropertyConstants.DB_USERNAME);
+        final String ses_name = ses.getProperty(PropertyConstants.NAME);
+        window.setTitle(title + "                    " + user + "@" + ses_name);
     }
 
 
@@ -301,69 +285,69 @@ public class Workspace extends DocumentContainer implements Runnable{
 
     @Override
     protected void showDocumentWindow() {
-    	
-    	if(SwingUtilities.isEventDispatchThread()){
-	        if (!window.isVisible()) {
-	            window.setVisible(true);
-	        }
-    	}else{
-    		try {
-				SwingUtilities.invokeAndWait(this);
-			} catch (Exception e) {
-				log.error("!", e);
-				SwingUtilities.invokeLater(this);
-			}
-    	}
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            if (!window.isVisible()) {
+                window.setVisible(true);
+            }
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(this);
+            } catch (Exception e) {
+                log.error("!", e);
+                SwingUtilities.invokeLater(this);
+            }
+        }
     }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
         if (window != null && !window.isVisible()) {
             window.setVisible(true);
         }
     }
-	
+
     public synchronized void lockFrame() {
-    	SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-		    	showInfo("Данная операция может занять значительное время");
-		    	//lockPanel.setSize(window.getSize());
-		    	
-		    	//window.setGlassPane(lockPanel);
-		    	window.setWaitCursorVisible(true);
-		    	window.getContentPane().setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                showInfo("Данная операция может занять значительное время");
+                //lockPanel.setSize(window.getSize());
+
+                //window.setGlassPane(lockPanel);
+                window.setWaitCursorVisible(true);
+                window.getContentPane().setEnabled(false);
 //		    	window.setWaiting(true);
 //		    	window.setEnabled(false);
-			}
-		});
-    	//window.setIdle(true);
-    	
-    	//busyDlg.setVisible(true);
-    	
-    	//window.setWaitPaneVisible(true);
-    	//bl.setBusy(true);
-    	
+            }
+        });
+        //window.setIdle(true);
+
+        //busyDlg.setVisible(true);
+
+        //window.setWaitPaneVisible(true);
+        //bl.setBusy(true);
+
     }
 
     public synchronized void unlockFrame() {
-    	SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-		    	clearInfo();
-		        //setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		    	window.setWaitCursorVisible(false);
-		    	window.getContentPane().setEnabled(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                clearInfo();
+                //setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                window.setWaitCursorVisible(false);
+                window.getContentPane().setEnabled(false);
 //		    	window.setWaiting(false);
 //		    	window.setEnabled(true);
-			}
-		});
+            }
+        });
     }
-    
-	@Override
-	public void setMenuBar(JMenuBar menu) {
-		 window.setJMenuBar(menu);
-		 window.getJMenuBar().repaint();
-	}
+
+    @Override
+    public void setMenuBar(JMenuBar menu) {
+        window.setJMenuBar(menu);
+        window.getJMenuBar().repaint();
+    }
 
 }

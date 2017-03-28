@@ -1,44 +1,5 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.JobAttributes;
-import java.awt.PageAttributes;
-import java.awt.PrintJob;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import properties.PropertyConstants;
-import properties.PropertyManager;
-import publicapi.ReportAPI;
-import publicapi.RetrieveableAPI;
-import publicapi.RmlContainerAPI;
-import views.grid.GridColumn;
-import views.printing.RPrintJob;
 import action.api.RTException;
 import action.calc.objects.class_type;
 import core.document.Document;
@@ -49,24 +10,28 @@ import core.reflection.rml.REPORTTRAILER;
 import core.rml.Container;
 import core.rml.RmlObject;
 import core.rml.VisualRmlObject;
-import core.rml.ui.impl.ZButtonImpl;
-import core.rml.ui.impl.ZComboBoxImpl;
-import core.rml.ui.impl.ZLabelImpl;
-import core.rml.ui.impl.ZPanelImpl;
-import core.rml.ui.impl.ZScrollPaneImpl;
-import core.rml.ui.impl.ZTextFieldImpl;
-import core.rml.ui.interfaces.ZButton;
-import core.rml.ui.interfaces.ZComboBox;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZLabel;
-import core.rml.ui.interfaces.ZPanel;
-import core.rml.ui.interfaces.ZScrollPane;
-import core.rml.ui.interfaces.ZTextField;
+import core.rml.ui.impl.*;
+import core.rml.ui.interfaces.*;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import properties.PropertyConstants;
+import properties.PropertyManager;
+import publicapi.ReportAPI;
+import publicapi.RetrieveableAPI;
+import publicapi.RmlContainerAPI;
+import views.grid.GridColumn;
+import views.printing.RPrintJob;
 
-public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAPI, RmlContainerAPI, class_type{
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.*;
 
-	private ZPanel reportPanel = ZPanelImpl.create(new GridBagLayout());
-	
+public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAPI, RmlContainerAPI, class_type {
+
+    private ZPanel reportPanel = ZPanelImpl.create(new GridBagLayout());
+
     private class FL extends FocusAdapter {
         public void focusGained(FocusEvent e) {
             tb.mashtab.requestFocus();
@@ -88,194 +53,171 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                         sp.getHorizontalScrollBar().setValue(
                                 sp.getHorizontalScrollBar().getValue()
                                         - sp.getHorizontalScrollBar()
-                                                .getUnitIncrement());
-                    }
-                    else {
+                                        .getUnitIncrement());
+                    } else {
                         sp.getHorizontalScrollBar().setValue(
                                 sp.getHorizontalScrollBar().getMinimum());
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getHorizontalScrollBar().setValue(
                                 sp.getHorizontalScrollBar().getValue()
                                         + sp.getHorizontalScrollBar()
-                                                .getUnitIncrement());
-                    }
-                    else {
+                                        .getUnitIncrement());
+                    } else {
                         sp.getHorizontalScrollBar().setValue(
                                 sp.getHorizontalScrollBar().getMaximum());
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getValue()
                                         - sp.getVerticalScrollBar()
-                                                .getUnitIncrement());
-                    }
-                    else {
+                                        .getUnitIncrement());
+                    } else {
                         prevPageAction();
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getValue()
                                         + sp.getVerticalScrollBar()
-                                                .getUnitIncrement());
-                    }
-                    else {
+                                        .getUnitIncrement());
+                    } else {
                         nextPageAction();
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
+                } else if (e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getValue()
                                         - sp.getVerticalScrollBar()
-                                                .getBlockIncrement());
-                    }
-                    else {
+                                        .getBlockIncrement());
+                    } else {
                         prevPageAction();
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+                } else if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getValue()
                                         + sp.getVerticalScrollBar()
-                                                .getBlockIncrement());
-                    }
-                    else {
+                                        .getBlockIncrement());
+                    } else {
                         nextPageAction();
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_HOME) {
+                } else if (e.getKeyCode() == KeyEvent.VK_HOME) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getMinimum());
-                    }
-                    else {
+                    } else {
                         firstPageAction();
                     }
                     e.consume();
-                    return;
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_END) {
+                } else if (e.getKeyCode() == KeyEvent.VK_END) {
                     if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
                         sp.getVerticalScrollBar().setValue(
                                 sp.getVerticalScrollBar().getMaximum());
-                    }
-                    else {
+                    } else {
                         lastPageAction();
                     }
                     e.consume();
-                    return;
                 }
             }
 
         }
     }
 
-    private static final Logger log            = Logger.getLogger(Report.class);
-    
+    private static final Logger log = Logger.getLogger(Report.class);
+
     private Container container = new Container(this);
 
-    private boolean             update_view    = true;
+    private boolean update_view = true;
 
     // OpenOfficeExport exporterToOO = null;
 
-    String                      query          = null;
+    String query = null;
 
-    final int                   th             = 65;                                 // высота toolbar'а
+    final int th = 65;                                 // высота toolbar'а
 
-    final String                rootGroupAlias = "ROOTGROUP";
+    final String rootGroupAlias = "ROOTGROUP";
 
-    final String                nextPageLabel  = StringBundle.Report_Label_NextPage; // "След.стр."
-
-
-    final String                prevPageLabel  = StringBundle.Report_Label_PrevPage; // "Пред.стр."
+    final String nextPageLabel = StringBundle.Report_Label_NextPage; // "След.стр."
 
 
-    final String                firstPageLabel = StringBundle.Report_Label_FirstPage; // "Перв.стр."
+    final String prevPageLabel = StringBundle.Report_Label_PrevPage; // "Пред.стр."
 
-    // ;
 
-    final String                lastPageLabel  = StringBundle.Report_Label_LastPage; // "Посл.стр."
+    final String firstPageLabel = StringBundle.Report_Label_FirstPage; // "Перв.стр."
 
     // ;
 
-    final String                printLabel     = StringBundle.Report_Label_Print;
+    final String lastPageLabel = StringBundle.Report_Label_LastPage; // "Посл.стр."
 
-    core.rml.dbi.Datastore               ds             = null;
+    // ;
 
-    ReportForm[]                colon          = new ReportForm[2];
+    final String printLabel = StringBundle.Report_Label_Print;
 
-    views.Group                 root           = null;
+    core.rml.dbi.Datastore ds = null;
 
-    core.rml.dbi.Group                   droot          = null;
+    ReportForm[] colon = new ReportForm[2];
 
-    ZScrollPane                 sp             = null;                               // new JScrollPane();
+    views.Group root = null;
 
-    int                         numRows        = 0;                                  // число строк в Datastore;
+    core.rml.dbi.Group droot = null;
 
-    MyToolbar                   tb             = null;                               // new MyToolbar();
+    ZScrollPane sp = null;                               // new JScrollPane();
 
-    WorkCanvas                  workArea       = null;                               // new WorkCanvas();
+    int numRows = 0;                                  // число строк в Datastore;
+
+    MyToolbar tb = null;                               // new MyToolbar();
+
+    WorkCanvas workArea = null;                               // new WorkCanvas();
 
     // поля для печати и разбивки на страницы
-    int                         numPages       = 0;
+    int numPages = 0;
 
-    String                      orientation    = "PORTRAIT";
+    String orientation = "PORTRAIT";
 
-    int                         currentPage    = 0;                                  // текущая страница(инкрементируется внутри
+    int currentPage = 0;                                  // текущая страница(инкрементируется внутри
 
     // processGroup)
 
-    int                         displayPage    = 0;                                  // страница отчета, отображаемая на дисплее
+    int displayPage = 0;                                  // страница отчета, отображаемая на дисплее
 
-    int                         printPage      = -1;                                 // страница, которую необходимо напечатать(=-1, если
+    int printPage = -1;                                 // страница, которую необходимо напечатать(=-1, если
 
     // печатаем все)
 
-    int                         offset         = 0;                                  // смещение для отрисовки на текущей странице
+    int offset = 0;                                  // смещение для отрисовки на текущей странице
 
-    boolean                     isPrint        = false;                              // =true, если вывод на принте
+    boolean isPrint = false;                              // =true, если вывод на принте
 
-    public Dimension            pageSize       = new Dimension(550, 800);            // magic numbers for
+    public Dimension pageSize = new Dimension(550, 800);            // magic numbers for
 
     // A4(portrait)
 
-    boolean                     first_time     = true;
+    boolean first_time = true;
 
-    int                         mashtab;                                             // масштаб при отрисовке в контекте дисплея
+    int mashtab;                                             // масштаб при отрисовке в контекте дисплея
 
-    Image                       image          = null;                               // здесь содержимое текущей страницы
+    Image image = null;                               // здесь содержимое текущей страницы
 
-    Graphics                    curGraphics    = null;
+    Graphics curGraphics = null;
 
-    PrintJob                    pjob           = null;
+    PrintJob pjob = null;
 
-    boolean                     needDrawing    = false;
+    boolean needDrawing = false;
 
-    boolean                     printed        = false;
+    boolean printed = false;
 
-    boolean                     needCreatePage = true;
+    boolean needCreatePage = true;
 
-    boolean                     wrepaint       = true;
+    boolean wrepaint = true;
 
     public Report() {
         workArea = new WorkCanvas();
@@ -352,22 +294,19 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                         .parseInt(ZetaUtility.pr(ZetaProperties.PRINTING_PORT, "8001"));
                 bsize = Integer.parseInt(ZetaUtility.pr(ZetaProperties.PRINTING_BUFFER_SIZE,
                         "50000"));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
             }
             try {
                 pjob = new RPrintJob(host, port, pname, orientation, bsize);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
             }
             if (pjob == null) {
                 log.debug("Print Server unavaible!");
                 return;
             }
-        }
-        else {
+        } else {
             JobAttributes job_atr = new JobAttributes();
             job_atr.setCopies(tb.numCopies.getSelectedIndex() + 1);
             PageAttributes page_atr = new PageAttributes();
@@ -375,8 +314,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
             if (orientation.toUpperCase().equals("LANDSCAPE")) {
                 page_atr
                         .setOrientationRequested(PageAttributes.OrientationRequestedType.LANDSCAPE);
-            }
-            else {
+            } else {
                 page_atr
                         .setOrientationRequested(PageAttributes.OrientationRequestedType.PORTRAIT);
             }
@@ -416,7 +354,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp = (String) prop.get("ORIENTATION");
         if (sp != null) {
             orientation = sp;
@@ -433,7 +371,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
     public void initChildren() {
 
-    	REPORTHEADER rHeader = null;
+        REPORTHEADER rHeader = null;
         REPORTTRAILER rTrailer = null;
         ReportGrid rGrid = null;
         views.Group group = null;
@@ -449,30 +387,24 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 //        }
 
         RmlObject[] objs = container.getChildren();
-        
+
         for (RmlObject child : objs) {
             if (child instanceof REPORTHEADER) {
                 rHeader = (REPORTHEADER) child;
-            }
-            else if (child instanceof REPORTTRAILER) {
+            } else if (child instanceof REPORTTRAILER) {
                 rTrailer = (REPORTTRAILER) child;
-            }
-            else if (child instanceof COLONTITUL) {
+            } else if (child instanceof COLONTITUL) {
                 ReportForm col = ((COLONTITUL) child).getForm();
                 if (col.getType().equals("TOP")) {
                     colon[0] = col;
-                }
-                else if (col.getType().equals("BOTTOM")) {
+                } else if (col.getType().equals("BOTTOM")) {
                     colon[1] = col;
                 }
-            }
-            else if (child instanceof views.Group) {
-                group = (views.Group)child;
-            }
-            else if (child instanceof ReportGrid) {
+            } else if (child instanceof views.Group) {
+                group = (views.Group) child;
+            } else if (child instanceof ReportGrid) {
                 rGrid = (ReportGrid) child;
-            }
-            else if (child instanceof core.rml.dbi.GroupReport
+            } else if (child instanceof core.rml.dbi.GroupReport
                     || child instanceof core.rml.dbi.Datastore) {
                 ds = (core.rml.dbi.Datastore) child;
             }
@@ -499,8 +431,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         fillColon(f);
         if (f.getType().equals("TOP")) { // значит, это верхний колонтитул
             f.paint(curGraphics, mashtab);
-        }
-        else { // а это нижний
+        } else { // а это нижний
             curGraphics.translate(0, (pageSize.height - getC2Height())
                     * mashtab / 100);
             f.paint(curGraphics, mashtab);
@@ -527,10 +458,9 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
         if (subgr == null) {
             processGrid(vgr.rGrid, dgr);
-        }
-        else {
-            for (int i = 0; i < subgr.length; i++) {
-                processGroup(subgr[i], vgr.group);
+        } else {
+            for (core.rml.dbi.Group aSubgr : subgr) {
+                processGroup(aSubgr, vgr.group);
             }
         }
 
@@ -562,8 +492,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
             // core.rml.dbi.Group)
             try {
                 f.paint(curGraphics, mashtab);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
             }
 
@@ -584,19 +513,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         }
         offset += rg.getPosition().y;
         while (drawedRows < gr.endrow - gr.begrow + 1) {
-            if (isDrawPage()) {
-                rg.drawIt = true;
-            }
-            else {
-                rg.drawIt = false;
-            }
+            rg.drawIt = isDrawPage();
             rg.beginRow = gr.begrow + drawedRows;
             rg.endRow = gr.endrow;
 
             if (offset == 0) {
                 delta = 1;
-            }
-            else {
+            } else {
                 delta = 0;
             }
             offset += delta;
@@ -606,8 +529,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
             int dr = rg.drawRows(curGraphics, mashtab);
             if (rg.endRow - rg.beginRow + 1 > dr) {
                 incPage();
-            }
-            else {
+            } else {
                 offset += dr * rg.sizeRow;
                 if (rg.drawGrid != 0) {
                     offset++;
@@ -640,8 +562,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     int getPageFreeSpace() {
         if (pageSize == null) {
             return 0;
-        }
-        else {
+        } else {
             return pageSize.height - offset - getC2Height(); /* getC1Height() */
         }
     }
@@ -674,22 +595,21 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
     public int retrieve() {
 
-    	int res = 0;
-    	
+        int res = 0;
+
         try {
             long t1 = System.currentTimeMillis();
             if (ds != null) {
                 try {
-                	query = (String) document.calculateMacro(ds.getSql());
-                }
-                catch (Exception e) {
+                    query = document.calculateMacro(ds.getSql());
+                } catch (Exception e) {
                     log.error("Shit happens!!!", e);
                     return res;
                 }
                 if (query.equals("")) {
                     return res;
                 }
-                
+
                 res = ds.retrieve();
                 numRows = ds.getRowCount();
                 if (numRows <= 0) {
@@ -701,9 +621,9 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                     if (rg != null) {
                         if (rg.columns != null) {
                             GridColumn[] columns = rg.columns;
-                            for (int i = 0; i < columns.length; i++) {
-                                if (columns[i].getTarget() != null) {
-                                    columns[i].setType(ds.getType(columns[i]
+                            for (GridColumn column : columns) {
+                                if (column.getTarget() != null) {
+                                    column.setType(ds.getType(column
                                             .getTarget()));
                                 }
                             }
@@ -722,10 +642,9 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                 createTree(droot, root);
                 computeTree(0, droot, root);
                 root.setCurPos(-1);
-                if(reportPanel.getGraphics() != null)
-                	reportPanel.paint(reportPanel.getGraphics());
-            }
-            else {
+                if (reportPanel.getGraphics() != null)
+                    reportPanel.paint(reportPanel.getGraphics());
+            } else {
                 throw new Error("views.Report have not DATASTORE!");
             }
             long t2 = System.currentTimeMillis();
@@ -735,20 +654,18 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
             setUpdateFlag(true);
             reportPanel.validate();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens!!!", e);
         }
-		return res;
+        return res;
     }
 
     public void initDbiRoot() {
         if (ds instanceof core.rml.dbi.GroupReport) {
             droot = ((core.rml.dbi.GroupReport) ds).getRoot();
 
-        }
-        else if (ds instanceof core.rml.dbi.Datastore) {
-            droot = new core.rml.dbi.Group(0, ((core.rml.dbi.Datastore) ds).getRowCount() - 1);
+        } else if (ds instanceof core.rml.dbi.Datastore) {
+            droot = new core.rml.dbi.Group(0, ds.getRowCount() - 1);
         }
     }
 
@@ -763,8 +680,8 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         createHT(vgr.rTrailer, dgr);
 
         if (subgr != null) {
-            for (int i = 0; i < subgr.length; i++) {
-                createTree(subgr[i], vgr.group);
+            for (core.rml.dbi.Group aSubgr : subgr) {
+                createTree(aSubgr, vgr.group);
             }
         }
     }
@@ -777,13 +694,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         if (fields == null) {
             return;
         }
-        for (int i = 0; i < fields.length; i++) {
-            if (fields[i].getExp() != null) { // значит это computed field и его
+        for (Field field : fields) {
+            if (field.getExp() != null) { // значит это computed field и его
                 // надо занести в core.rml.dbi.Group
-                gr.addField(fields[i].getAlias());
+                gr.addField(field.getAlias());
             }
-            if (!fields[i].isComputed()) {
-                fields[i].setValue(ds.getValue(fields[i].gettarget()));
+            if (!field.isComputed()) {
+                field.setValue(ds.getValue(field.gettarget()));
             }
         }
     }
@@ -806,7 +723,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     }
 
     public void computeHT(int j, ReportForm header, ReportForm trailer,
-            core.rml.dbi.Group dgr, views.Group vgr) {
+                          core.rml.dbi.Group dgr, views.Group vgr) {
         if (vgr == null) {
             return;
         }
@@ -828,7 +745,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
             return;
         }
         for (int i = 0; i < vgr.seq.size(); i++) {
-            String alias = (String) vgr.seq.elementAt(i);
+            String alias = vgr.seq.elementAt(i);
             if (alias == null) {
                 continue;
             }
@@ -893,11 +810,9 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     void printAction() {
         if (tb.whatPrint.getSelectedIndex() == 0) {
             print(-1, -1); // распечатка всех страниц
-        }
-        else if (tb.whatPrint.getSelectedIndex() == 1) {
+        } else if (tb.whatPrint.getSelectedIndex() == 1) {
             print(displayPage, displayPage); // распечатка одной страницы
-        }
-        else if (tb.whatPrint.getSelectedIndex() == 2) {
+        } else if (tb.whatPrint.getSelectedIndex() == 2) {
             // распечатка диапазона страниц
             log.debug("print diapazon");
             try {
@@ -908,15 +823,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                 }
                 if (end <= 0) {
                     end = 0;
-                }
-                else if (end > numPages) {
+                } else if (end > numPages) {
                     end = numPages;
                 }
                 log.debug("beg = " + beg + " end = " + end + " numPages="
                         + numPages);
                 print(beg - 1, end - 1);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
             }
         }
@@ -925,8 +838,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     boolean isDrawPage() {
         if (isPrint) {
             return needDrawing && (currentPage == printPage || printPage == -1);
-        }
-        else {
+        } else {
             return needDrawing && (currentPage == displayPage);
         }
     }
@@ -965,33 +877,33 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 //            }
 //        }
 
-        ZButton nextPage   = ZButtonImpl.create(nextPageLabel);
+        ZButton nextPage = ZButtonImpl.create(nextPageLabel);
 
-        ZButton prevPage   = ZButtonImpl.create(prevPageLabel);
+        ZButton prevPage = ZButtonImpl.create(prevPageLabel);
 
-        ZButton firstPage  = ZButtonImpl.create(firstPageLabel);
+        ZButton firstPage = ZButtonImpl.create(firstPageLabel);
 
-        ZButton lastPage   = ZButtonImpl.create(lastPageLabel);
+        ZButton lastPage = ZButtonImpl.create(lastPageLabel);
 
-        ZButton print      = ZButtonImpl.create(printLabel);
+        ZButton print = ZButtonImpl.create(printLabel);
 
-        ZPanel   wp1        = ZPanelImpl.create();
+        ZPanel wp1 = ZPanelImpl.create();
 
-        ZPanel   wp11       = ZPanelImpl.create();
+        ZPanel wp11 = ZPanelImpl.create();
 
-        ZPanel   wp12       = ZPanelImpl.create();
+        ZPanel wp12 = ZPanelImpl.create();
 
-        ZPanel   wp2        = ZPanelImpl.create();
+        ZPanel wp2 = ZPanelImpl.create();
 
-        ZLabel   pages      = ZLabelImpl.create(StringBundle.Report_Label_Pages);
+        ZLabel pages = ZLabelImpl.create(StringBundle.Report_Label_Pages);
 
-        ZLabel   iz         = ZLabelImpl.create(StringBundle.Report_Label_Iz);
+        ZLabel iz = ZLabelImpl.create(StringBundle.Report_Label_Iz);
 
-        ZLabel   curPage    = ZLabelImpl.create("");
+        ZLabel curPage = ZLabelImpl.create("");
 
-        ZLabel   numPages   = ZLabelImpl.create("");
+        ZLabel numPages = ZLabelImpl.create("");
 
-        ZLabel   lnumCopies = ZLabelImpl.create(StringBundle.Report_Label_NumCopies);
+        ZLabel lnumCopies = ZLabelImpl.create(StringBundle.Report_Label_NumCopies);
 
 //        class MyTextField extends JTextField {
 //
@@ -1001,29 +913,29 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 //            }
 //        }
 
-        ZLabel      lBegPages  = ZLabelImpl.create(StringBundle.Report_Label_BegPages);
+        ZLabel lBegPages = ZLabelImpl.create(StringBundle.Report_Label_BegPages);
 
-        ZLabel      lEndPages  = ZLabelImpl.create(StringBundle.Report_Label_EndPages);
+        ZLabel lEndPages = ZLabelImpl.create(StringBundle.Report_Label_EndPages);
 
-        ZTextField fBegPages  = ZTextFieldImpl.create();
+        ZTextField fBegPages = ZTextFieldImpl.create();
 
-        ZTextField fEndPages  = ZTextFieldImpl.create();
+        ZTextField fEndPages = ZTextFieldImpl.create();
 
-        ZComboBox   numCopies  = ZComboBoxImpl.create();
+        ZComboBox numCopies = ZComboBoxImpl.create();
 
-        ZComboBox   whatPrint  = ZComboBoxImpl.create();
+        ZComboBox whatPrint = ZComboBoxImpl.create();
 
-        ZComboBox   mashtab    = ZComboBoxImpl.create();
+        ZComboBox mashtab = ZComboBoxImpl.create();
 
         // JButton saveButton = new JButton();
 
-        ZLabel      lwhatPrint = ZLabelImpl.create(StringBundle.Report_Label_WhatPrint);
+        ZLabel lwhatPrint = ZLabelImpl.create(StringBundle.Report_Label_WhatPrint);
 
-        ZLabel      lmashtab   = ZLabelImpl.create(StringBundle.Report_Label_Mashtab);
+        ZLabel lmashtab = ZLabelImpl.create(StringBundle.Report_Label_Mashtab);
 
         public MyToolbar() {
-        	super();
-        	      	
+            super();
+
             setBackground(Color.lightGray);
             setFont(new Font("Dialog", 0, 12));
             setLayout(new GridLayout(2, 1));
@@ -1034,7 +946,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
             KeyListener keyListener = new KL();
             ActionListener actionLiatener = new AL(this);
-            
+
             nextPage.addKeyListener(keyListener);
             nextPage.setFocusable(false);
 
@@ -1049,14 +961,14 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
 
             print.addKeyListener(keyListener);
             print.setFocusable(false);
-            
+
 
             wp1.addFocusListener(new FL());
             wp11.addFocusListener(new FL());
             wp12.addFocusListener(new FL());
             wp2.addFocusListener(new FL());
-            
-            
+
+
             lmashtab.setBounds(10, 10, 50, 15);
             mashtab.setBounds(62, 7, 55, 20);
 
@@ -1083,8 +995,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                 s = mashtab.getItemAt(f).toString();
                 Report.this.mashtab = Integer.parseInt(s.substring(0, s
                         .length() - 1));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
                 mashtab.setSelectedIndex(4);
                 Report.this.mashtab = 100;
@@ -1166,8 +1077,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                     String str = (String) mashtab.getSelectedItem();
                     str = str.substring(0, str.length() - 1);
                     m = Integer.parseInt(str);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     log.error("Shit happens!!!", ex);
                 }
                 Report.this.setMashtab(m);
@@ -1179,15 +1089,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         if (method.equals("CURRENTPAGE")) {
             if (isPrint) {
                 return new Double(currentPage + 1);
-            }
-            else {
+            } else {
                 return new Double(displayPage + 1);
             }
-        }
-        else if (method.equals("TOTALPAGES")) {
+        } else if (method.equals("TOTALPAGES")) {
             return new Double(numPages);
-        }else
-        	return super.method(method, arg);
+        } else
+            return super.method(method, arg);
     }
 
     public String type() {
@@ -1209,13 +1117,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
     }
 
     class WorkCanvas extends JComponent {
-        boolean        clean = false;
+        boolean clean = false;
 
-        public boolean note  = false;
+        public boolean note = false;
 
-        public String  str1  = null;
+        public String str1 = null;
 
-        public String  str2  = null;
+        public String str2 = null;
 
         public synchronized void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -1230,12 +1138,11 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
             if (ds != null && update_view) {
                 String res = null;
                 try {
-                    res = (String) document.calculateMacro(ds.getSql());
-                }
-                catch (Exception e) {
+                    res = document.calculateMacro(ds.getSql());
+                } catch (Exception e) {
                     log.error("Shit happens!!!", e);
                 }
-                
+
                 if ((res == null) || res.equals("")) {
                     note = true;
                     str1 = "Проверьте правильность";
@@ -1322,17 +1229,13 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(t.nextPage.getJComponent())) {
                 Report.this.nextPageAction();
-            }
-            else if (e.getSource().equals(t.prevPage.getJComponent())) {
+            } else if (e.getSource().equals(t.prevPage.getJComponent())) {
                 Report.this.prevPageAction();
-            }
-            else if (e.getSource().equals(t.firstPage.getJComponent())) {
+            } else if (e.getSource().equals(t.firstPage.getJComponent())) {
                 Report.this.firstPageAction();
-            }
-            else if (e.getSource().equals(t.lastPage.getJComponent())) {
+            } else if (e.getSource().equals(t.lastPage.getJComponent())) {
                 Report.this.lastPageAction();
-            }
-            else if (e.getSource().equals(t.print.getJComponent())) {
+            } else if (e.getSource().equals(t.print.getJComponent())) {
                 Report.this.printAction();
             }
             // else if (e.getSource().equals(t.saveButton))
@@ -1344,8 +1247,7 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
                 if (t.whatPrint.getSelectedIndex() == 2) {
                     t.fBegPages.setEnabled(true);
                     t.fEndPages.setEnabled(true);
-                }
-                else {
+                } else {
                     t.fBegPages.setEnabled(false);
                     t.fEndPages.setEnabled(false);
                 }
@@ -1357,39 +1259,39 @@ public class Report extends VisualRmlObject implements ReportAPI, RetrieveableAP
         update_view = flag;
     }
 
-	@Override
-	public void focusThis() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void focusThis() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return reportPanel;
-	}
+    }
 
-	@Override
-	public void addChild(RmlObject child) {
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return reportPanel;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public void addChild(RmlObject child) {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
+
+    @Override
+    protected Border getDefaultBorder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -5,28 +5,26 @@ import proguard.annotation.Keep;
 /**
  * Элемент для управления Фокусировкой в рамках документа
  */
-		
+
 public interface FocuserAPI extends RmlObjectAPI {
-    
+
     /**
-     * Передать фокус на объект 
-     * 
-     *  @param component - объект для передачи фокуса
+     * Передать фокус на объект
+     *
+     * @param component - объект для передачи фокуса
      */
     @Keep
-    public void focus(Object component);
-    
+    void focus(Object component);
+
     /**
-     * Передать фокус на слудещий объект 
-     * 
+     * Передать фокус на слудещий объект
      */
     @Keep
-    public void focusNext();
-   
+    void focusNext();
+
     /**
-     * Передать фокус на предыдущий объект 
-     * 
+     * Передать фокус на предыдущий объект
      */
     @Keep
-    public void focusPrevious();
+    void focusPrevious();
 }

@@ -34,7 +34,7 @@ public class DatastoreTransaction {
     }
 
     public boolean containColumnName(String columnName) {
-       return columnNames.contains(columnName) || (columnNames.contains(columnName.toUpperCase()));
+        return columnNames.contains(columnName) || (columnNames.contains(columnName.toUpperCase()));
     }
 
     public List<String> getColumnNames() {

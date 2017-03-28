@@ -1,11 +1,10 @@
 package views.field;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 
-public interface BaseField{
+public interface BaseField {
 
-	void requestFocus();
+    void requestFocus();
 //	protected JPanel fieldPanel = new JPanel();
 //	
 //    protected JTextComponent editField;
@@ -74,17 +73,17 @@ public interface BaseField{
 //    	return fieldPanel;
 //    }
 
-	Object getValue();
+    Object getValue();
 
-	Rectangle getBounds();
+    Rectangle getBounds();
 
-	Point getLocationOnScreen();
+    Point getLocationOnScreen();
 
-	boolean isEditable();
+    boolean isEditable();
 
-	void setValue(Object val);
+    void setValue(Object val);
 
-	void finishTheEditing();
+    void finishTheEditing();
 
-	void setTextOnly(Object time);
+    void setTextOnly(Object time);
 }

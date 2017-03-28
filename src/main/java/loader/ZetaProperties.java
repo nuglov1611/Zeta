@@ -14,37 +14,37 @@ package loader;
 import java.util.Properties;
 
 public class ZetaProperties {
-    public final static String CORE_VERSION             = "7.2.0";
+    public final static String CORE_VERSION = "7.2.0";
 
-    public static String HOME_PATH             = "./";
+    public static String HOME_PATH = "./";
 
-    public static boolean DEMO             = false;
-    
+    public static boolean DEMO = false;
+
     public static boolean ONLOAD = false;
-    
-    public static String       ORACLE_VERSION           = "";
 
-    public static String       NAFIGATOR_MAXIMIZE       = "nafigator.maximize";
+    public static String ORACLE_VERSION = "";
 
-    public final static String EXCEPTION_LOADER         = "exception.loader";
+    public static String NAFIGATOR_MAXIMIZE = "nafigator.maximize";
 
-    public final static String DEBUG_LOADER             = "debug.loader";
+    public final static String EXCEPTION_LOADER = "exception.loader";
+
+    public final static String DEBUG_LOADER = "debug.loader";
 
 //    public final static String DEBUG_COLOR              = "debug.color";
 
-    public final static String DEBUG_PROTOCOL           = "debug.protocol";
+    public final static String DEBUG_PROTOCOL = "debug.protocol";
 
-    public final static String DEBUG_RML                = "debug.rml";
+    public final static String DEBUG_RML = "debug.rml";
 
-    public final static String DEBUG_VIEWS              = "debug.views";
+    public final static String DEBUG_VIEWS = "debug.views";
 
-    public final static String DEBUG_DSTORE             = "debug.dstore";
+    public final static String DEBUG_DSTORE = "debug.dstore";
 
-    public final static String TREE_DEBUG               = "debug.tree";
+    public final static String TREE_DEBUG = "debug.tree";
 
-    public final static String DEBUG_PARSER             = "debug.parser";
+    public final static String DEBUG_PARSER = "debug.parser";
 
-    public final static String DEBUG_CALCULATOR         = "debug.calculator";
+    public final static String DEBUG_CALCULATOR = "debug.calculator";
 
 //    public final static String CLASS_SERVER             = "class.server";
 //
@@ -86,7 +86,7 @@ public class ZetaProperties {
 
     public final static String IMAGE_BROWSE = "images/browse.png";
 
-    public final static String PROPNAME                 = "properties/zeta.properties";
+    public final static String PROPNAME = "properties/zeta.properties";
 
 //    public final static int    TEXTBG                   = 0;
 //
@@ -100,21 +100,21 @@ public class ZetaProperties {
 
 //    public final static int    FLDFG                    = 5;
 
-    public final static String MSG_RUSUREEXIT           = "msg.RUSureExit";
+    public final static String MSG_RUSUREEXIT = "msg.RUSureExit";
 
-    public final static String MSG_YESBUTTON             = "msg.YesButtonLabel";
+    public final static String MSG_YESBUTTON = "msg.YesButtonLabel";
 
-    public final static String MSG_CLOSEBUTTON             = "msg.CloseButtonLabel";
-    
-    public final static String MSG_OKBUTTON             = "msg.OkButtonLabel";
+    public final static String MSG_CLOSEBUTTON = "msg.CloseButtonLabel";
 
-    public static final String MSG_NOBUTTON             = "msg.NoButtonLabel";
-    
-    public final static String MSG_CANCELBUTTON         = "msg.CanscelButtonLabel";
+    public final static String MSG_OKBUTTON = "msg.OkButtonLabel";
+
+    public static final String MSG_NOBUTTON = "msg.NoButtonLabel";
+
+    public final static String MSG_CANCELBUTTON = "msg.CanscelButtonLabel";
 
     public static final String MSG_INPUTBUTTON = "msg.InputButtonLabel";
 
-    public final static String MSG_USERALREADYEXIST     = "\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0441 \u0442\u0430\u043a\u0438\u043c \u0438\u043c\u0435\u043d\u0435\u043c \u0443\u0436\u0435 \u043f\u0440\u0438\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0435!!! \u0412\u043e\u0439\u0442\u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u043e?";
+    public final static String MSG_USERALREADYEXIST = "\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0441 \u0442\u0430\u043a\u0438\u043c \u0438\u043c\u0435\u043d\u0435\u043c \u0443\u0436\u0435 \u043f\u0440\u0438\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0435!!! \u0412\u043e\u0439\u0442\u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u043e?";
 
 //    public final static String MSG_BADUSERSCOUNT1       = "msg.BadUsersCount1";
 
@@ -122,9 +122,9 @@ public class ZetaProperties {
 
 //    public final static String MSG_BADLICENSE           = "msg.BadLicense";
 
-    public final static String MSG_BADUSERORPASSWORD    = "msg.BadUserOrPassword";
+    public final static String MSG_BADUSERORPASSWORD = "msg.BadUserOrPassword";
 
-    public final static String MSG_BLOCKED              = "msg.Blocked";
+    public final static String MSG_BLOCKED = "msg.Blocked";
 
 //    public final static String MSG_UNCLOSEABLE          = "msg.Uncloseable";
 //
@@ -134,33 +134,33 @@ public class ZetaProperties {
 
 //    public final static String MSG_CANTCONNECTTODS      = "msg.CantConnnectToDocumentServer";
 
-    public final static String MSG_CANTCONNECTTODBS     = "msg.CantConnectToDataBaseServer";
+    public final static String MSG_CANTCONNECTTODBS = "msg.CantConnectToDataBaseServer";
 
 //    public final static String MSG_CANTLOADCLASS        = "msg.CantLoadClass";
 
 //    public final static String MSG_PARSERERROR          = "msg.ParsingError";
 
-    public final static String MSG_UNKNOWNERROR         = "msg.UnknownFatalError";
+    public final static String MSG_UNKNOWNERROR = "msg.UnknownFatalError";
 
 //    public final static String MSG_ERRORREADNODE        = "msg.ErrorReadNode";
 
 //    public final static String MSG_ERRORLOADNODE        = "msg.ErrorLoadNode";
 
-    public final static String MSG_CANTLOADDOCUMENT     = "msg.CantLoadDocument";
+    public final static String MSG_CANTLOADDOCUMENT = "msg.CantLoadDocument";
 
 //    public final static String MSG_BADDOCUMENT          = "msg.BadDocument";
 
-    public final static String MSG_BADEDITVALUEPREFIX   = "msg.BadEditValuePrefix";
+    public final static String MSG_BADEDITVALUEPREFIX = "msg.BadEditValuePrefix";
 
-    public final static String MSG_BADEDITVALUEPOSTFIX  = "msg.BadEditValuePostfix";
+    public final static String MSG_BADEDITVALUEPOSTFIX = "msg.BadEditValuePostfix";
 
-    public final static String MSG_BADEDITVALUE         = "msg.BadEditValue";
+    public final static String MSG_BADEDITVALUE = "msg.BadEditValue";
 
-    public final static String MSG_BADEDITBUTTONEDIT    = "msg.BadEditButtonEdit";
+    public final static String MSG_BADEDITBUTTONEDIT = "msg.BadEditButtonEdit";
 
-    public final static String MSG_BADEDITBUTTONUNDO    = "msg.BadEditButtonUndo";
+    public final static String MSG_BADEDITBUTTONUNDO = "msg.BadEditButtonUndo";
 
-    public final static String MSG_BADEDITVALUEHEADER   = "msg.BadEditValueHeader";
+    public final static String MSG_BADEDITVALUEHEADER = "msg.BadEditValueHeader";
 
 //    public final static String DSTORE_CHANGE1           = "dstore.change_from";
 //
@@ -182,11 +182,11 @@ public class ZetaProperties {
 //
 //    public final static String CLR_TREEVIEW             = "color.treeview";
 
-    public final static String TITLE_MAINWINDOW         = "title.mainwindow";
+    public final static String TITLE_MAINWINDOW = "title.mainwindow";
 
-    public final static String TITLE_MESSAG             = "title.messag";
+    public final static String TITLE_MESSAG = "title.messag";
 
-    public final static String TITLE_SURE               = "title.sure";
+    public final static String TITLE_SURE = "title.sure";
 
 //    public final static String TITLE_WORKPLACE          = "title.workplace";
 
@@ -194,7 +194,7 @@ public class ZetaProperties {
 //
 //    public final static String TITLE_LOGIN              = "title.login";
 
-    public final static String TITLE_ERROR              = "title.error";
+    public final static String TITLE_ERROR = "title.error";
 
     public static final String TITLE_INPUT = "title.input";
 
@@ -202,7 +202,7 @@ public class ZetaProperties {
 
     public static final String TITLE_IFORMATION = "title.info";
 
-    public final static String TITLE_NAFIGATOR          = "title.nafigator";
+    public final static String TITLE_NAFIGATOR = "title.nafigator";
 
 //    public final static String FONT_DEFAULT             = "font.default";
 //
@@ -236,13 +236,13 @@ public class ZetaProperties {
 
 //    public final static String NAFIGATOR_HEADER         = "nafigator.header";
 
-    public final static String NAFIGATOR_WIDTH          = "nafigator.width";
+    public final static String NAFIGATOR_WIDTH = "nafigator.width";
 
-    public final static String NAFIGATOR_HEIGHT         = "nafigator.height";
+    public final static String NAFIGATOR_HEIGHT = "nafigator.height";
 
-    public final static String NAFIGATOR_X              = "nafigator.x";
+    public final static String NAFIGATOR_X = "nafigator.x";
 
-    public final static String NAFIGATOR_Y              = "nafigator.y";
+    public final static String NAFIGATOR_Y = "nafigator.y";
 
 //    public final static String LOADING_STRING           = "loading.label";
 //
@@ -261,14 +261,14 @@ public class ZetaProperties {
     public static final int MESSAGE_WARN = 2;
 
     public static final int MESSAGE_INFO = 3;
-    
+
     public static final int MESSAGE_CONFIRMATION = 4;
 
-    public final static String NEED_EXTRAH              = "extrah.need";
+    public final static String NEED_EXTRAH = "extrah.need";
 
-    public final static String DEFAULT_EXTRAH           = "extrah.default";
+    public final static String DEFAULT_EXTRAH = "extrah.default";
 
-    public final static String SYSTEM_OUT               = "system.out";
+    public final static String SYSTEM_OUT = "system.out";
 //
 //    public final static String SYSTEM_OUT_SIZE          = "system.out.lines";
 //
@@ -312,51 +312,51 @@ public class ZetaProperties {
 //
 //    public final static String FILEDIALOG_FOREGROUND    = "filedialog.foreground";
 
-    public final static String PRINTING_REMOTE          = "printing.remote";
+    public final static String PRINTING_REMOTE = "printing.remote";
 
-    public final static String PRINTING_HOST            = "printing.host";
+    public final static String PRINTING_HOST = "printing.host";
 
-    public final static String PRINTING_PRINTER_NAME    = "printing.printer_name";
+    public final static String PRINTING_PRINTER_NAME = "printing.printer_name";
 
-    public final static String PRINTING_BUFFER_SIZE     = "printing.buffer_size";
+    public final static String PRINTING_BUFFER_SIZE = "printing.buffer_size";
 
-    public final static String PRINTING_PORT            = "printing.port";
+    public final static String PRINTING_PORT = "printing.port";
 
-    public final static String HELP_BROWSER             = "help.browser";
+    public final static String HELP_BROWSER = "help.browser";
 
-    public final static String HELP_START_PAGE          = "help.start_page";
+    public final static String HELP_START_PAGE = "help.start_page";
 
-    public final static String _DEFAULTFONT             = "Arial,BOLD,14";
+    public final static String _DEFAULTFONT = "Arial,BOLD,14";
 
-    public final static String _DEFAULTCOLOR            = "#efefef,black,gray,black,gray,black";
+    public final static String _DEFAULTCOLOR = "#efefef,black,gray,black,gray,black";
 
-    public final static String REP_INIT_MASHTAB         = "rep.InitMashtab";
+    public final static String REP_INIT_MASHTAB = "rep.InitMashtab";
 
 
-    public static String       DEFAULTFONT              = _DEFAULTFONT;
+    public static String DEFAULTFONT = _DEFAULTFONT;
 
-    public static String       DEFAULTCOLOR             = _DEFAULTCOLOR;
+    public static String DEFAULTCOLOR = _DEFAULTCOLOR;
 
-    public static Properties   prop;
+    public static Properties prop;
 
-    public static int          loader_debug             = 0;
+    public static int loader_debug = 0;
 
-    public static int          protocol_debug           = 0;
+    public static int protocol_debug = 0;
 
-    public static int          rml_debug                = 0;
+    public static int rml_debug = 0;
 
-    public static int          views_debug              = 0;
+    public static int views_debug = 0;
 
-    public static int          lisp_debug               = 0;
+    public static int lisp_debug = 0;
 
-    public static int          dstore_debug             = 0;
+    public static int dstore_debug = 0;
 
-    public static int          tree_groups_debug        = 0;
+    public static int tree_groups_debug = 0;
 
-    public static int          parser_debug             = 3;
+    public static int parser_debug = 3;
 
-    public static int          calc_debug               = 0;
+    public static int calc_debug = 0;
 
-    public static boolean      loader_exception         = true;
+    public static boolean loader_exception = true;
 
 }

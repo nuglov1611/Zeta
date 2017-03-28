@@ -12,5 +12,5 @@
 package action.calc.objects;
 
 public interface class_size {
-    public Double size() throws Exception;
+    Double size() throws Exception;
 }

@@ -1,8 +1,8 @@
 package views.grid.model.cross.parameters;
 
-import java.text.NumberFormat;
-
 import views.grid.model.cross.functions.GenericFunction;
+
+import java.text.NumberFormat;
 
 /**
  * Data field descriptor
@@ -10,7 +10,7 @@ import views.grid.model.cross.functions.GenericFunction;
  * @author vagapova.m
  * @since 20.07.2010
  */
-public class DataField extends CrossField{
+public class DataField extends CrossField {
 
     /**
      * numeric formatter

@@ -1,23 +1,23 @@
 package core.rml.ui.interfaces;
 
-import javax.swing.text.Document;
-
 import core.rml.ui.RequiresEDT;
 import core.rml.ui.RequiresEDTPolicy;
 
+import javax.swing.text.Document;
+
 public interface ZTextArea extends ZTextComponent {
 
-	Document getDocument();
+    Document getDocument();
 
-	@RequiresEDT(RequiresEDTPolicy.SYNC) 
-	void append(String text);
-	
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	void setCaretPosition(int position);
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    void append(String text);
 
-	@RequiresEDT
-	void setLineWrap(boolean b);
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    void setCaretPosition(int position);
 
-	@RequiresEDT
-	void setWrapStyleWord(boolean b);
+    @RequiresEDT
+    void setLineWrap(boolean b);
+
+    @RequiresEDT
+    void setWrapStyleWord(boolean b);
 }

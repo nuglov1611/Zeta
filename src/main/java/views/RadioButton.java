@@ -1,14 +1,5 @@
 package views;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
-
-import publicapi.RadioButtonAPI;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
 import action.api.RTException;
 import core.document.Document;
 import core.document.Shortcutter;
@@ -18,11 +9,22 @@ import core.rml.VisualRmlObject;
 import core.rml.ui.impl.ZRadioButtonImpl;
 import core.rml.ui.interfaces.ZCheckBox;
 import core.rml.ui.interfaces.ZComponent;
+import org.apache.log4j.Logger;
+import publicapi.RadioButtonAPI;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
+
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
- * 
+ *
  */
 public class RadioButton extends VisualRmlObject implements Focusable, Shortcutter, RadioButtonAPI {
+
+    private static final Logger LOG = Logger.getLogger(RadioButton.class);
 
     class KL extends KeyAdapter {
         @Override
@@ -34,15 +36,15 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
     }
 
 
-	private ZCheckBox button = ZRadioButtonImpl.create(); 
-    
-    public final static int   DEFAULT_FONT_SIZE = 12;
+    private ZCheckBox button = ZRadioButtonImpl.create();
 
-    private FocusPosition     focusPosition     = new FocusPosition();
+    public final static int DEFAULT_FONT_SIZE = 12;
 
-    private String            value             = null;
+    private FocusPosition focusPosition = new FocusPosition();
 
-    private boolean           isChecked         = false;
+    private String value = null;
+
+    private boolean isChecked = false;
 
 
     public RadioButton() {
@@ -50,7 +52,7 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
     }
 
     public void focusThis() {
-    	button.requestFocus();
+        button.requestFocus();
     }
 
     @Override
@@ -67,16 +69,11 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         value = (String) prop.get(RmlConstants.VALUE);
 
         String sp = (String) prop.get(RmlConstants.CHECK);
-        if (sp != null && sp.equals(RmlConstants.YES)) {
-            isChecked = true;
-        }
-        else {
-            isChecked = false;
-        }
+        isChecked = sp != null && sp.equals(RmlConstants.YES);
 
         sp = (String) prop.get(RmlConstants.LABEL);
         if (sp != null) {
@@ -91,10 +88,8 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
                 for (String element : ar) {
                     doc.addShortcut(element, this);
                 }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.out.println(e);
+            } catch (Exception e) {
+                LOG.error(e);
             }
         }
 
@@ -108,7 +103,7 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
     public void processShortcut() {
         button.requestFocus();
         if (!button.isSelected()) {
-        	setSelected(true);
+            setSelected(true);
         }
     }
 
@@ -122,51 +117,53 @@ public class RadioButton extends VisualRmlObject implements Focusable, Shortcutt
         focusPosition.setFocusPosition(position);
     }
 
-    public Object method(String method, Object arg) throws Exception {        
+    public Object method(String method, Object arg) throws Exception {
         if (method.equals(RmlConstants.SET_VALUE)) {
             String checkValue = String.valueOf(arg);
             if (RmlConstants.ON_VALUE.equals(checkValue.toUpperCase())) {
-            	setSelected(true);
+                setSelected(true);
                 return 1;
             } else if (RmlConstants.OFF_VALUE.equals(checkValue.toUpperCase())) {
-            	setSelected(false);
+                setSelected(false);
                 return 0;
             } else {
                 throw new RTException("", "Unknown radiobutton value");
             }
-        }else
-        	return super.method(method, arg);
+        } else
+            return super.method(method, arg);
     }
 
-	@Override
-	public void setFocusable(boolean focusable) {
-		button.setFocusable(focusable);
-	}
+    @Override
+    public void setFocusable(boolean focusable) {
+        button.setFocusable(focusable);
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return button;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return button;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return BasicBorders.getRadioButtonBorder();
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return BasicBorders.getRadioButtonBorder();
+    }
 
-	/**
-	 * Возвращает состояние кнопки (включена/выключена)
-	 * @return true - включена, false - выключена 
-	 */
-	public boolean isSelected() {
-		return button.isSelected();
-	}
+    /**
+     * Возвращает состояние кнопки (включена/выключена)
+     *
+     * @return true - включена, false - выключена
+     */
+    public boolean isSelected() {
+        return button.isSelected();
+    }
 
-	/**
-	 * Задает состояние кнопки (включена/выключена)
-	 * @param selected если true - включена, false - выключена 
-	 */
-	public void setSelected(boolean selected) {
-		button.setSelected(selected);
-	}
+    /**
+     * Задает состояние кнопки (включена/выключена)
+     *
+     * @param selected если true - включена, false - выключена
+     */
+    public void setSelected(boolean selected) {
+        button.setSelected(selected);
+    }
 
 }

@@ -11,28 +11,21 @@
 
 package core.reflection.functions;
 
-import java.util.Hashtable;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.api.ARGV;
 import action.api.GlobalValuesObject;
 import action.api.RTException;
-import action.calc.CalcException;
-import action.calc.ExternFunction;
-import action.calc.Func;
-import action.calc.Lexemator;
-import action.calc.OP;
-import action.calc.Parser;
+import action.calc.*;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 public class TRY implements ExternFunction {
-    private static final Logger log     = Logger.getLogger(TRY.class);
+    private static final Logger log = Logger.getLogger(TRY.class);
 
-    OP                          expr    = null;
+    OP expr = null;
 
-    OP                          catcher = null;
+    OP catcher = null;
 
     public Object eval() throws Exception {
         if (ZetaProperties.calc_debug > 2) {
@@ -43,23 +36,20 @@ public class TRY implements ExternFunction {
             GlobalValuesObject gvo = new ARGV();
             OP.getAliases().put("##return_value##", gvo);
             gvo.setValue(result);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             //log.error("Shit happens", e);
             GlobalValuesObject gvo = new ARGV();
             OP.getAliases().put("##exception##", gvo);
             gvo.setValue(new RTException("NULLEXCEPTION",
                     "element not initialized"));
             return OP.doOP(catcher);
-        }
-        catch (RTException e) {
+        } catch (RTException e) {
             //log.error("Shit happens", e);
             GlobalValuesObject gvo = new ARGV();
             OP.getAliases().put("##exception##", gvo);
             gvo.setValue(e);
             return OP.doOP(catcher);
-        }
-        catch (CalcException e) {
+        } catch (CalcException e) {
             //log.error("Shit happens", e);
             GlobalValuesObject gvo = new ARGV();
             OP.getAliases().remove("##exception##");
@@ -87,8 +77,7 @@ public class TRY implements ExternFunction {
         }
         if (lex.type() == Lexemator.LEXPR) {
             expr = Parser.parse1(lex.as_string().toCharArray());
-        }
-        else {
+        } else {
             throw new Exception();
         }
         lex.next();
@@ -96,11 +85,11 @@ public class TRY implements ExternFunction {
             log.debug("~clac.funcions.TRY::init LED/LTAG");
         }
         switch (lex.type()) {
-        case Lexemator.LTAG:
-            catcher = new Func(lex.as_string(), lex.args());
-            break;
-        default:
-            throw new RTException("SYNTAX", "Must has catch and/or finally");
+            case Lexemator.LTAG:
+                catcher = new Func(lex.as_string(), lex.args());
+                break;
+            default:
+                throw new RTException("SYNTAX", "Must has catch and/or finally");
         }
         if (ZetaProperties.calc_debug > 2) {
             log.debug("~clac.funcions.TRY::init end of parse");

@@ -1,7 +1,6 @@
 package views;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -9,7 +8,7 @@ import java.util.Vector;
 public class UTIL {
 
     public static Vector<String> createSequence(Vector<String> names,
-            Vector<Vector<String>> Bn) throws Exception {
+                                                Vector<Vector<String>> Bn) throws Exception {
         if (names == null || Bn == null) {
             throw new Exception("input Vector's may not be null!");
         }
@@ -32,7 +31,7 @@ public class UTIL {
             int bjsize = bj.size();
             for (int k = 0; k < bjsize; k++) {
                 cur++;
-                String bjk = (String) bj.elementAt(cur);
+                String bjk = bj.elementAt(cur);
                 if (!names.contains(bjk)) {
                     bj.removeElement(bjk);
                     cur--;
@@ -71,7 +70,7 @@ public class UTIL {
                 int bjsize = bj.size();
                 for (int k = 0; k < bjsize; k++) {
                     cur++;
-                    String bjk = (String) bj.elementAt(cur);
+                    String bjk = bj.elementAt(cur);
                     if (!names.contains(bjk)) {
                         bj.removeElement(bjk);
                         cur--;
@@ -90,8 +89,7 @@ public class UTIL {
             int green = Integer.parseInt(color.substring(3, 5), 16);
             int blue = Integer.parseInt(color.substring(5, 7), 16);
             return new Color(((red << 16) + (green << 8) + blue));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Exception inside Grid.getColor: "
                     + e.getMessage());
@@ -100,8 +98,8 @@ public class UTIL {
     }
 
     public static int[] getOutPoint(int width, int height, FontMetrics fm,
-            String halignment, String valignment, int dw, int dh, int x, int y,
-            String str) {
+                                    String halignment, String valignment, int dw, int dh, int x, int y,
+                                    String str) {
         int xp, yp;
         // int width = col.size;
         // int height = sizeRow;
@@ -114,27 +112,21 @@ public class UTIL {
         int wheight = height - 2 * dh;
         if (halignment.equals("LEFT")) {
             xp = x + dw;
-        }
-        else if (halignment.equals("RIGHT")) {
+        } else if (halignment.equals("RIGHT")) {
             xp = x + dw + wwidth - sw;
-        }
-        else if (halignment.equals("CENTER")) {
+        } else if (halignment.equals("CENTER")) {
             xp = x + dw + (wwidth - sw) / 2 + 1;
-        }
-        else {
+        } else {
             xp = x + dw;
         }
 
         if (valignment.equals("BOTTOM")) {
             yp = y + dh + wheight - desc;
-        }
-        else if (valignment.equals("TOP")) {
+        } else if (valignment.equals("TOP")) {
             yp = y + dh + sh - desc;
-        }
-        else if (valignment.equals("CENTER")) {
+        } else if (valignment.equals("CENTER")) {
             yp = y + dh + sh + (wheight - sh) / 2 - desc - 1;
-        }
-        else {
+        } else {
             yp = y + dh + wheight - desc;
         }
 
@@ -145,11 +137,11 @@ public class UTIL {
     }
 
     public static String makeWrap(String str, String delim, int width,
-            FontMetrics fm) {
+                                  FontMetrics fm) {
         if (delim == null) {
             return str;
         }
-        StringBuffer retbuffer = new StringBuffer();
+        StringBuilder retbuffer = new StringBuilder();
         StringTokenizer tl1 = new StringTokenizer(str, "\n", true);
         int countl1 = tl1.countTokens();
         for (int i = 0; i < countl1; i++) {
@@ -179,8 +171,7 @@ public class UTIL {
                         tw += fm.stringWidth(tok2);
                         sdel += tok2;
                     }
-                }
-                catch (NoSuchElementException e) { // строка заканчивается на
+                } catch (NoSuchElementException e) { // строка заканчивается на
                     // раздлитель, выходим
                     // из цикла по j
                     e.printStackTrace();
@@ -193,14 +184,12 @@ public class UTIL {
                         retbuffer.append(tok2);
                         retbuffer.append("\n");
                         sw = 0;
-                    }
-                    else {
+                    } else {
                         retbuffer.append("\n");
                         retbuffer.append(tok2);
                         sw = fm.stringWidth(tok2);
                     }
-                }
-                else {
+                } else {
                     retbuffer.append(sdel);
                     retbuffer.append(tok2);
                     sw += tw;
@@ -235,7 +224,7 @@ public class UTIL {
         if (str == null) {
             return "";
         }
-        StringBuffer ret = new StringBuffer();
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == '"') {
                 ret.append("\\k");

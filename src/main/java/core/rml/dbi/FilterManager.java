@@ -1,8 +1,8 @@
 package core.rml.dbi;
 
-import java.util.Vector;
-
 import org.apache.log4j.Logger;
+
+import java.util.Vector;
 
 /**
  * User: vagapova.m
@@ -28,8 +28,8 @@ public class FilterManager {
         for (Integer rowIndex : dsModel.getRowIndexes()) {
             if (rowIndexes.contains(rowIndex)) {
                 filteredModel.addRow(dsModel.getRow(rowIndex));
-                    }
-                            }
+            }
+        }
         Datastore rep = new Datastore(ds);
         rep.setModel(filteredModel);
         rep.setFiltered(true);

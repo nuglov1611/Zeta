@@ -4,7 +4,7 @@ import core.rml.ui.RequiresEDT;
 
 public interface ZTextField extends ZTextComponent {
 
-	@RequiresEDT
-	void setHorizontalAlignment(int left);
+    @RequiresEDT
+    void setHorizontalAlignment(int left);
 
 }

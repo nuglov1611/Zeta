@@ -1,16 +1,16 @@
 package core.reflection.objects;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Vector;
-
 import action.api.GlobalValuesObject;
 import action.api.HaveMethod;
 import action.api.RTException;
 import action.calc.objects.class_constructor;
 import action.calc.objects.class_type;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Vector;
 
 public class DATE implements class_constructor, HaveMethod, class_type,
         GlobalValuesObject {
@@ -29,9 +29,8 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             dat = new GregorianCalendar((zn0).intValue(), (zn1).intValue(),
                     (zn2).intValue());
             return this;
-        }
-        else if (arg instanceof String) {
-            if (((String) arg).equals("")) {
+        } else if (arg instanceof String) {
+            if (arg.equals("")) {
                 dat = new GregorianCalendar();
                 return this;
             }
@@ -39,14 +38,12 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             dat = new GregorianCalendar();
             dat.setTime(form.parse(arg.toString()));
             return this;
-        }
-        else if (arg instanceof Long) {
+        } else if (arg instanceof Long) {
             dat = new GregorianCalendar();
             SimpleDateFormat form = new SimpleDateFormat();
             dat.setTime(form.parse(arg.toString()));
             return this;
-        }
-        else if (arg instanceof Date) {
+        } else if (arg instanceof Date) {
             dat = new GregorianCalendar();
             // this.dat = (Date) arg;
             dat.setTime((Date) arg);
@@ -67,31 +64,24 @@ public class DATE implements class_constructor, HaveMethod, class_type,
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("TONUMBER")) {
             return new Double(dat.getTime().getTime());
-        }
-        else if (method.equals("TOSTRING")) {
+        } else if (method.equals("TOSTRING")) {
             return dat.toString();
-        }
-        else if (method.equals("VALUE")) {
+        } else if (method.equals("VALUE")) {
             return dat;
-        }
-        else if (method.equals("TOPLSTRING")) {
+        } else if (method.equals("TOPLSTRING")) {
             String s;
 
             s = new Integer(dat.get(Calendar.DAY_OF_MONTH)).toString();
             s = s + '.' + new Integer(dat.get(Calendar.MONTH) + 1).toString();
             s = s + '.' + new Integer(dat.get(Calendar.YEAR)).toString();
             return s;
-        }
-        else if (method.equals("MM")) {
+        } else if (method.equals("MM")) {
             return new Double(dat.get(Calendar.MONTH) + 1);
-        }
-        else if (method.equals("YYYY")) {
+        } else if (method.equals("YYYY")) {
             return new Double(dat.get(Calendar.YEAR));
-        }
-        else if (method.equals("DD")) {
+        } else if (method.equals("DD")) {
             return new Double(dat.get(Calendar.DAY_OF_MONTH));
-        }
-        else if (method.equals("EQUALS")) {
+        } else if (method.equals("EQUALS")) {
             Date d = null;
             if (arg instanceof Date) {
                 d = (Date) arg;
@@ -102,12 +92,10 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             boolean b = (dat.getTime()).equals(d);
             if (b) {
                 return new Double(1);
-            }
-            else {
+            } else {
                 return new Double(0);
             }
-        }
-        else if (method.equals("BEFORE")) {
+        } else if (method.equals("BEFORE")) {
             Date d = null;
             if (arg instanceof Date) {
                 d = (Date) arg;
@@ -120,12 +108,10 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             boolean b = dat.before(dt);
             if (b) {
                 return new Double(1);
-            }
-            else {
+            } else {
                 return new Double(0);
             }
-        }
-        else if (method.equals("AFTER")) {
+        } else if (method.equals("AFTER")) {
             Date d = null;
             if (arg instanceof Date) {
                 d = (Date) arg;
@@ -138,12 +124,10 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             boolean b = dat.after(dt);
             if (b) {
                 return new Double(1);
-            }
-            else {
+            } else {
                 return new Double(0);
             }
-        }
-        else if (method.equals("MOVEBYSECOND")) {
+        } else if (method.equals("MOVEBYSECOND")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -151,16 +135,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.SECOND, d.intValue());
             return this;
-        }
-        else if (method.equals("MOVEBYMINUTE")) {
+        } else if (method.equals("MOVEBYMINUTE")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -168,16 +150,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.MINUTE, d.intValue());
             return this;
-        }
-        else if (method.equals("MOVEBYHOUR")) {
+        } else if (method.equals("MOVEBYHOUR")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -185,16 +165,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.HOUR, d.intValue());
             return this;
-        }
-        else if (method.equals("MOVEBYDAY")) {
+        } else if (method.equals("MOVEBYDAY")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -202,16 +180,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.HOUR, d.intValue());
             return this;
-        }
-        else if (method.equals("MOVEBYMONTH")) {
+        } else if (method.equals("MOVEBYMONTH")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -219,16 +195,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.MONTH, d.intValue());
             return this;
-        }
-        else if (method.equals("MOVEBYYEAR")) {
+        } else if (method.equals("MOVEBYYEAR")) {
             Double d = null;
             if (arg instanceof Double) {
                 d = (Double) arg;
@@ -236,16 +210,14 @@ public class DATE implements class_constructor, HaveMethod, class_type,
             if (arg instanceof String) {
                 try {
                     d = Double.valueOf((String) arg);
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new RTException("BadFormatException",
                             "wrong string for type Double");
                 }
             }
             dat.add(Calendar.YEAR, d.intValue());
             return this;
-        }
-        else {
+        } else {
             throw new RTException("HasMethodException",
                     "object DATA has not method " + method);
         }

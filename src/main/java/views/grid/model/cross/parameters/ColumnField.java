@@ -21,8 +21,8 @@ public class ColumnField extends CrossField {
     public ColumnField(String columnName, String description, GenericAggregator aggregator) {
         super(columnName, description);
         if (aggregator != null) {
-        this.aggregator = aggregator;
-    }
+            this.aggregator = aggregator;
+        }
     }
 
     public ColumnField(String columnName) {

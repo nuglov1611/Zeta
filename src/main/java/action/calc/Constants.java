@@ -1,7 +1,6 @@
 package action.calc;
 
 /**
- *
  * @author uglov
  */
 public class Constants {

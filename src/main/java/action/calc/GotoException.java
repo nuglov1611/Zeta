@@ -13,11 +13,11 @@ package action.calc;
 
 public class GotoException extends CalcException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
-    public String             label;
+    public String label;
 
     public GotoException(String label) {
         this.label = label;

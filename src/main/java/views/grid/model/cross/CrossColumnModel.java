@@ -1,11 +1,10 @@
 package views.grid.model.cross;
 
-import java.util.ArrayList;
+import core.rml.RmlConstants;
+import views.grid.GridSwing;
 
 import javax.swing.table.AbstractTableModel;
-
-import views.grid.GridSwing;
-import core.rml.RmlConstants;
+import java.util.ArrayList;
 
 /**
  * Inner class used to define column fields content

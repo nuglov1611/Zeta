@@ -8,46 +8,23 @@
 
 package loader;
 
-import static loader.ZetaProperties.DEBUG_CALCULATOR;
-import static loader.ZetaProperties.DEBUG_DSTORE;
-import static loader.ZetaProperties.DEBUG_LOADER;
-import static loader.ZetaProperties.DEBUG_PARSER;
-import static loader.ZetaProperties.DEBUG_PROTOCOL;
-import static loader.ZetaProperties.DEBUG_RML;
-import static loader.ZetaProperties.DEBUG_VIEWS;
-import static loader.ZetaProperties.DEFAULTCOLOR;
-import static loader.ZetaProperties.DEFAULTFONT;
-import static loader.ZetaProperties.EXCEPTION_LOADER;
-import static loader.ZetaProperties.TREE_DEBUG;
-import static loader.ZetaProperties.calc_debug;
-import static loader.ZetaProperties.dstore_debug;
-import static loader.ZetaProperties.loader_debug;
-import static loader.ZetaProperties.loader_exception;
-import static loader.ZetaProperties.parser_debug;
-import static loader.ZetaProperties.prop;
-import static loader.ZetaProperties.protocol_debug;
-import static loader.ZetaProperties.rml_debug;
-import static loader.ZetaProperties.tree_groups_debug;
-import static loader.ZetaProperties.views_debug;
+import boot.Boot;
+import core.browser.WorkspaceManager;
+import org.apache.log4j.Logger;
+import views.MessageFactory;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
+import java.awt.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-
-import views.MessageFactory;
-import boot.Boot;
-import core.browser.WorkspaceManager;
+import static loader.ZetaProperties.*;
 
 public class ZetaUtility {
-    private static final Logger log    = Logger.getLogger(ZetaUtility.class);
+    private static final Logger log = Logger.getLogger(ZetaUtility.class);
 
-    static Object               pr_tmp = new Object();
+    static Object pr_tmp = new Object();
 
     //##########################################################################
     // ######
@@ -59,14 +36,13 @@ public class ZetaUtility {
         try {
 
             Properties pr = new Properties();
-            
+
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             pr.load(cl.getResourceAsStream(ZetaProperties.PROPNAME));
             ZetaProperties.prop = pr;
             ZetaUtility.setdebuging();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.fatal("\tBroken with init properties of curent system", e);
             System.exit(0);
         }
@@ -108,8 +84,7 @@ public class ZetaUtility {
                             .substring(3, 5)), fromhex(s.substring(5, 7)));
                 else
                     return Color.gray;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.warn("Bad color", e);
                 return Color.gray;
             }
@@ -202,8 +177,7 @@ public class ZetaUtility {
         for (int i = 0; i < num; ++i)
             try {
                 r[i] = st.nextToken().trim();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Parsing trouble", e);
                 return parse(num, d, null);
             }
@@ -235,59 +209,50 @@ public class ZetaUtility {
 
         try {
             loader_debug = Integer.valueOf(pr(DEBUG_LOADER, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             protocol_debug = Integer.valueOf(pr(DEBUG_PROTOCOL, "0"))
                     .intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             rml_debug = Integer.valueOf(pr(DEBUG_RML, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             views_debug = Integer.valueOf(pr(DEBUG_VIEWS, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             dstore_debug = Integer.valueOf(pr(DEBUG_DSTORE, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             tree_groups_debug = Integer.valueOf(pr(TREE_DEBUG, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             parser_debug = Integer.valueOf(pr(DEBUG_PARSER, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         try {
             calc_debug = Integer.valueOf(pr(DEBUG_CALCULATOR, "0")).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
 
         try {
             loader_exception = (pr(EXCEPTION_LOADER, "OFF").toUpperCase()
                     .compareTo("ON") == 0);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -306,10 +271,10 @@ public class ZetaUtility {
         return r;
     }
 
-    public static Double extSure(String message){
+    public static Double extSure(String message) {
         return new Double(MessageFactory.getInstance().showYesNoCancelMessage(WorkspaceManager.getCurWorkspace(), message));
     }
-    
+
     public static Object input(String message) {
         return input(message, "", WorkspaceManager.getCurWorkspace());
     }
@@ -325,6 +290,7 @@ public class ZetaUtility {
     public static boolean sure(String message, int messageType) {
         return sure(message, messageType, null);
     }
+
     public static boolean sure(String message, int messageType, String font) {
         return sure(message, messageType, font, WorkspaceManager.getCurWorkspace());
     }
@@ -337,15 +303,15 @@ public class ZetaUtility {
             answer = MessageFactory.getInstance().showMessage(fr, message, MessageFactory.Type.WARNING);
         } else if (messageType == ZetaProperties.MESSAGE_INFO) {
             answer = MessageFactory.getInstance().showMessage(fr, message, MessageFactory.Type.INFO);
-        } else if(messageType == ZetaProperties.MESSAGE_CONFIRMATION){
+        } else if (messageType == ZetaProperties.MESSAGE_CONFIRMATION) {
             answer = MessageFactory.getInstance().showMessage(fr, message, MessageFactory.Type.EXTENDED_CONFIRMATION);
         } else {
             answer = MessageFactory.getInstance().showMessage(fr, message, MessageFactory.Type.CONFIRMATION);
         }
         return answer;
     }
-    
-    public static void oracleMessage(Throwable error, Component owner){
+
+    public static void oracleMessage(Throwable error, Component owner) {
         String err_msg = "Неизвестная ошибка БД";
         String err_msg2 = null;
         if (error.getMessage() != null) {
@@ -357,7 +323,7 @@ public class ZetaUtility {
                 boolean m1 = m.find();
                 boolean m2 = m.matches();
                 error = error.getCause();
-            }while (!m.matches() && error != null);
+            } while (!m.matches() && error != null);
             if (m.matches()) {
                 err_msg = err_msg2;
                 String ora = m.group(1);
@@ -371,7 +337,7 @@ public class ZetaUtility {
     public static void message(String message) {
         message(message, ZetaProperties.MESSAGE_ERROR);
     }
-    
+
     public static void message(String message, int messageType) {
         message(null, message, messageType);
     }
@@ -402,9 +368,8 @@ public class ZetaUtility {
             } else {
                 MessageFactory.getInstance().showMessage(owner, header, message,
                         MessageFactory.Type.SIMPLE, font);
-        }
-        }
-        catch (Exception e) {
+            }
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }

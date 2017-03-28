@@ -1,37 +1,11 @@
 package views.grid.manager;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.swing.JList;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
+import core.parser.Proper;
+import core.rml.RmlConstants;
+import core.rml.dbi.Datastore;
+import core.rml.ui.interfaces.ZComponent;
+import core.rml.ui.interfaces.ZScrollPane;
 import org.apache.log4j.Logger;
-
 import views.ColumnTemplate;
 import views.grid.GridColumn;
 import views.grid.GridSwing;
@@ -41,25 +15,18 @@ import views.grid.editor.CommonField;
 import views.grid.editor.TextFieldCellEditor;
 import views.grid.filter.GridComparator;
 import views.grid.filter.GridRowFilter;
-import views.grid.listener.GridColumnSelectionListener;
-import views.grid.listener.GridComponentListener;
-import views.grid.listener.GridFocusListener;
-import views.grid.listener.GridHeaderFocusListener;
-import views.grid.listener.GridHeaderMouseListener;
-import views.grid.listener.GridKeyListener;
-import views.grid.listener.GridMouseListener;
-import views.grid.listener.GridRowFocusListener;
-import views.grid.listener.GridRowHeaderSelectionListener;
-import views.grid.listener.GridRowSelectionListener;
+import views.grid.listener.*;
 import views.grid.model.GridMetadataModel;
 import views.grid.model.GridTableFactory;
 import views.grid.renderer.GridHeaderFactory;
 import views.grid.renderer.cross.CrossTablePanel;
-import core.parser.Proper;
-import core.rml.RmlConstants;
-import core.rml.dbi.Datastore;
-import core.rml.ui.interfaces.ZComponent;
-import core.rml.ui.interfaces.ZScrollPane;
+
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.*;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class GridTableManager {
 
@@ -318,8 +285,8 @@ public class GridTableManager {
     public void setRowSorter(TableModel model, RowFilter filter) {
         rowSorter = new TableRowSorter<TableModel>(model);
         if (model != null && metadataModel != null) {
-        	if(parent.getSourceColumns() != 0)
-        		rowSorter.setMaxSortKeys(parent.getSourceColumns());
+            if (parent.getSourceColumns() != 0)
+                rowSorter.setMaxSortKeys(parent.getSourceColumns());
             rowSorter.setSortsOnUpdates(true);
             dataTable.setRowSorter(rowSorter);
             for (int i = 0; i < getVColumnCount(); i++) {
@@ -336,7 +303,7 @@ public class GridTableManager {
                     rowHeaderIndexes.put(modelRow, viewRow);
                 }
                 rowSorter.setRowFilter(filter);
-                columnFilterIndexes = ((GridRowFilter)filter).getColumnIndexes();
+                columnFilterIndexes = ((GridRowFilter) filter).getColumnIndexes();
                 filteringMode = true;
             } else {
                 rowHeaderIndexes.clear();
@@ -523,8 +490,8 @@ public class GridTableManager {
         if (nextRow != DEFAULT_ROW) {
             int nextModelRow = convertRowIndexToModel(nextRow);
             if (nextModelRow != DEFAULT_ROW && getCurrentRow() != nextModelRow) {
-        setCurrentRow(nextRow, true, true);
-    }
+                setCurrentRow(nextRow, true, true);
+            }
         }
     }
 
@@ -533,8 +500,8 @@ public class GridTableManager {
         if (row != DEFAULT_ROW) {
             int nextModelRow = convertRowIndexToModel(row);
             if (nextModelRow != DEFAULT_ROW && getCurrentRow() != nextModelRow) {
-        setCurrentRow(row, true, false);
-    }
+                setCurrentRow(row, true, false);
+            }
         }
     }
 
@@ -556,8 +523,8 @@ public class GridTableManager {
      *                      таблице. ¬ некоторых случа€х, когда перелистываетс€
      *                      страница прокручивать нет необходимости, это
      *                      осущетвл€етс€ программно (событие KeyEvent.DOWN и т.п.)
-     * @param toggle - if ctrl pressed
-     * @param extend - if shift pressed
+     * @param toggle        - if ctrl pressed
+     * @param extend        - if shift pressed
      */
     public void setCurrentRow(Integer nextRow, boolean drawSelection, boolean needScrolling, boolean toggle, boolean extend) {
 
@@ -685,8 +652,8 @@ public class GridTableManager {
      * ¬озвращает состо€ние выборки в таблице
      *
      * @return true - если выбрана кака€ либо строка (клик мышкой по кнопке с
-     *         индексом строки) false - если выбрана кака€-либо €чейка (клик
-     *         мышкой по €чейке таблицы)
+     * индексом строки) false - если выбрана кака€-либо €чейка (клик
+     * мышкой по €чейке таблицы)
      */
     public boolean isRowSelected() {
         return isRowSelected;
@@ -700,7 +667,7 @@ public class GridTableManager {
      */
     public void setRowSelected(boolean rowSelected) {
         if (rowSelected != isRowSelected) {
-        isRowSelected = rowSelected;
+            isRowSelected = rowSelected;
             refreshView();
         }
     }
@@ -777,22 +744,22 @@ public class GridTableManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-        if (isCtrlA) {
-            dataTable.selectAll();
-        } else if (selection != null && selection.size() != 0) {
-            for (Integer selectedIndex : selection) {
-                int viewRow = convertRowIndexToView(selectedIndex);
-                if (viewRow >= 0 && (dataTable.getRowSorter() == null ||
-                        (dataTable.getRowSorter() != null && viewRow < dataTable.getRowSorter().getViewRowCount()))) {
-                    dataTable.addRowSelectionInterval(viewRow, viewRow);
+                if (isCtrlA) {
+                    dataTable.selectAll();
+                } else if (selection != null && selection.size() != 0) {
+                    for (Integer selectedIndex : selection) {
+                        int viewRow = convertRowIndexToView(selectedIndex);
+                        if (viewRow >= 0 && (dataTable.getRowSorter() == null ||
+                                (dataTable.getRowSorter() != null && viewRow < dataTable.getRowSorter().getViewRowCount()))) {
+                            dataTable.addRowSelectionInterval(viewRow, viewRow);
+                        }
+                    }
+                }
+                if (currentModelColumn != DEFAULT_COLUMN) {
+                    int viewColumn = convertColumnIndexToView(currentModelColumn);
+                    dataTable.setColumnSelectionInterval(viewColumn, viewColumn);
                 }
             }
-        }
-        if (currentModelColumn != DEFAULT_COLUMN) {
-            int viewColumn = convertColumnIndexToView(currentModelColumn);
-            dataTable.setColumnSelectionInterval(viewColumn, viewColumn);
-        }
-    }
         });
     }
 
@@ -837,20 +804,20 @@ public class GridTableManager {
             @Override
             public void run() {
 
-        if (rowSorter != null) {
-            rowSorter.modelStructureChanged();
-        }
-        if (dataTable.getModel() != null) {
-            dataTable.tableChanged(new TableModelEvent(dataTable.getModel()));
-        }
-        parent.getVisualComponent().repaint();
-        initRowHeader();
-        tableContainer.revalidate();
-        tableContainer.repaint();
+                if (rowSorter != null) {
+                    rowSorter.modelStructureChanged();
+                }
+                if (dataTable.getModel() != null) {
+                    dataTable.tableChanged(new TableModelEvent(dataTable.getModel()));
+                }
+                parent.getVisualComponent().repaint();
+                initRowHeader();
+                tableContainer.revalidate();
+                tableContainer.repaint();
 
-        //TODO scrollPane was used there
+                //TODO scrollPane was used there
 //        scrollPane.getRowHeader().repaint();
-    }
+            }
         });
     }
 
@@ -858,8 +825,8 @@ public class GridTableManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-        dataTable.requestFocusInWindow();
-    }
+                dataTable.requestFocusInWindow();
+            }
         });
     }
 
@@ -1064,9 +1031,9 @@ public class GridTableManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-        dataTable.revalidate();
-        dataTable.repaint();
-    }
+                dataTable.revalidate();
+                dataTable.repaint();
+            }
         });
     }
 
@@ -1087,8 +1054,8 @@ public class GridTableManager {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-            dataTable.doLayout();
-        }
+                    dataTable.doLayout();
+                }
             });
         }
     }
@@ -1102,22 +1069,22 @@ public class GridTableManager {
     }
 
     public void setColumnTitle(GridColumn column, String title) {
-            String oldTitle = column.getTitle();
-            JTableHeader th = dataTable.getTableHeader();
-            TableColumnModel tcm = th.getColumnModel();
-            int columnIndex = -1;
-            try {
-                columnIndex = tcm.getColumnIndex(oldTitle);
-            } catch (IllegalArgumentException e) {
-                //no such columns with titles
-            }
-            if (columnIndex != -1) {
-                column.setTitle(title);
-                TableColumn tc = tcm.getColumn(columnIndex);
-                tc.setHeaderValue(title);
-                th.repaint();
-            }
+        String oldTitle = column.getTitle();
+        JTableHeader th = dataTable.getTableHeader();
+        TableColumnModel tcm = th.getColumnModel();
+        int columnIndex = -1;
+        try {
+            columnIndex = tcm.getColumnIndex(oldTitle);
+        } catch (IllegalArgumentException e) {
+            //no such columns with titles
         }
+        if (columnIndex != -1) {
+            column.setTitle(title);
+            TableColumn tc = tcm.getColumn(columnIndex);
+            tc.setHeaderValue(title);
+            th.repaint();
+        }
+    }
 
     public void setColumnVisible(GridColumn column, boolean visible) {
         column.setVisible(visible);
@@ -1132,7 +1099,7 @@ public class GridTableManager {
 
     public Object isColumnVisible(GridColumn column) {
         //Integer columnIndex = metadataModel.getColumnIndexByTarget(columnTarget);
-    	Integer columnIndex =  metadataModel.getColumnIndexByTarget(column.getTarget()); 
+        Integer columnIndex = metadataModel.getColumnIndexByTarget(column.getTarget());
         return metadataModel.isColumnsVisible(columnIndex);
     }
 
@@ -1173,9 +1140,9 @@ public class GridTableManager {
     }
 
     public void addComboTypeColumn(String columnAlias, String columnType,
-                               String columnTitle, Integer columnWidth,
-                               Integer columnPosition, String editStyle,
-                               String values, Datastore ds) {
+                                   String columnTitle, Integer columnWidth,
+                                   Integer columnPosition, String editStyle,
+                                   String values, Datastore ds) {
         int type = GridColumn.generateType(columnType);
         String columnTarget = parent.getDatastore().addColumn(type, true);
         addColumn(columnAlias, columnTarget, type, columnTitle, columnWidth,
@@ -1252,9 +1219,9 @@ public class GridTableManager {
     }
 
     public int getTableColumnModelIndex(GridColumn column) {
-    	//int columnModelIndex = metadataModel.getColumnIndexByTarget(column.getTarget());
+        //int columnModelIndex = metadataModel.getColumnIndexByTarget(column.getTarget());
         int columnModelIndex = metadataModel.getColumnModelIndex(column);
-        
+
         if (columnModelIndex != -1) {
             try {
                 dataTable.getColumnModel().getColumn(columnModelIndex);

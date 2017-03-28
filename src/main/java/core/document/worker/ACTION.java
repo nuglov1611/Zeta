@@ -11,40 +11,39 @@
 
 package core.document.worker;
 
-import java.text.DateFormat;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-
-import org.apache.log4j.Logger;
-
-import publicapi.RetrieveableAPI;
 import action.api.ScriptApi;
 import core.document.Document;
 import core.document.NotifyInterface;
 import core.rml.dbi.Datastore;
 import core.rml.dbi.ErrorReader;
+import org.apache.log4j.Logger;
+import publicapi.RetrieveableAPI;
+
+import java.text.DateFormat;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 public class ACTION {
-    private static final Logger       log         = Logger
-                                                          .getLogger(ACTION.class);
+    private static final Logger log = Logger
+            .getLogger(ACTION.class);
 
-    private Document                  actionOwner = null;
+    private Document actionOwner = null;
 
-    private String                    Action;
+    private String Action;
 
     private Hashtable<String, Object> Aliases;
 
-    private NotifyInterface           notifyI;
+    private NotifyInterface notifyI;
 
     class Action implements Actioner {
-        Command                   cmd = null;
+        Command cmd = null;
 
         Hashtable<String, Object> aliases;
 
-        NotifyInterface           ni;
+        NotifyInterface ni;
 
         public Action(String s, Hashtable<String, Object> aliases,
-                NotifyInterface ni) throws Exception {
+                      NotifyInterface ni) throws Exception {
             this.ni = ni;
             Command end = null;
             cmd = null;
@@ -55,8 +54,7 @@ public class ACTION {
                 Command cd = new Command(str, aliases, actionOwner);
                 if (cmd == null) {
                     end = cmd = cd;
-                }
-                else {
+                } else {
                     end.next = cd;
                     end = cd;
                 }
@@ -78,29 +76,28 @@ public class ACTION {
         public void notifyActioner() {
             try {
                 doAction();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens!!!", e);
             }
         }
     }
 
     class Command {
-        int              cmd    = -1;
+        int cmd = -1;
 
-        boolean          newf   = false;
+        boolean newf = false;
 
-        boolean          overf  = false;
+        boolean overf = false;
 
-        String           target = "";
+        String target = "";
 
-        Object[]         arg    = null;
+        Object[] arg = null;
 
-        String           args   = "";
+        String args = "";
 
-        public Command   next   = null;
+        public Command next = null;
 
-        private Document doc    = null;
+        private Document doc = null;
 
         public Command(String s, Hashtable<String, Object> aliases, Document d)
                 throws Exception {
@@ -112,40 +109,31 @@ public class ACTION {
             String str = st.nextToken().trim().toUpperCase();
             if (str.compareTo("RETRIEVE") == 0) {
                 cmd = RETRIEVE;
-            }
-            else if (str.compareTo("OPEN") == 0) {
+            } else if (str.compareTo("OPEN") == 0) {
                 cmd = OPEN;
-            }
-            else if (str.compareTo("OPENNEW") == 0) {
+            } else if (str.compareTo("OPENNEW") == 0) {
                 cmd = OPEN;
                 newf = true;
-            }
-            else if (str.compareTo("OPENOVER") == 0) {
+            } else if (str.compareTo("OPENOVER") == 0) {
                 cmd = OPEN;
                 overf = true;
                 /*
                  * }else if ( str.compareTo("OPENNEWOVER") == 0 ){ cdm = OPEN;
                  * newf = true; overf = true;
                  */
-            }
-            else if (str.compareTo("CREATE") == 0) {
+            } else if (str.compareTo("CREATE") == 0) {
                 cmd = CREATE;
-            }
-            else if (str.compareTo("CREATENEW") == 0) {
+            } else if (str.compareTo("CREATENEW") == 0) {
                 cmd = CREATE;
                 newf = true;
-            }
-            else if (str.compareTo("CREATEOVER") == 0) {
+            } else if (str.compareTo("CREATEOVER") == 0) {
                 cmd = CREATE;
                 overf = true;
-            }
-            else if (str.compareTo("EXECUTE") == 0) {
+            } else if (str.compareTo("EXECUTE") == 0) {
                 cmd = EXECUTE;
-            }
-            else if (str.compareTo("EXECEXPR") == 0) {
+            } else if (str.compareTo("EXECEXPR") == 0) {
                 cmd = EXECEXPR;
-            }
-            else {
+            } else {
                 throw new Exception("~core.document.ACTION$Command::<init>\n\t"
                         + str + " unknown command");
             }
@@ -162,32 +150,27 @@ public class ACTION {
                         log.debug("--------\n" + a);
                         if (a.length() == 0) {
                             arg[i] = a;
-                        }
-                        else if (a.charAt(0) == '&') {
+                        } else if (a.charAt(0) == '&') {
                             arg[i] = aliases.get(a.substring(1));
                             log.debug("add object " + arg[i] + " in ARGUMENTS."
                                     + i);
-                        }
-                        else {
+                        } else {
                             try {
                                 a.toUpperCase();
                                 arg[i] = Double.valueOf(a);
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 // log.error("Shit happens!!!", e);
                                 try {
                                     arg[i] = DateFormat.getDateInstance()
                                             .parse(a);
-                                }
-                                catch (Exception e1) {
+                                } catch (Exception e1) {
                                     // log.error("Shit happens!!!", e1);
                                     arg[i] = a;
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Shit happens", e);
                 }
             }
@@ -199,45 +182,35 @@ public class ACTION {
                 Object tg = aliases.get(target.toUpperCase());
                 if (tg instanceof RetrieveableAPI) {
                     ((RetrieveableAPI) tg).retrieve();
-                }
-                else if (tg instanceof Datastore) {
+                } else if (tg instanceof Datastore) {
                     ((Datastore) tg).retrieve();
                 }
                 actor.notifyActioner();
-            }
-            else if (cmd == EXECUTE) {
+            } else if (cmd == EXECUTE) {
                 new core.rml.dbi.EXECUTOR(actionOwner).execute(arg, aliases);
                 actor.notifyActioner();
-            }
-            else if ((cmd == OPEN) || (cmd == CREATE)) {
+            } else if ((cmd == OPEN) || (cmd == CREATE)) {
                 if (cmd == CREATE) {
                     Document.resetIt = true;
                 }
                 if (newf) {
                     actionOwner.callDocumentNewWindow(target, arg, actor);
-                }
-                else {
+                } else {
                     actionOwner.callDocumentSomeWindow(target, arg, actor);
                 }
-            }
-            else if (cmd == EXECEXPR) {
+            } else if (cmd == EXECEXPR) {
                 String expr = null;
                 try {
                     expr = (String) arg[0];
                     doc.executeScript(expr, false);
 //                    Calc c = new Calc(expr);
 //                    c.eval(aliases);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Exception in ACTION.doCmd():", e);
                     return;
                 }
                 actor.notifyActioner();
-            }
-            else if (cmd == -1) {
-                return;
-            }
-            else {
+            } else if (cmd != -1) {
                 throw new Exception("~core.document.ACTION$Command::doCmd " + cmd);
             }
         }
@@ -245,11 +218,11 @@ public class ACTION {
 
     static final int RETRIEVE = 0;
 
-    static final int CREATE   = 1;
+    static final int CREATE = 1;
 
-    static final int OPEN     = 2;
+    static final int OPEN = 2;
 
-    static final int EXECUTE  = 3;
+    static final int EXECUTE = 3;
 
     static final int EXECEXPR = 4;
 
@@ -258,22 +231,21 @@ public class ACTION {
     }
 
     public void prepareAction(String action, Hashtable<String, Object> aliases,
-            NotifyInterface ni) {
+                              NotifyInterface ni) {
         Action = action;
         Aliases = aliases;
         notifyI = ni;
     }
 
     private void action(String action, Hashtable<String, Object> aliases,
-            NotifyInterface ni) throws Exception {
+                        NotifyInterface ni) throws Exception {
         try {
-            
-        	action = ScriptApi.macro(action, aliases);
-            
+
+            action = ScriptApi.macro(action, aliases);
+
             Action a = new Action(action, aliases, ni);
             a.doAction();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             if (e instanceof java.sql.SQLException) {
                 ErrorReader.getInstance().addMessage(e.getMessage());
@@ -285,5 +257,5 @@ public class ACTION {
     public void runAction() throws Exception {
         action(Action, Aliases, notifyI);
     }
-    
+
 }

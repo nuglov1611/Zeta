@@ -11,23 +11,21 @@
 
 package action.calc;
 
-import java.util.Hashtable;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.api.GlobalValuesObject;
 import action.api.RTException;
 import action.calc.objects.class_field;
 import action.calc.objects.class_size;
 import action.calc.objects.class_type;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 
 public class Alias extends OP implements Const {
-    private static final Logger log   = Logger.getLogger(Alias.class);
+    private static final Logger log = Logger.getLogger(Alias.class);
 
-    String                      field = null;
+    String field = null;
 
     public Alias(String alias) {
         if (ZetaProperties.calc_debug > 1) {
@@ -42,16 +40,14 @@ public class Alias extends OP implements Const {
         if ((q = alias.indexOf('.')) != -1) {
             left = alias.substring(0, q);
             right = alias.substring(q + 1);
-        }
-        else {
+        } else {
             left = alias;
             right = null;
         }
     }
 
     @Override
-    public Object eval() throws Exception, NullPointerException,
-            ClassCastException {
+    public Object eval() throws Exception {
         return getValue();
     }
 
@@ -65,13 +61,12 @@ public class Alias extends OP implements Const {
         h.put(name(), "");
     }
 
-    public Object getValue() throws Exception, NullPointerException,
-            ClassCastException {
+    public Object getValue() throws Exception {
         GlobalValuesObject o;
         Object result = new Double(0);
         try {
             if (right == null) {
-            	final Hashtable<String, Object> aliases = OP.getAliases();
+                final Hashtable<String, Object> aliases = OP.getAliases();
                 if (left.equals("NIL")) {
                     return new Nil();
                 }
@@ -79,40 +74,36 @@ public class Alias extends OP implements Const {
                 if (o != null) {
                     if (ZetaProperties.calc_debug > 1) {
                         log.debug("~calc.Alias::getValue from V."
-                                + (String) left);
+                                + left);
                     }
                     result = o.getValueByName((String) left);
-                }
-                else {
+                } else {
                     o = (GlobalValuesObject) OP.getAliases().get(left);
                     if (ZetaProperties.calc_debug > 1) {
                         log.debug("~calc.Alias::getValue from aliases "
-                                + (String) left);
+                                + left);
                     }
                     result = o.getValue();
                 }
-            }
-            else if (((String) left).compareTo("G") == 0) {
+            } else if (((String) left).compareTo("G") == 0) {
                 o = (GlobalValuesObject) OP.getAliases().get(right);
                 if (ZetaProperties.calc_debug > 1) {
                     log.debug("~calc.Alias::getValue from aliases "
-                            + (String) right);
+                            + right);
                 }
                 result = o.getValue();
-            }
-            else if (((String) left).compareTo("P") == 0) {
+            } else if (((String) left).compareTo("P") == 0) {
                 o = (GlobalValuesObject) OP.getAliases().get(right);
                 if (ZetaProperties.calc_debug > 1) {
                     log.debug("~calc.Alias::getValue from aliases "
-                            + (String) left + "." + (String) right);
+                            + left + "." + right);
                 }
                 result = o;
-            }
-            else {
+            } else {
                 o = (GlobalValuesObject) OP.getAliases().get(left);
                 if (ZetaProperties.calc_debug > 1) {
                     log.debug("~calc.Alias::getValue from aliases "
-                            + (String) left + "." + (String) right);
+                            + left + "." + right);
                 }
                 result = o.getValueByName((String) right);
             }
@@ -123,62 +114,48 @@ public class Alias extends OP implements Const {
                 if (result instanceof String) {
                     if (field.equals("TYPE")) {
                         return "STRING";
-                    }
-                    else if (field.equals("LENGTH")) {
+                    } else if (field.equals("LENGTH")) {
                         return new Double(((String) result).length());
-                    }
-                    else {
+                    } else {
                         throw new RTException("HASNOTFIELD", "String "
                                 + toString() + " has not field " + field);
                     }
-                }
-                else if (result instanceof Double) {
+                } else if (result instanceof Double) {
                     if (field.equals("TYPE")) {
                         return "NUMBER";
                     }
                     if (field.equals("INT")) {
                         return "" + ((Double) result).intValue();
-                    }
-                    else {
+                    } else {
                         throw new RTException("HASNOTFIELD", "Number "
                                 + toString() + " has not field " + field);
                     }
-                }
-                else if (result instanceof Object[]) {
+                } else if (result instanceof Object[]) {
                     if (field.equals("TYPE")) {
                         return "ARRAY";
-                    }
-                    else if (field.equals("LENGTH") || field.equals("SIZE")) {
+                    } else if (field.equals("LENGTH") || field.equals("SIZE")) {
                         return new Double(((Object[]) result).length);
-                    }
-                    else {
+                    } else {
                         throw new RTException("HASNOTFIELD", "Array "
                                 + toString() + " has not field " + field);
                     }
-                }
-                else if (result instanceof Hashtable) {
+                } else if (result instanceof Hashtable) {
                     if (field.equals("TYPE")) {
                         return "HASH";
-                    }
-                    else {
+                    } else {
                         throw new RTException("HASNOTFIELD", "Hash "
                                 + toString() + " has not field " + field);
                     }
-                }
-                else if ((result instanceof class_type) && field.equals("TYPE")) {
-                }
-                else if ((result instanceof class_size) && field.equals("SIZE")) {
-                }
-                else if (result instanceof class_field) {
+                } else if ((result instanceof class_type) && field.equals("TYPE")) {
+                } else if ((result instanceof class_size) && field.equals("SIZE")) {
+                } else if (result instanceof class_field) {
                     return ((class_field) result).field(field);
-                }
-                else {
+                } else {
                     throw new RTException("HASNOTFIELD", "Object " + toString()
                             + " has not any field");
                 }
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             log.error("Shit happens", e);
             throw new RTException("NullException", "" + this
                     + " not initialized");
@@ -194,8 +171,7 @@ public class Alias extends OP implements Const {
         return "" + left + ((right != null) ? "." + right : "");
     }
 
-    public Object setValue(Object a) throws Exception, NullPointerException,
-            ClassCastException {
+    public Object setValue(Object a) throws Exception {
         GlobalValuesObject o;
         if (ZetaProperties.calc_debug > 2) {
             log.debug("~calc.Alias::setValue " + toString() + " set to " + a);
@@ -209,59 +185,48 @@ public class Alias extends OP implements Const {
             if (o != null) {
                 if (field == null) {
                     o.setValueByName((String) left, a);
-                }
-                else {
+                } else {
                     Object x = o.getValueByName((String) left);
                     if (x instanceof class_field) {
                         ((class_field) x).set_field(field, a);
-                    }
-                    else {
+                    } else {
                         throw new RTException("HASNOTFIELD", "Object "
                                 + toString() + " has not any field");
                     }
                 }
-            }
-            else {
+            } else {
                 o = (GlobalValuesObject) OP.getAliases().get(left);
                 if (field == null) {
                     o.setValue(a);
-                }
-                else if (o instanceof class_field) {
+                } else if (o instanceof class_field) {
                     ((class_field) o).set_field(field, a);
-                }
-                else {
+                } else {
                     throw new RTException("HASNOTFIELD", "Object " + toString()
                             + " has not any field");
                 }
             }
-        }
-        else if (((String) left).compareTo("G") == 0) {
+        } else if (((String) left).compareTo("G") == 0) {
             o = (GlobalValuesObject) OP.getAliases().get(right);
             if (field == null) {
                 o.setValue(a);
-            }
-            else {
+            } else {
                 Object x = o.getValueByName((String) left);
                 if (x instanceof class_field) {
                     ((class_field) x).set_field(field, a);
-                }
-                else {
+                } else {
                     throw new RTException("HASNOTFIELD", "Object " + toString()
                             + " has not any field");
                 }
             }
-        }
-        else {
+        } else {
             o = (GlobalValuesObject) OP.getAliases().get(left);
             if (field == null) {
                 o.setValueByName((String) right, a);
-            }
-            else {
+            } else {
                 Object x = o.getValueByName((String) right);
                 if (x instanceof class_field) {
                     ((class_field) x).set_field(field, a);
-                }
-                else {
+                } else {
                     throw new RTException("HASNOTFIELD", "Global Object " + x
                             + " AKA " + toString() + " has not any field");
                 }

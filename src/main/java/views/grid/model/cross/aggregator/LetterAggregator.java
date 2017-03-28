@@ -55,8 +55,7 @@ public class LetterAggregator extends GenericAggregator implements Serializable 
         if (obj.getClass() != LetterAggregator.class)
             return false;
         String s1 = "";
-        for (int i = 0; i < groupValues.length; i++)
-            s1 += groupValues[i] + "_";
+        for (String groupValue : groupValues) s1 += groupValue + "_";
         String s2 = "";
         for (int i = 0; i < ((LetterAggregator) obj).groupValues.length; i++)
             s2 += ((LetterAggregator) obj).groupValues[i] + "_";
@@ -66,8 +65,7 @@ public class LetterAggregator extends GenericAggregator implements Serializable 
 
     public final int hashCode() {
         String s1 = "";
-        for (int i = 0; i < groupValues.length; i++)
-            s1 += groupValues[i] + "_";
+        for (String groupValue : groupValues) s1 += groupValue + "_";
         return s1.hashCode();
     }
 

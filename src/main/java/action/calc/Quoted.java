@@ -30,8 +30,7 @@ public class Quoted implements Const, HaveMethod, class_type {
     public Object method(String method, Object arg) throws Exception {
         if (method.equals("EVAL")) {
             return e.eval();
-        }
-        else {
+        } else {
             throw new RTException("HasMethodException",
                     "object Quoted has not method " + method);
         }

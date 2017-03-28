@@ -1,5 +1,13 @@
 package core.reflection.rml;
 
+import action.api.ScriptApi;
+import core.connection.DBMSConnection;
+import core.document.Document;
+import core.parser.Proper;
+import core.rml.RmlObject;
+import org.apache.log4j.Logger;
+import publicapi.DBExecutorAPI;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -7,26 +15,16 @@ import java.sql.Types;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
-import publicapi.DBExecutorAPI;
-import action.api.ScriptApi;
-import core.connection.DBMSConnection;
-import core.document.Document;
-import core.parser.Proper;
-import core.rml.RmlObject;
-
 
 /**
- *
  * @author nuglov
  */
-public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
+public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable {
 
     private static final Logger log = Logger
-    .getLogger(DBEXECUTOR.class);
-	
-	
+            .getLogger(DBEXECUTOR.class);
+
+
     private String query = null;
     private Object result = null;
     private boolean blockingExecution = true;
@@ -40,7 +38,7 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
 
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         blockingExecution = ((String) prop.get("BLOCKING", "YES")).equalsIgnoreCase("yes");
         sharedConnection = ((String) prop.get("SHAREDCONNECTION", "YES")).equalsIgnoreCase("yes");
         query = (String) prop.get("QUERY");
@@ -50,44 +48,35 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
         document = doc;
     }
 
-    private void setResType(String type){
-        if(type.equalsIgnoreCase("varchar")){
+    private void setResType(String type) {
+        if (type.equalsIgnoreCase("varchar")) {
             resType = Types.VARCHAR;
-        }
-        else if(type.equalsIgnoreCase("numeric")){
+        } else if (type.equalsIgnoreCase("numeric")) {
             resType = Types.NUMERIC;
-        }
-        else if(type.equalsIgnoreCase("char")){
+        } else if (type.equalsIgnoreCase("char")) {
             resType = Types.CHAR;
-        }
-        else if(type.equalsIgnoreCase("date")){
+        } else if (type.equalsIgnoreCase("date")) {
             resType = Types.DATE;
-        }
-        else{
+        } else {
             resType = Types.NULL;
         }
     }
 
     public Object method(String method, Object arg) throws Exception {
-        if(method.equalsIgnoreCase("execute")){
+        if (method.equalsIgnoreCase("execute")) {
             execute();
-        }
-        else if(method.equalsIgnoreCase("setQuery")){
+        } else if (method.equalsIgnoreCase("setQuery")) {
             setQuery((String) arg);
-        }
-        else if(method.equalsIgnoreCase("setSharedConnection")){
+        } else if (method.equalsIgnoreCase("setSharedConnection")) {
             setSharedConnection(((String) arg).equalsIgnoreCase("yes"));
-        }
-        else if(method.equalsIgnoreCase("setBlocking")){
-        	setBlocking(((String) arg).equalsIgnoreCase("yes"));
-        }
-        else if(method.equalsIgnoreCase("getResult")){
+        } else if (method.equalsIgnoreCase("setBlocking")) {
+            setBlocking(((String) arg).equalsIgnoreCase("yes"));
+        } else if (method.equalsIgnoreCase("getResult")) {
             return getResult().toString();
-        }
-        else if(method.equalsIgnoreCase("registerOutParameter")){
-            synchronized(dataLock){
-                  final Vector v = (Vector) arg;
-                  registerOutParameter(((Double)v.elementAt(0)).intValue(), ((Double)v.elementAt(1)).intValue());
+        } else if (method.equalsIgnoreCase("registerOutParameter")) {
+            synchronized (dataLock) {
+                final Vector v = (Vector) arg;
+                registerOutParameter(((Double) v.elementAt(0)).intValue(), ((Double) v.elementAt(1)).intValue());
             }
         }
 
@@ -95,96 +84,98 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
 
     }
 
-	/**
-	 * Установить тип возвращаемого параметра
-	 * @param index номер возвращаемого параметра
-	 * @param type тип java.sql.Types
-	 */
-	public void registerOutParameter(int index, int type) {
-		resIndex = index;
-		resType = type;
-	}
+    /**
+     * Установить тип возвращаемого параметра
+     *
+     * @param index номер возвращаемого параметра
+     * @param type  тип java.sql.Types
+     */
+    public void registerOutParameter(int index, int type) {
+        resIndex = index;
+        resType = type;
+    }
 
-	/**
-	 * Возвращает результат запроса 
-	 * @return значение зарегистрированного параметра
-	 */
-	public Object getResult() {
-		synchronized(resultLock){
-		    if(result != null)
-		        return result;
-		    else
-		        return "";
-		}
-	}
+    /**
+     * Возвращает результат запроса
+     *
+     * @return значение зарегистрированного параметра
+     */
+    public Object getResult() {
+        synchronized (resultLock) {
+            if (result != null)
+                return result;
+            else
+                return "";
+        }
+    }
 
-	/**
-	 * Использовать общее подключение к БД (подлючение рабочего пространства) или создавать свое 
-	 * @param shared если true - то новое подключение не создается, будет использоваться общее 
-	 *               подключение рабочего пространства
-	 */
-	public void setSharedConnection(boolean shared) {
-		sharedConnection = shared;
-	}
+    /**
+     * Использовать общее подключение к БД (подлючение рабочего пространства) или создавать свое
+     *
+     * @param shared если true - то новое подключение не создается, будет использоваться общее
+     *               подключение рабочего пространства
+     */
+    public void setSharedConnection(boolean shared) {
+        sharedConnection = shared;
+    }
 
-	/**
-	 * Выполнять запрос к БД в блокирующем или не блокирующм режиме 
-	 * @param blocking если true - при вызове execute создастся новый поток.
-	 */
-	public void setBlocking(boolean blocking) {
-		blockingExecution = blocking;
-	}
+    /**
+     * Выполнять запрос к БД в блокирующем или не блокирующм режиме
+     *
+     * @param blocking если true - при вызове execute создастся новый поток.
+     */
+    public void setBlocking(boolean blocking) {
+        blockingExecution = blocking;
+    }
 
-	/**
-	 * Задать текст запроса
-	 * @param q - запрос 
-	 */
-	public void setQuery(String q) {
-		synchronized(dataLock){
-		    query = q;
-		}
-	}
+    /**
+     * Задать текст запроса
+     *
+     * @param q - запрос
+     */
+    public void setQuery(String q) {
+        synchronized (dataLock) {
+            query = q;
+        }
+    }
 
-	/**
-	 * Выполнить запрос
-	 */
-	public void execute() {
-		if(blockingExecution){
-		    run();
-		}
-		else{
-		    new Thread(this).start();
-		}
-	}
+    /**
+     * Выполнить запрос
+     */
+    public void execute() {
+        if (blockingExecution) {
+            run();
+        } else {
+            new Thread(this).start();
+        }
+    }
 
-	public void run() {
+    public void run() {
         try {
             Connection con = null;
-            synchronized(dataLock){
-                if(sharedConnection){
+            synchronized (dataLock) {
+                if (sharedConnection) {
                     con = document.getConnection();
-                }
-                else{
+                } else {
                     con = DBMSConnection.getConnection(this);
                 }
                 cst = con.prepareCall(query);
-                if(resType != Types.NULL){
+                if (resType != Types.NULL) {
                     cst.registerOutParameter(resIndex, resType);
                 }
             }
 
-            synchronized(resultLock){
+            synchronized (resultLock) {
                 cst.execute();
-                if(resType != Types.NULL)
+                if (resType != Types.NULL)
                     result = cst.getObject(resIndex);
             }
             commit();
 
         } catch (Exception ex) {
             log.error("!", ex);
-        }
-        finally{
-            if(cst != null) {
+        } finally {
+            if (cst != null) {
                 try {
                     cst.close();
                 } catch (SQLException ex) {
@@ -196,24 +187,24 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
         }
     }
 
-	@Override
-	public Object getValue() throws Exception {
-		return this;
-	}
+    @Override
+    public Object getValue() throws Exception {
+        return this;
+    }
 
-	@Override
-	public Object getValueByName(String name) throws Exception {
-		return null;
-	}
+    @Override
+    public Object getValueByName(String name) throws Exception {
+        return null;
+    }
 
-	@Override
-	public void setValue(Object obj) throws Exception {
-	}
+    @Override
+    public void setValue(Object obj) throws Exception {
+    }
 
-	@Override
-	public void setValueByName(String name, Object obj) throws Exception {
-	}
-	
+    @Override
+    public void setValueByName(String name, Object obj) throws Exception {
+    }
+
     //Список зависимых компонентов
     private String[] dependences = null;
 
@@ -223,7 +214,7 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
     //Действие, выполняемое, при изменении состояния компонента
     private ScriptApi commitExpression = null;
 
-    protected void initComminAPI(Proper prop){
+    protected void initComminAPI(Proper prop) {
 
         String dep = (String) prop.get("DEPLIST");
         if (dep != null) {
@@ -240,18 +231,18 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
             }
         }
 
-         final String comm = (String) prop.get("COMMITEXP");
-         if(comm != null){
-             commitExpression = ScriptApi.getAPI(comm);
-         }
+        final String comm = (String) prop.get("COMMITEXP");
+        if (comm != null) {
+            commitExpression = ScriptApi.getAPI(comm);
+        }
 
-         final String depExp = (String) prop.get("DEPEXP");
-         if(depExp != null){
-             depExpression = ScriptApi.getAPI(depExp);
-         }
+        final String depExp = (String) prop.get("DEPEXP");
+        if (depExp != null) {
+            depExpression = ScriptApi.getAPI(depExp);
+        }
     }
 
-//    private void calcDep() {
+    //    private void calcDep() {
 //        if (dependences == null) {
 //            return;
 //        }
@@ -278,20 +269,19 @@ public class DBEXECUTOR extends RmlObject implements DBExecutorAPI, Runnable{
 //        }
 //    }
 //
-    private void onCommit(){
+    private void onCommit() {
         try {
             if (commitExpression != null) {
                 commitExpression.eval(document.getAliases());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("", e);
         }
     }
 
-    protected void commit(){
+    protected void commit() {
         onCommit();
 //        calcDep();
     }
-	
+
 }

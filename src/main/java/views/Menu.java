@@ -1,37 +1,32 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.util.Vector;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-import org.apache.log4j.Logger;
-
-import publicapi.MenuAPI;
 import action.api.RTException;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.Container;
 import core.rml.RmlObject;
+import org.apache.log4j.Logger;
+import publicapi.MenuAPI;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /**
  * Контекстное меню
- *
  */
 public class Menu extends RmlObject implements MenuAPI {
-    private static final Logger log      = Logger.getLogger(Menu.class);
-    
+    private static final Logger log = Logger.getLogger(Menu.class);
+
     private Container container = new Container(this);
 
-    JMenu                       menu     = new JMenu();
+    JMenu menu = new JMenu();
 
-    String                      label    = "Submenu1";
+    String label = "Submenu1";
 
-    Color                       bg_color = null;
-    
+    Color bg_color = null;
+
     public Menu() {
     }
 
@@ -41,14 +36,14 @@ public class Menu extends RmlObject implements MenuAPI {
         for (int i = 0; i < item_count; i++) {
             cur_itm = menu.getItem(i); // menu.getItem(i);
             if (cur_itm != null) {
-            	if (cur_itm instanceof JMenu) {
+                if (cur_itm instanceof JMenu) {
                     views.Menu tmp_menu = new views.Menu();
                     tmp_menu.setMenu((JMenu) cur_itm);
                     tmp_menu.addActionListenerRecursiv(al);
-                }else if (cur_itm instanceof JMenuItem) {
+                } else if (cur_itm instanceof JMenuItem) {
                     ((JMenuItem) cur_itm).addActionListener(al);
                 }
-             }
+            }
         }
     }
 
@@ -83,15 +78,14 @@ public class Menu extends RmlObject implements MenuAPI {
     public Object getValueByName(String name) {
         try {
             return getItem(Integer.parseInt(name));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             log.error("Shit happen!", e);
             return label;
         }
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         sp = (String) prop.get("LABEL");
         if (sp != null) {
@@ -108,14 +102,12 @@ public class Menu extends RmlObject implements MenuAPI {
     public Object method(String method, Object arg) throws Exception {
         if (method.toUpperCase().equals("SIZE")) {
             return new Double(getSize());
-        }
-        else if (method.toUpperCase().equals("REMOVE")) {
+        } else if (method.toUpperCase().equals("REMOVE")) {
             try {
                 int i = ((Double) arg).intValue();
                 removeItem(i);
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happen", e);
                 throw new RTException("CastException",
                         "method REMOVE must have one Numeric parameter"
@@ -128,40 +120,42 @@ public class Menu extends RmlObject implements MenuAPI {
         }
         if (method.toUpperCase().equals("PUT")) {
             Double d = (Double) ((Vector<Object>) arg).elementAt(0);
-            
+
             putItem(d.intValue(), (Item) ((Vector<Object>) arg).elementAt(1));
             return new Double(0);
-        }
-        else {
+        } else {
             throw new RTException("HasNotMethod", "method " + method
                     + " not defined in class views.Menu!");
         }
     }
 
-	/**
-	 * Возвращает элемент меню 
-	 * @param i номер элемента
-	 * @return элемент меню
-	 */
-	public JMenuItem getItemAt(int i) {
+    /**
+     * Возвращает элемент меню
+     *
+     * @param i номер элемента
+     * @return элемент меню
+     */
+    public JMenuItem getItemAt(int i) {
         return getItem(i);
-	}
+    }
 
-	/**
-	 * Удаляет элемент меню
-	 * @param i номер элемента
-	 */
-	public void removeItem(int i) {
-		menu.remove(i);
-	}
+    /**
+     * Удаляет элемент меню
+     *
+     * @param i номер элемента
+     */
+    public void removeItem(int i) {
+        menu.remove(i);
+    }
 
-	/**
-	 * Возвращает кол-во элементов в меню
-	 * @return кол-во элементов
-	 */
-	public int getSize() {
-		return menu.getItemCount();
-	}
+    /**
+     * Возвращает кол-во элементов в меню
+     *
+     * @return кол-во элементов
+     */
+    public int getSize() {
+        return menu.getItemCount();
+    }
 
     public void set(JMenuItem it, int i) {
         menu.insert(it, i);
@@ -178,26 +172,25 @@ public class Menu extends RmlObject implements MenuAPI {
     public void setValueByName(String name, Object o) {
         try {
             putItem(Integer.parseInt(name), (Item) o);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             log.error("Shit happen!", e);
             label = o.toString();
         }
     }
 
-	/**
-	 * Добавляет новый элемент в меню. Если номер будет больше чем кол-во элементов в меню, то элемент добавится в конец меню
-	 * @param i - номер для добавления элемента
-	 * @param item - элемент меню
-	 */
-	public void putItem(int i, Item item) {
-		if (i > menu.getItemCount() - 1) {
-		    append(((Item) item).getItem());
-		}
-		else {
-		    set(((Item) item).getItem(), i);
-		}
-	}
+    /**
+     * Добавляет новый элемент в меню. Если номер будет больше чем кол-во элементов в меню, то элемент добавится в конец меню
+     *
+     * @param i    - номер для добавления элемента
+     * @param item - элемент меню
+     */
+    public void putItem(int i, Item item) {
+        if (i > menu.getItemCount() - 1) {
+            append(item.getItem());
+        } else {
+            set(item.getItem(), i);
+        }
+    }
 
     public String type() {
         return "SVR_MENU";
@@ -211,41 +204,40 @@ public class Menu extends RmlObject implements MenuAPI {
         return menu.add(item);
     }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
-	    
+
         if (child instanceof views.Item) {
             if (((views.Item) child).getText().equals("-")) {
                 menu.addSeparator();
-            }
-            else {
+            } else {
                 JMenuItem mi = ((views.Item) child).getItem();
                 mi.addActionListener(null); // нужно!
                 menu.add(mi);
             }
-        }else if (child instanceof views.Menu) {
+        } else if (child instanceof views.Menu) {
             JMenu m = ((views.Menu) child).getMenu();
             menu.add(m);
         }
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 }

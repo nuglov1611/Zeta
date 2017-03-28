@@ -1,37 +1,25 @@
 package properties;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import loader.ZetaProperties;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * PropertyManager for managing zeta xml properties
@@ -153,8 +141,7 @@ public class PropertyManager {
             cachePath.setTextContent(PropertyConstants.DEFAULT_TEXT);
             root.appendChild(cachePath);
             propsDocument.appendChild(root);
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             log.error(e);
         }
     }
@@ -194,7 +181,7 @@ public class PropertyManager {
                     }
                 } else {
                     currentFileName = ZetaProperties.HOME_PATH + fileName;
-                	//fileName = ZetaProperties.HOME_PATH + fileName;
+                    //fileName = ZetaProperties.HOME_PATH + fileName;
                     settingsFile = new File(currentFileName);
                 }
                 if (propsDocument == null) {
@@ -208,18 +195,15 @@ public class PropertyManager {
 //                currentFileName = fileName;
             }
             loadSessions();
-        }
-        catch (SAXException e) {
+        } catch (SAXException e) {
             log.error(e);
         } catch (URISyntaxException e) {
             log.error(e);
         } catch (MalformedURLException e) {
             log.error(e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error(e);
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             log.error(e);
         } finally {
             if (is != null) {
@@ -312,14 +296,11 @@ public class PropertyManager {
                 Result result = new StreamResult(propertiesFile);
                 Source source = new DOMSource(propsDocument);
                 xformer.transform(source, result);
-            }
-            catch (TransformerConfigurationException ex) {
+            } catch (TransformerConfigurationException ex) {
                 log.error(ex);
-            }
-            catch (TransformerException ex) {
+            } catch (TransformerException ex) {
                 log.error(ex);
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 log.error(ex);
             }
         }
@@ -431,8 +412,7 @@ public class PropertyManager {
         Integer intProp = new Integer(PropertyConstants.DEFAULT_ZOOM);
         try {
             intProp = Integer.parseInt(strProp);
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             log.error(ex);
         }
         return intProp;

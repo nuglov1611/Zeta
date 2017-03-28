@@ -1,19 +1,12 @@
 package views.grid.renderer.grid;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SortOrder;
-import javax.swing.UIManager;
-import javax.swing.table.TableCellRenderer;
-
+import core.rml.RmlConstants;
 import views.grid.GridColumn;
 import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
+
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 
 public class GridColumnHeaderRenderer implements TableCellRenderer {
 
@@ -75,7 +68,7 @@ public class GridColumnHeaderRenderer implements TableCellRenderer {
                 }
                 ((JLabel) component).setIcon(icon);
             }
-        }        
+        }
         return component;
     }
 }

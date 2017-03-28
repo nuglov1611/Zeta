@@ -1,19 +1,19 @@
 package views.menu;
 
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 public class ZMenuItem extends JMenuItem {
-	String exp = null;
-	
-	public ZMenuItem(){
-		super();
-	}
-	
-	public void setExp(String e){
-		exp = e;
-	}
+    String exp = null;
 
-	public String getExp(){
-		return exp;
-	}
+    public ZMenuItem() {
+        super();
+    }
+
+    public void setExp(String e) {
+        exp = e;
+    }
+
+    public String getExp() {
+        return exp;
+    }
 }

@@ -4,37 +4,37 @@ import action.api.RTException;
 
 public class D2S {
 
-    static String[] mnum  = { "", "один", "два", "три", "четыре", "пять",
+    static String[] mnum = {"", "один", "два", "три", "четыре", "пять",
             "шесть", "семь", "восемь", "девять", "десять", "одиннадцать",
             "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
-            "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать" };
+            "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"};
 
-    static String[] fnum  = { "", "одна", "две" };
+    static String[] fnum = {"", "одна", "две"};
 
-    static String[] decs  = { "", "", "двадцать", "тридцать", "сорок",
-            "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто" };
+    static String[] decs = {"", "", "двадцать", "тридцать", "сорок",
+            "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"};
 
-    static String[] sotni = { "", "сто", "двести", "триста", "четыреста",
-            "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот" };
+    static String[] sotni = {"", "сто", "двести", "триста", "четыреста",
+            "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"};
 
-    static String[] rs    = { "", "тысяч", "миллион", "миллиард", "триллион",
-            "квадриллион", "10^18", "10^21" };                                   // разряды
+    static String[] rs = {"", "тысяч", "миллион", "миллиард", "триллион",
+            "квадриллион", "10^18", "10^21"};                                   // разряды
 
     // таблица окончаний
-    static String[] mokon = { "ов", "", "а", "а", "а", "ов", "ов", "ов", "ов",
-            "ов"         };
+    static String[] mokon = {"ов", "", "а", "а", "а", "ов", "ов", "ов", "ов",
+            "ов"};
 
-    static String[] fokon = { "", "а", "и", "и", "и", "", "", "", "", "" };
+    static String[] fokon = {"", "а", "и", "и", "и", "", "", "", "", ""};
 
-    static String[] rubs  = { "ей", "ь", "я", "я", "я", "ей", "ей", "ей", "ей",
-            "ей"         };
+    static String[] rubs = {"ей", "ь", "я", "я", "я", "ей", "ей", "ей", "ей",
+            "ей"};
 
-    static String[] kops  = { "ек", "йка", "йки", "йки", "йки", "ек", "ек",
-            "ек", "ек", "ек" };
+    static String[] kops = {"ек", "йка", "йки", "йки", "йки", "ек", "ек",
+            "ек", "ек", "ек"};
 
-    static String   rub   = "рубл";
+    static String rub = "рубл";
 
-    static String   kop   = "копе";
+    static String kop = "копе";
 
     private static String pr(int three, int r, boolean rubs) { // данная
         // вспомогательная
@@ -54,11 +54,9 @@ public class D2S {
         if (num == 0) {
             if (r == 0) {
                 str += " " + rs[r];
-            }
-            else if (r == 1) {
+            } else if (r == 1) {
                 str += " " + rs[r] + fokon[0];
-            }
-            else {
+            } else {
                 str += " " + rs[r] + mokon[0];
             }
             return str.trim();
@@ -68,43 +66,35 @@ public class D2S {
         if (num < 20) {
             if (num > 9) {
                 num2 = 0;
-            }
-            else {
+            } else {
                 num2 = num;
             }
             if (r != 1) { // разряды - не тысяч
                 if (rubs || num > 2) {
                     str += " " + mnum[num];
-                }
-                else {
+                } else {
                     str += " " + fnum[num];
                 }
                 // if (num<10) str+=
-            }
-            else {
+            } else {
                 if (num < 3) {
                     str += " " + fnum[num];
-                }
-                else {
+                } else {
                     str += " " + mnum[num];
                 }
             }
-        }
-        else {
+        } else {
             str += " " + decs[num / 10];
             if (r == 1) {
                 if ((num % 10) < 3) {
                     str += " " + fnum[num % 10];
-                }
-                else {
+                } else {
                     str += " " + mnum[num % 10];
                 }
-            }
-            else {
+            } else {
                 if (!rubs && (num % 10) < 3) {
                     str += " " + fnum[num % 10];
-                }
-                else {
+                } else {
                     str += " " + mnum[num % 10];
                 }
             }
@@ -113,11 +103,9 @@ public class D2S {
         str = str.trim();
         if (r == 0) {
             str += " " + rs[r];
-        }
-        else if (r == 1) {
+        } else if (r == 1) {
             str += " " + rs[r] + fokon[num2];
-        }
-        else {
+        } else {
             str += " " + rs[r] + mokon[num2];
         }
         return str.trim();
@@ -155,8 +143,7 @@ public class D2S {
             n /= 1000;
             if (n > 0) {
                 r++;
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -169,11 +156,10 @@ public class D2S {
             str = pr(curr, i, true) + " " + str;
         }
         if (str.trim().length() > 0) {
-            StringBuffer temp = new StringBuffer(str.trim());
+            StringBuilder temp = new StringBuilder(str.trim());
             temp.setCharAt(0, Character.toUpperCase(temp.charAt(0)));
             str = temp + " " + rub + rubs[getend(l)];
-        }
-        else { // кол-во рублей=0
+        } else { // кол-во рублей=0
             str = "Ноль рублей";
         }
 
@@ -181,8 +167,7 @@ public class D2S {
 
         if (k > 0) {
             str += " " + k + " " + kop + kops[getend(k)];
-        }
-        else {
+        } else {
             str += " 00 копеек";
         }
 

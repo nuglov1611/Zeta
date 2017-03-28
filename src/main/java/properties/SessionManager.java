@@ -35,16 +35,16 @@ public class SessionManager {
 
     public void setCurrentSession(Session newCurrentSession) {
         if (newCurrentSession != null) {
-        String newCurrentId = newCurrentSession.getId();
-        if (!sessions.containsKey(newCurrentId)) {
-            save(newCurrentSession);
+            String newCurrentId = newCurrentSession.getId();
+            if (!sessions.containsKey(newCurrentId)) {
+                save(newCurrentSession);
+            }
+            //это не первый старт программы, сохраняем инфу о текущей сессии
+            if (currentSession != null) {
+                PropertyManager.getIntance().saveProperty(PropertyConstants.CURRENT_SESSION, newCurrentId);
+            }
+            currentSession = newCurrentSession;
         }
-        //это не первый старт программы, сохраняем инфу о текущей сессии
-        if (currentSession != null) {
-            PropertyManager.getIntance().saveProperty(PropertyConstants.CURRENT_SESSION, newCurrentId);   
-        }
-        currentSession = newCurrentSession;
-    }
     }
 
     public void save(Session session) {
@@ -68,7 +68,7 @@ public class SessionManager {
     }
 
     public Collection<Session> getSessions() {
-        Collection <Session> sessionsValues = null;
+        Collection<Session> sessionsValues = null;
         if (sessions == null) {
             //Try to initialize sessions in loading properties process
             PropertyManager.getIntance();

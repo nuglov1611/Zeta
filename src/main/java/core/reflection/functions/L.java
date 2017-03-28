@@ -23,39 +23,30 @@ public class L extends BaseExternFunction {
         boolean flag = true;
         String label = null;
         Object result = new Double(0);
-        try {
-            while (flag) {
-                flag = false;
-                try {
-                    if (label != null) {
-                        if (label.equals("BEGINLOOP")) {
-                            result = expr.eval();
-                        }
-                        else {
-                            result = expr.evalLabel(label);
-                        }
-                    }
-                    else {
+        while (flag) {
+            flag = false;
+            try {
+                if (label != null) {
+                    if (label.equals("BEGINLOOP")) {
                         result = expr.eval();
+                    } else {
+                        result = expr.evalLabel(label);
                     }
+                } else {
+                    result = expr.eval();
                 }
-                catch (GotoException e) {
-                    // e.printStackTrace();
-                    label = e.label;
-                    flag = true;
-                }
-                catch (ContinueException e) {
-                    // e.printStackTrace();
-                    label = "BEGINLOOP";
-                    flag = true;
-                }
-                catch (BreakException e) {
-                    // e.printStackTrace();
-                    break;
-                }
+            } catch (GotoException e) {
+                // e.printStackTrace();
+                label = e.label;
+                flag = true;
+            } catch (ContinueException e) {
+                // e.printStackTrace();
+                label = "BEGINLOOP";
+                flag = true;
+            } catch (BreakException e) {
+                // e.printStackTrace();
+                break;
             }
-        }
-        finally {
         }
         return result;
     }

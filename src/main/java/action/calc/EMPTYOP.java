@@ -13,7 +13,7 @@ package action.calc;
 
 public class EMPTYOP extends OP {
     @Override
-    public Object eval() throws NullPointerException, ClassCastException,
+    public Object eval() throws
             Exception {
         return "";
     }

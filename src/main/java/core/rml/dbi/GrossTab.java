@@ -1,31 +1,31 @@
 package core.rml.dbi;
 
+import org.apache.log4j.Logger;
+
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
 public class GrossTab extends Datastore {
-    private static final Logger       log       = Logger
-                                                        .getLogger(GrossTab.class);
+    private static final Logger log = Logger
+            .getLogger(GrossTab.class);
 
-    int                               rowCr;
+    int rowCr;
 
-    int                               colCr;
+    int colCr;
 
-    int                               dataCr;
+    int dataCr;
 
-    int                               eval      = 1;
+    int eval = 1;
 
-    Vector<Object>                    rowData   = new Vector<Object>();
+    Vector<Object> rowData = new Vector<Object>();
 
-    Vector<Object>                    colData   = new Vector<Object>();
+    Vector<Object> colData = new Vector<Object>();
 
     Hashtable<String, Vector<Object>> groupData = new Hashtable<String, Vector<Object>>();
 
-    int                               sortRows  = 1;
+    int sortRows = 1;
 
-    int                               sortCols  = 1;
+    int sortCols = 1;
 
     public void build() {
         for (int i = 0; i < super.getRowCount(); i++) {
@@ -50,12 +50,10 @@ public class GrossTab extends Datastore {
                     Vector<Object> array = new Vector<Object>();
                     array.addElement(data);
                     groupData.put(key, array);
-                }
-                else {
+                } else {
                     mas.addElement(data);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -76,8 +74,7 @@ public class GrossTab extends Datastore {
             if (sortCols == 1) {
                 QSort.QuickSort(colData, 0, colData.size() - 1);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
 
@@ -87,7 +84,7 @@ public class GrossTab extends Datastore {
         model.setColumnType(0, tpr);
         model.addColumnName(0, "******");
         for (int j = 0; j < colData.size(); j++) {
-            model.addColumnName(j+1, colData.elementAt(j).toString()); // colName[0] =
+            model.addColumnName(j + 1, colData.elementAt(j).toString()); // colName[0] =
             // "------";
         }
     }
@@ -98,8 +95,7 @@ public class GrossTab extends Datastore {
             colCr = ((Integer) cc).intValue();
             dataCr = ((Integer) dc).intValue();
             eval = ((Integer) evl).intValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log
                     .error(
                             "in GrossTab MUST be set parameters: \n rowcondition,columncondition,datacondition",
@@ -114,8 +110,7 @@ public class GrossTab extends Datastore {
             rowData.removeAllElements();
             groupData.clear();
             super.retrieve();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
         build();
@@ -125,14 +120,14 @@ public class GrossTab extends Datastore {
 
     public void eval(int eval) {
         switch (eval) {
-        case 1:
-            do_summ();
-            break;
-        case 2:
-            do_count();
-            break;
-        default:
-            do_count();
+            case 1:
+                do_summ();
+                break;
+            case 2:
+                do_count();
+                break;
+            default:
+                do_count();
         }
     }
 
@@ -165,8 +160,7 @@ public class GrossTab extends Datastore {
                         + colData.elementAt(col));
                 if (v != null) {
                     model.addValue(modelRowIndex, (double) v.size());
-                }
-                else {
+                } else {
                     model.addValue(modelRowIndex, new Double(0));
                 }
             }

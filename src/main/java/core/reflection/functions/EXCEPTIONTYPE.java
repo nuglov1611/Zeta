@@ -21,8 +21,7 @@ public class EXCEPTIONTYPE extends NullExternFunction {
         Object o = OP.getAliases().get("##exception##");
         if (o != null) {
             return ((RTException) ((GlobalValuesObject) o).getValue()).type;
-        }
-        else {
+        } else {
             return "No Exception";
         }
     }

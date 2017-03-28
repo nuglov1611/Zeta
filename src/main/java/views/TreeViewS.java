@@ -1,27 +1,5 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Vector;
-
-import javax.swing.JTree;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-
-import org.apache.log4j.Logger;
-
-import publicapi.TreeViewAPI;
-import views.focuser.FocusPosition;
-import views.focuser.Focusable;
 import action.api.RTException;
 import core.document.AliasesKeys;
 import core.document.Closeable;
@@ -38,17 +16,32 @@ import core.rml.dbi.GroupReport;
 import core.rml.ui.impl.ZScrollPaneImpl;
 import core.rml.ui.interfaces.ZComponent;
 import core.rml.ui.interfaces.ZScrollPane;
+import org.apache.log4j.Logger;
+import publicapi.TreeViewAPI;
+import views.focuser.FocusPosition;
+import views.focuser.Focusable;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Vector;
+
+import static java.awt.event.KeyEvent.VK_CONTEXT_MENU;
+import static java.awt.event.KeyEvent.VK_ENTER;
 
 /**
  * Визуальный компонент "дерево". По сути визуальное представление GroupReport
- *
  */
 public class TreeViewS extends VisualRmlObject implements ActionListener,
-        Focusable, Shortcutter, Closeable,  TreeViewAPI {
-	
-	private ZScrollPane treePanel = ZScrollPaneImpl.create();
-	Container container = new Container(this);
-	
+        Focusable, Shortcutter, Closeable, TreeViewAPI {
+
+    private ZScrollPane treePanel = ZScrollPaneImpl.create();
+    Container container = new Container(this);
+
     class ML extends MouseAdapter {
 
         public void mouseClicked(MouseEvent e) {
@@ -60,8 +53,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                         if (selected_node != null) {
                             if (selected_node.getChildCount() == 0) {
                                 listAction2();
-                            }
-                            else {
+                            } else {
                                 nodeAction();
                             }
                         }
@@ -92,24 +84,24 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
             if (document.executeShortcut(e)) {
                 return;
             }
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                if (selected_node != null) {
-                    core.rml.dbi.Group g = (core.rml.dbi.Group) selected_node.getDataObject();
-                    if (g != null) {
-                        setCurrentRow(g.begrow);
+            switch (e.getKeyCode()) {
+                case VK_ENTER:
+                    if (selected_node != null) {
+                        core.rml.dbi.Group g = selected_node.getDataObject();
+                        if (g != null) {
+                            setCurrentRow(g.begrow);
+                        }
+                        if (selected_node.getChildCount() == 0) {
+                            listAction2();
+                        } else {
+                            nodeAction();
+                        }
+                        return;
                     }
-                    if (selected_node.getChildCount() == 0) {
-                        listAction2();
-                    }
-                    else {
-                        nodeAction();
-                    }
-                    return;
-                }
-            }
-            if (e.getKeyCode() == menuKey) {
-                rightClickReaction(null);
-                return;
+                    break;
+                case VK_CONTEXT_MENU:
+                    rightClickReaction(null);
+                    break;
             }
         }
     }
@@ -158,7 +150,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
 
     boolean storePath = false;
 
-    int menuKey = 525;
+    public static final int MENU_KEY = 525;
 
     Vector<Object> vPath = new Vector<Object>();             // path for current node
 
@@ -170,20 +162,18 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         String command = e.getActionCommand();
         try {
             document.doAction(command, null);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Shit happens", ex);
         }
 
     }
 
     public void initChildren() {
-    	RmlObject[] objs = container.getChildren();
-    	for (RmlObject element : objs) {
+        RmlObject[] objs = container.getChildren();
+        for (RmlObject element : objs) {
             if (element instanceof DataTree) {
                 gr = (DataTree) element;
-            }
-            else if (element instanceof views.Menu) {
+            } else if (element instanceof views.Menu) {
                 menu = (views.Menu) element;
                 menu.addActionListenerRecursiv(this);
             }
@@ -223,8 +213,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         }
         if (expandAll) {
             expandAll();
-        }
-        else {
+        } else {
             tree.expandPath(new TreePath(root.getPath()));
         }
         treePanel.getViewport().add(tree);
@@ -320,7 +309,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String sp;
         listAction = (String) prop.get("LISTACTION");
         listAction2 = (String) prop.get("LISTACTION2");
@@ -335,19 +324,9 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         if (sp != null) {
             foreground = UTIL.getColor(sp);
         }
-        if (((String) prop.get("EXPANDALL", "NO")).equals("YES")) {
-            expandAll = true;
-        }
-        else {
-            expandAll = false;
-        }
-        if (((String) prop.get("SORTED", "YES")).equals("YES")) {
-            sorted = true;
-        }
-        else {
-            sorted = false;
-        }
-        if (((String) prop.get("STOREPATH", "NO")).equals("YES")) {
+        expandAll = prop.get("EXPANDALL", "NO").equals("YES");
+        sorted = prop.get("SORTED", "YES").equals("YES");
+        if (prop.get("STOREPATH", "NO").equals("YES")) {
             storePath = true;
         }
         doc.addHandler(this);
@@ -359,8 +338,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                 for (String element : ar) {
                     doc.addShortcut(element, this);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -370,29 +348,18 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
             treePanel.requestFocusInWindow();
         }
 
-        sp = (String) prop.get("MENUKEY");
-        if (sp != null) {
-            try {
-                menuKey = Integer.parseInt(sp);
-            }
-            catch (Exception e) {
-                log.error("Shit happens", e);
-            }
-        }
         sp = (String) prop.get("FONT_FAMILY");
         if (sp != null) {
             try {
                 FontFamily = new Integer(sp);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 log.error("Bad Font Family!!!", e);
                 FontFamily = 0;
             }
         }
         try {
             FontSize = (Integer) prop.get("FONT_SIZE", 12);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Bad Font Size!!!", e);
             FontSize = 12;
         }
@@ -411,8 +378,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
             if (listAction != null) {
                 document.doAction(listAction, null);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -421,10 +387,9 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         log.debug("listAction2 called !;listAction2=" + listAction2);
         try {
             if (listAction2 != null) {
-            	document.doAction(listAction2, null);
+                document.doAction(listAction2, null);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
     }
@@ -436,20 +401,17 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         if (method.equals("GETLEVEL")) {
             if (tree == null) {
                 return new Double(0);
-            }
-            else {
+            } else {
                 return new Double(getLevel());
             }
-        }
-        else if (method.equals("SETSOURCE")) {
+        } else if (method.equals("SETSOURCE")) {
             if (!(arg instanceof DataTree)) {
                 throw new RTException("CastException",
                         "wrong paramters of treeview.setSource <groupreport>");
             }
             setSource((GroupReport) arg);
             return null;
-        }
-        else if (method.equals("SETCURRENTNODE")) {
+        } else if (method.equals("SETCURRENTNODE")) {
             if (!(arg instanceof Double)) {
                 throw new RTException("CastException",
                         "wrong paramters of treeview.setCurrentNode <number>");
@@ -457,21 +419,21 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
             int n = ((Double) arg).intValue();
             setCurrentNode(n);
             return null;
-        }
-        else {
-        	return super.method(method, arg);
+        } else {
+            return super.method(method, arg);
         }
     }
 
     /**
      * Задает текущий элемент
+     *
      * @param n номер элемента если -1, то выбирается корневой элемент
      */
     public void setCurrentNode(int n) {
         TreeNodeS node = root;
         if (n == -1) {
             tree.setSelectionPath(new TreePath(root.getPath()));
-        }else{
+        } else {
             while (node != null) {
                 tree.expandPath(new TreePath(node.getPath()));
                 node = (TreeNodeS) node.getFirstLeaf();
@@ -505,15 +467,17 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
 
     /**
      * Задает источник данных для дерева
+     *
      * @param dataTree - источник данных
      */
     public void setSource(GroupReport dataTree) {
-        gr = (DataTree) dataTree;
+        gr = dataTree;
         createTree();
     }
 
     /**
      * Возвращает кол-во уровней до данного элемента в дереве, расстояние от корня до элемента
+     *
      * @return кол-во уровней до данного элемента
      */
     public int getLevel() {
@@ -523,8 +487,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         // There is no selection. Default to the root node.
         {
             _node = root;
-        }
-        else {
+        } else {
             _node = (TreeNodeS) (_path.getLastPathComponent());
         }
         return _node.getLevel();
@@ -534,10 +497,9 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         log.debug("nodeAction called !");
         try {
             if (nodeAction != null) {
-            	document.doAction(nodeAction, null);
+                document.doAction(nodeAction, null);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
 
@@ -550,7 +512,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
      */
 
     public void processShortcut() {
-    	treePanel.requestFocus();
+        treePanel.requestFocus();
     }
 
     // отображает стр-ру GroupReport на TreeView2
@@ -592,12 +554,10 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                     arr[i] = grep.getIdColumn();
                 }
                 return restorePath(arr);
-            }
-            else {
+            } else {
                 return restorePath(grep.getGroupColumn());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
             return null;
 
@@ -629,14 +589,12 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                     node = cnode;
                     if (cnode.getChildCount() > 0) {
                         cnode = (TreeNodeS) cnode.getFirstChild();
-                    }
-                    else {
+                    } else {
                         break;
                     }
                     gr = _g;
                     break;
-                }
-                else {
+                } else {
                     node = cnode;
                 }
                 cnode = (TreeNodeS) cnode.getNextSibling();
@@ -657,7 +615,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                 if (storePath) {
                     TreeNodeS node = restorePath((core.rml.dbi.GroupReport) gr);
                     if (node != null) {
-                        core.rml.dbi.Group g = (core.rml.dbi.Group) node.getDataObject();
+                        core.rml.dbi.Group g = node.getDataObject();
                         if (g != null) {
                             setCurrentRow(g.begrow);
                         }
@@ -669,8 +627,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                     }
 
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Shit happens", e);
             }
         }
@@ -687,7 +644,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         if (node == null) {
             return null;
         }
-        
+
         Group g = node.getDataObject();
         if (g == null) {
             return null;
@@ -702,8 +659,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
             if (e != null) {
                 // menu.show(e.getComponent(), e.getX(), e.getY());
                 menu.show(treePanel.getJComponent(), e.getX(), e.getY());
-            }
-            else {
+            } else {
                 menu.show(treePanel.getJComponent(), 0, 0);
             }
         }
@@ -753,12 +709,10 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                     arr[i] = grep.getIdColumn();
                 }
                 storeCurrentPath(arr);
-            }
-            else {
+            } else {
                 storeCurrentPath(grep.getGroupColumn());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Shit happens", e);
         }
 
@@ -782,7 +736,7 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
                 e.getY()));
         TreeNodeS node = (TreeNodeS) tmp_tree.getLastSelectedPathComponent();
         if (node != null) {
-            core.rml.dbi.Group g = (core.rml.dbi.Group) node.getDataObject();
+            core.rml.dbi.Group g = node.getDataObject();
             if (g != null) {
                 setCurrentRow(g.begrow);
             }
@@ -800,48 +754,42 @@ public class TreeViewS extends VisualRmlObject implements ActionListener,
         }
     }
 
-    @Override
     public int getFocusPosition() {
         return fp.getFocusPosition();
     }
 
-    @Override
     public void setFocusPosition(int position) {
         fp.setFocusPosition(position);
     }
 
-	@Override
-	public void addChild(RmlObject child) {
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
-	}
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void setFocusable(boolean focusable) {
-		tree.setFocusable(focusable);
-	}
+    @Override
+    public void setFocusable(boolean focusable) {
+        tree.setFocusable(focusable);
+    }
 
-	@Override
-	public ZComponent getVisualComponent() {
-		return treePanel;
-	}
+    @Override
+    public ZComponent getVisualComponent() {
+        return treePanel;
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
-	@Override
-	protected Border getDefaultBorder() {
-		return new EmptyBorder(0,0,0,0);
-	}
+    @Override
+    protected Border getDefaultBorder() {
+        return new EmptyBorder(0, 0, 0, 0);
+    }
 }

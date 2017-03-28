@@ -38,6 +38,7 @@ public class CrossField {
         this.description = description;
         this.width = width;
     }
+
     public String getColumnName() {
         return columnName;
     }

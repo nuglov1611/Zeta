@@ -39,7 +39,6 @@ public class QSort {
                 QuickSort(a, lo, hi0);
             }
         }
-        ;
     }
 
     private static void swap(Vector<Object> a, int i, int j) {

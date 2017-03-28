@@ -10,16 +10,16 @@
  */
 package core.rml.dbi;
 
-import java.util.Vector;
-
 import action.api.HaveMethod;
 import action.api.RTException;
 import action.calc.objects.class_type;
 
+import java.util.Vector;
+
 public class DsRow implements HaveMethod, class_type {
     Datastore parent;
 
-    int       row;
+    int row;
 
     public DsRow(int row, Datastore parent) {
         this.row = row;
@@ -30,26 +30,22 @@ public class DsRow implements HaveMethod, class_type {
         if (method.equals("FIELD")) {
             if ((arg instanceof String)) {
                 return parent.getValue(row, (String) arg);
-            }
-            else if ((arg instanceof Double)) {
+            } else if ((arg instanceof Double)) {
                 return parent.getValue(row, ((Double) arg).intValue());
-            }
-            else {
+            } else {
                 throw new RTException("CastException",
                         "DsRow::FIELD must have one argument compateable with String type");
             }
 
-        }
-        else if (method.equals("SETFIELD")) {
+        } else if (method.equals("SETFIELD")) {
             try {
                 Vector<Object> v = (Vector<Object>) arg;
                 String field = (String) v.elementAt(0);
                 Object o = v.elementAt(1);
                 parent.setValue(row, field, o);
                 return new Double(0);
-            }
-            catch (ClassCastException e) {
-               // e.printStackTrace();
+            } catch (ClassCastException e) {
+                // e.printStackTrace();
                 throw new RTException("CastException",
                         "DsRow::SETFIELD must have two arguments:\n"
                                 + "first  String type");

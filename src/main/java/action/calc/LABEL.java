@@ -11,17 +11,16 @@
 
 package action.calc;
 
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.util.Enumeration;
 import java.util.Vector;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
 
 class LABEL extends OP implements Unar {
     protected final static Logger log = Logger.getLogger(LABEL.class);
 
-    String                        label;
+    String label;
 
     public LABEL(String label) {
         sym = ':';
@@ -31,15 +30,14 @@ class LABEL extends OP implements Unar {
     }
 
     @Override
-    public Object eval() throws NullPointerException, ClassCastException,
+    public Object eval() throws
             Exception {
         Vector<Object> v;
         Object result;
         result = doOP(left);
         if (result instanceof Vector) {
             v = (Vector<Object>) result;
-        }
-        else {
+        } else {
             v = new Vector<Object>();
             v.addElement(result);
         }
@@ -47,11 +45,10 @@ class LABEL extends OP implements Unar {
             result = doOP(right);
             if (result instanceof Vector) {
                 Vector<Object> r = (Vector<Object>) result;
-                for (Enumeration<Object> e = r.elements(); e.hasMoreElements();) {
+                for (Enumeration<Object> e = r.elements(); e.hasMoreElements(); ) {
                     v.addElement(e.nextElement());
                 }
-            }
-            else {
+            } else {
                 v.addElement(result);
             }
         }
@@ -65,8 +62,7 @@ class LABEL extends OP implements Unar {
         }
         if (this.label.equals(label)) {
             return ((OP) right).eval();
-        }
-        else {
+        } else {
             return ((OP) left).evalLabel(label);
         }
     }

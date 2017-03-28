@@ -1,27 +1,19 @@
 package views.grid.renderer.cell;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
+import core.rml.RmlConstants;
+import views.grid.GridColumn;
+import views.grid.manager.GridTableManager;
 
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
-
-import views.grid.GridColumn;
-import views.grid.manager.GridTableManager;
-import core.rml.RmlConstants;
+import java.awt.*;
 
 public class BooleanCellRenderer implements TableCellRenderer {
     private GridTableManager tableManager;
-    
+
     public BooleanCellRenderer(GridTableManager tableManager) {
         super();
         this.tableManager = tableManager;
@@ -34,7 +26,7 @@ public class BooleanCellRenderer implements TableCellRenderer {
         column = tableManager.convertColumnIndexToModel(column);
         GridColumn currColumn = tableManager.getVColumn(column);
 
-        if(value == null){
+        if (value == null) {
             value = true;
         }
         JPanel panel = new JPanel(new BorderLayout());
@@ -74,7 +66,7 @@ public class BooleanCellRenderer implements TableCellRenderer {
         } else {
             panel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
         }
-        check.setSelected((Boolean)value);
+        check.setSelected((Boolean) value);
         return panel;
     }
 }

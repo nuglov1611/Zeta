@@ -11,20 +11,18 @@
 
 package core.reflection.functions;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.calc.OP;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
 
 
 public class DEBUGING extends BaseExternFunction {
-    protected final static Logger log      = Logger.getLogger(DEBUGING.class);
+    protected final static Logger log = Logger.getLogger(DEBUGING.class);
 
-    static final String           fun      = "FUN DEBUG : ";
+    static final String fun = "FUN DEBUG : ";
 
-    static boolean                debuging = true;
+    static boolean debuging = true;
 
     public Object eval() throws Exception {
         if (ZetaProperties.calc_debug > 2) {

@@ -4,147 +4,127 @@
  */
 package core.rml;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.util.Vector;
-
-import javax.swing.ImageIcon;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
-import loader.Loader;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
-import publicapi.RmlContainerAPI;
-import publicapi.VisualRmlObjectAPI;
 import action.api.RTException;
 import action.calc.Nil;
 import core.document.Document;
 import core.parser.Proper;
 import core.rml.ui.interfaces.ZComponent;
+import loader.Loader;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+import publicapi.RmlContainerAPI;
+import publicapi.VisualRmlObjectAPI;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 /**
  * Суперкаласс для Rml-объектов, имеющих графическое представление.
+ *
  * @author nuglov
- * {@inheritDoc}
+ *         {@inheritDoc}
  */
 abstract public class VisualRmlObject extends RmlObject implements VisualRmlObjectAPI {
-	/**
-	 *@internal
-	 */
-	private static final Logger log = Logger.getLogger(VisualRmlObject.class);
-
-	/**
-	 *@internal
-	 */
-    public static int UNKNOWN_COLOR = -1;
-	/**
-	 *@internal
-	 */
-    public static int SELECTED = 1;
-	/**
-	 *@internal
-	 */
-    public static int UNSELECTED = 2;
-	/**
-	 *@internal
-	 */
-    public static int PRESSED = 3;
     /**
      * @internal
-     * Координата левого верхнего угла визуального компонента по оси X
+     */
+    private static final Logger log = Logger.getLogger(VisualRmlObject.class);
+
+    /**
+     * @internal
+     */
+    public static int UNKNOWN_COLOR = -1;
+    /**
+     * @internal
+     */
+    public static int SELECTED = 1;
+    /**
+     * @internal
+     */
+    public static int UNSELECTED = 2;
+    /**
+     * @internal
+     */
+    public static int PRESSED = 3;
+    /**
+     * @internal Координата левого верхнего угла визуального компонента по оси X
      */
     protected int left = 0;
     /**
-     * @internal
-     * Координата левого верхнего угла визуального компонента по оси Y
+     * @internal Координата левого верхнего угла визуального компонента по оси Y
      */
     protected int top = 0;
     /**
-     * @internal
-     * Ширина визуального компонента
+     * @internal Ширина визуального компонента
      */
     protected int width = 0;
     /**
-     * @internal
-     * Высота визуального компонента
+     * @internal Высота визуального компонента
      */
     protected int height = 0;
     /**
-     * @internal
-     * Цвет фона визуального компонента
+     * @internal Цвет фона визуального компонента
      */
     protected String background;
     /**
-     * @internal
-     * Ссылка на картинку для заднего фона
+     * @internal Ссылка на картинку для заднего фона
      */
     protected String bgimage = null;
     /**
-     * @internal
-     * Цвет шрифта визуального компонента
+     * @internal Цвет шрифта визуального компонента
      */
     protected String foreground;
     /**
-     * @internal
-     * Флаг видимости компонента
+     * @internal Флаг видимости компонента
      */
     protected String visible = "yes";
     /**
-     * @internal
-     * Прозрачность фона компонента, варьируется от 0 (прозрачный) до 255 (непрозрачный)
+     * @internal Прозрачность фона компонента, варьируется от 0 (прозрачный) до 255 (непрозрачный)
      */
     protected int bgTransparency = -1;
 
     /**
-	 *@internal
-	 */
+     * @internal
+     */
     protected boolean firstFocus = false;
     /**
-     * @internal
-     * Шрифт визуального компонента
+     * @internal Шрифт визуального компонента
      */
-    protected String toolTipText = null; 
-    
-	/**
-	 *@internal
-	 */
+    protected String toolTipText = null;
+
+    /**
+     * @internal
+     */
     protected Font font = null;
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     protected String borderLayoutPos = BorderLayout.CENTER;
-    
-	/**
-	 *@internal
-	 */
+
+    /**
+     * @internal
+     */
     protected Border border = null;
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     abstract public void focusThis();
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     abstract public ZComponent getVisualComponent();
 
-    
+
     /**
      * Возвращает размеры графического компонента.
+     *
      * @return массив размеров (width, height)
      */
     public Dimension getSize() {
@@ -153,28 +133,30 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Возвращает значение признака видимости графического компонента.
+     *
      * @return true - видимый
      */
-    public boolean isVisible(){
-    	try {
-			return ((String) document.calculateMacro(visible)).equalsIgnoreCase(RmlConstants.YES);
-		} catch (Exception e) {
-			log.error("!", e);
-			return true;
-		}
+    public boolean isVisible() {
+        try {
+            return document.calculateMacro(visible).equalsIgnoreCase(RmlConstants.YES);
+        } catch (Exception e) {
+            log.error("!", e);
+            return true;
+        }
     }
-    
+
     /**
      * Возвращает координаты графического компонента.
+     *
      * @return координаты верхнего левого угла
      */
     public Point getPosition() {
         return new Point(left, top);
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     public void init(Proper prop, Document doc) {
         super.init(prop, doc);
         if (prop == null) {
@@ -184,23 +166,23 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
         Integer ip = null;
 
         background = (String) prop.get(RmlConstants.BG_COLOR);
-        if(background == null)
+        if (background == null)
             background = (String) prop.get(RmlConstants.BACKGROUND);
 
         foreground = (String) prop.get(RmlConstants.FONT_COLOR);
-        if(foreground == null)
+        if (foreground == null)
             foreground = (String) prop.get(RmlConstants.FOREGROUND);
 
         s = (String) prop.get("FONT");
         if (s != null) {
-        	font = loader.ZetaUtility.font1(s);
-        }else if (getVisualComponent() != null){
-	        	if(getVisualComponent().getFont() != null){
-	        	String name = (String) prop.get("FONT_FACE", "Serif");
-	        	Integer style = (Integer) prop.get("FONT_FAMILY", getVisualComponent().getFont().getStyle());
-	        	Integer size = (Integer) prop.get("FONT_SIZE", getVisualComponent().getFont().getSize());
-	        	font = new Font(name, style, size);
-        	}
+            font = loader.ZetaUtility.font1(s);
+        } else if (getVisualComponent() != null) {
+            if (getVisualComponent().getFont() != null) {
+                String name = (String) prop.get("FONT_FACE", "Serif");
+                Integer style = (Integer) prop.get("FONT_FAMILY", getVisualComponent().getFont().getStyle());
+                Integer size = (Integer) prop.get("FONT_SIZE", getVisualComponent().getFont().getSize());
+                font = new Font(name, style, size);
+            }
         }
 
         ip = (Integer) prop.get(RmlConstants.LEFT);
@@ -251,63 +233,62 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
         } else if (s.equalsIgnoreCase(BorderLayout.NORTH)) {
             borderLayoutPos = BorderLayout.NORTH;
         }
-        
+
         toolTipText = (String) prop.get(RmlConstants.TOOLTIPTEXT);
 
         initCommonVisualComponent(getVisualComponent());
         setBorder(prop);
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     private void setBorder(Proper prop) {
-		if(getVisualComponent() == null )
-			return;
-		String b = (String) prop.get(RmlConstants.BORDER);
-		Insets ins = getVisualComponent().getInsets(); 
+        if (getVisualComponent() == null)
+            return;
+        String b = (String) prop.get(RmlConstants.BORDER);
+        Insets ins = getVisualComponent().getInsets();
 //		if(ins == null)
 //			ins = new Insets(0,0,0,0);
 
-		if (b!=null){
-			if(b.equalsIgnoreCase("line")){
-				Color bc = ZetaUtility.color((String)prop.get("BORDERCOLOR", "black"));
-				int bthick = (Integer)prop.get("BORDERTHICK", 1);
-				boolean bround = ((String)prop.get("BROUND", "NO")).equalsIgnoreCase(RmlConstants.YES);
-				border = new LineBorder(bc, bthick, bround);
-				getVisualComponent().setBorder(border);
-			}else if(b.equalsIgnoreCase("empty")){
-				border = new EmptyBorder(ins);
-				getVisualComponent().setBorder(border);
-			}else if(b.equalsIgnoreCase("default")){
-				border = getDefaultBorder();
-				getVisualComponent().setBorder(border);
-			}
-		}
-		
-		int btop = (Integer) prop.get("BTOP", ins.top);
-		int bleft = (Integer) prop.get("BLEFT", ins.left);
-		int bbottom = (Integer) prop.get("BBOTTOM", ins.bottom);
-		int bright = (Integer) prop.get("BRIGHT", ins.right);
-		
-		getVisualComponent().getInsets().set(btop, bleft, bbottom, bright);
-	}
+        if (b != null) {
+            if (b.equalsIgnoreCase("line")) {
+                Color bc = ZetaUtility.color((String) prop.get("BORDERCOLOR", "black"));
+                int bthick = (Integer) prop.get("BORDERTHICK", 1);
+                boolean bround = ((String) prop.get("BROUND", "NO")).equalsIgnoreCase(RmlConstants.YES);
+                border = new LineBorder(bc, bthick, bround);
+                getVisualComponent().setBorder(border);
+            } else if (b.equalsIgnoreCase("empty")) {
+                border = new EmptyBorder(ins);
+                getVisualComponent().setBorder(border);
+            } else if (b.equalsIgnoreCase("default")) {
+                border = getDefaultBorder();
+                getVisualComponent().setBorder(border);
+            }
+        }
 
-	/**
-	 *@internal
-	 */
-    protected abstract Border getDefaultBorder();
-    
-	/**
-	 *@internal
-	 */
-	public String getPositionForBorder() {
-        return borderLayoutPos;
+        int btop = (Integer) prop.get("BTOP", ins.top);
+        int bleft = (Integer) prop.get("BLEFT", ins.left);
+        int bbottom = (Integer) prop.get("BBOTTOM", ins.bottom);
+        int bright = (Integer) prop.get("BRIGHT", ins.right);
+
+        getVisualComponent().getInsets().set(btop, bleft, bbottom, bright);
     }
 
     /**
      * @internal
-     * Initialize rml object with all assigned properties
+     */
+    protected abstract Border getDefaultBorder();
+
+    /**
+     * @internal
+     */
+    public String getPositionForBorder() {
+        return borderLayoutPos;
+    }
+
+    /**
+     * @internal Initialize rml object with all assigned properties
      * Be sure that you initialize visual object before calling this method and
      * calling init()
      */
@@ -329,9 +310,9 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
         }
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     public static int getColor(String color) {
         int res = UNKNOWN_COLOR;
         if (color != null) {
@@ -341,31 +322,30 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
                 int blue = Integer.parseInt(color.substring(5, 7), 16);
                 res = ((red << 16) + (green << 8) + blue);
             } catch (Exception e) {
-            	log.error("", e);
+                log.error("", e);
             }
         }
 
         return res;
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     public Object method(String method, Object arg) throws Exception {
         if (getVisualComponent() != null) {
             if (method.equalsIgnoreCase("setVisible")) {
-                setVisible(((String) visible).equalsIgnoreCase("YES"));
-            } else if(method.equalsIgnoreCase("setEnabled")){
+                setVisible(visible.equalsIgnoreCase("YES"));
+            } else if (method.equalsIgnoreCase("setEnabled")) {
                 if (arg instanceof Double) {
                     setEnabled(((Double) arg).intValue() != 0);
                 } else if (arg instanceof String) {
                     setEnabled(((String) arg).equalsIgnoreCase("yes"));
-                }
-                else {
+                } else {
                     throw new RTException("ClassCastException",
                             "Wrong paramter of setEnabled number/string");
                 }
-            }else if (method.equalsIgnoreCase("setTop")) {
+            } else if (method.equalsIgnoreCase("setTop")) {
                 setTop(((Double) arg).intValue());
             } else if (method.equalsIgnoreCase("setLeft")) {
                 setLeft(((Double) arg).intValue());
@@ -406,6 +386,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Установить размеры объекта (ширину и высоту)
+     *
      * @param w - ширина
      * @param h - высота
      */
@@ -417,6 +398,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Установить высоту визуального компонента
+     *
      * @param h высота
      */
     public void setHeight(int h) {
@@ -426,7 +408,8 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Установить ширину визуального компонента
-     * @param w ширина 
+     *
+     * @param w ширина
      */
     public void setWidth(int w) {
         width = w;
@@ -434,7 +417,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
     }
 
     /**
-     * Получить фокус 
+     * Получить фокус
      */
     public void requestFocus() {
         getVisualComponent().requestFocus();
@@ -442,6 +425,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Поволяет узнать возможность графического компонента принимать фокус
+     *
      * @return true - если объект может принимать фокус, false - если не может
      */
     public boolean isFocusable() {
@@ -450,6 +434,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать возможность графического компонента принимать фокус
+     *
      * @param focusable true - компонент может принимать фокус, false - не может принимать фокус
      */
     public void setFocusable(boolean focusable) {
@@ -458,6 +443,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать координаты графического компонента по горизонтали и вертикали
+     *
      * @param x координата по горизонтали
      * @param y координата по вертикали
      */
@@ -469,6 +455,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать координату графического компонента по горизонтали (координата левой границы)
+     *
      * @param x координата
      */
     public void setLeft(int x) {
@@ -478,6 +465,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать координату графического компонента по вертикали (координата верхней границы)
+     *
      * @param y координата
      */
     public void setTop(int y) {
@@ -487,6 +475,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать признак "активности" графического компонента
+     *
      * @param enabled признак (true - компонент активный, false - не активный("серый"))
      */
     public void setEnabled(boolean enabled) {
@@ -495,6 +484,7 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     /**
      * Задать признак видимости графического компонента
+     *
      * @param visible признак (true - видимый, false - не видимый)
      */
     public void setVisible(boolean visible) {
@@ -518,17 +508,17 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
             }
 
             final byte[] img_data = Loader.getInstanceRml().loadByName_bytes(clink);
-            
+
             return Toolkit.getDefaultToolkit().createImage(img_data);
         } catch (Exception ex) {
-        	log.error("", ex);
+            log.error("", ex);
         }
         return null;
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     protected void setBGImage(final Image image, final String constr, final int style_type) {
 //        Display.getInstance().callSerially(
 //                new Runnable() {
@@ -542,9 +532,9 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 //                });
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     protected void setBGImage(final String link, final String constr, final int style_type, final boolean skipValidating) {
 //        Display.getInstance().callSerially(
 //                new Runnable() {
@@ -558,9 +548,9 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 //                });
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     protected void setBGImage(Image img, String constr, int style_type, boolean skipValidating) {
 //        if (img == null) {
 //            return;
@@ -612,21 +602,21 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 //        }
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     public boolean getVisible() {
         return isVisible() && getVisualComponent().isVisible();
     }
 
-	/**
-	 *@internal
-	 */
+    /**
+     * @internal
+     */
     public void setVisible(boolean vsbl, boolean direct) {
 
         if (direct) {
             //При рямом вызове сохраняем состояние объекта
-            visible = vsbl ? RmlConstants.YES : RmlConstants.NO ;
+            visible = vsbl ? RmlConstants.YES : RmlConstants.NO;
         }
 
         if (vsbl && !isVisible()) {
@@ -648,9 +638,9 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
             //В этом случае вызов является косвеным
             final RmlObject[] children = ((RmlContainerAPI) this).getChildren();
             if (children != null) {
-                for (int i = 0; i < children.length; i++) {
-                    if (children[i] instanceof VisualRmlObject) {
-                        ((VisualRmlObject) children[i]).setVisible(vsbl, false);
+                for (RmlObject aChildren : children) {
+                    if (aChildren instanceof VisualRmlObject) {
+                        ((VisualRmlObject) aChildren).setVisible(vsbl, false);
                     }
                 }
             }
@@ -659,20 +649,20 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 
     }
 
-	/**
-	 *@internal
-	 */
-	public Font getFont() {
-		return font;
-	}
+    /**
+     * @internal
+     */
+    public Font getFont() {
+        return font;
+    }
 
-	/**
-	 *@internal
-	 */
-	public void setFont(Font font) {
-		getVisualComponent().setFont(font);
-	}
-	
+    /**
+     * @internal
+     */
+    public void setFont(Font font) {
+        getVisualComponent().setFont(font);
+    }
+
 //	protected void setIcon(String path, String description, boolean scaled){
 //		ImageIcon icon = createImageIcon(path, description);
 //		if(icon != null){
@@ -683,38 +673,36 @@ abstract public class VisualRmlObject extends RmlObject implements VisualRmlObje
 //	}
 
     /**
-     * @internal
-     * Creates an ImageIcon if the path is valid.
      * @param String - resource path
      * @param String - description of the file
+     * @internal Creates an ImageIcon if the path is valid.
      */
     protected ImageIcon createImageIcon(String path,
-            String description) {
-    	ImageIcon img = null;
+                                        String description) {
+        ImageIcon img = null;
         if (path != null) {
-			try {
-	        	final String isrc = (String) document.calculateMacro(path);
-	        	if(description == null)
-	        		img = new ImageIcon(Loader.getInstanceRml().loadByName_bytes(isrc));
-	        	else
-	        		img = new ImageIcon(Loader.getInstanceRml().loadByName_bytes(isrc), description);
-			} catch (Exception e) {
-				log.error("!", e);
-			}
+            try {
+                final String isrc = document.calculateMacro(path);
+                if (description == null)
+                    img = new ImageIcon(Loader.getInstanceRml().loadByName_bytes(isrc));
+                else
+                    img = new ImageIcon(Loader.getInstanceRml().loadByName_bytes(isrc), description);
+            } catch (Exception e) {
+                log.error("!", e);
+            }
         }
-        
+
         return img;
     }
-    
+
     /**
-     * @internal
-     * Resizes an image using a Graphics2D object backed by a BufferedImage.
      * @param srcImg - source image to scale
-     * @param w - desired width
-     * @param h - desired height
+     * @param w      - desired width
+     * @param h      - desired height
      * @return - the new resized image
+     * @internal Resizes an image using a Graphics2D object backed by a BufferedImage.
      */
-    protected Image getScaledImage(Image srcImg, int w, int h){
+    protected Image getScaledImage(Image srcImg, int w, int h) {
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resizedImg.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);

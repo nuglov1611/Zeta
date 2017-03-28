@@ -1,9 +1,9 @@
 package views.grid.listener;
 
+import views.grid.manager.GridTableManager;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import views.grid.manager.GridTableManager;
 
 public class GridRowHeaderSelectionListener extends MouseAdapter {
 

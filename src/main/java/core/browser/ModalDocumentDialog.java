@@ -1,32 +1,20 @@
 /**
- * 
+ *
  */
 package core.browser;
-
-import java.awt.Cursor;
-import java.awt.Dialog.ModalityType;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
 
 import core.document.Document;
 import core.document.exception.LoadDocumentException;
 import core.parser.Proper;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dialog.ModalityType;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /*
  * @author uglov
@@ -53,22 +41,22 @@ public class ModalDocumentDialog extends DocumentContainer implements Runnable {
 
     private JDialog window = null;
 
-    public JMenuBar createMenuBar(ArrayList<JMenu> documentMenu){
-    	JMenuBar ret = new JMenuBar();
-    	if(documentMenu != null){
-    		for(JMenu menu : documentMenu)
-    			ret.add(menu);
-    	}
-    	
-    	return ret;
+    public JMenuBar createMenuBar(ArrayList<JMenu> documentMenu) {
+        JMenuBar ret = new JMenuBar();
+        if (documentMenu != null) {
+            for (JMenu menu : documentMenu)
+                ret.add(menu);
+        }
+
+        return ret;
     }
-    
+
     public ModalDocumentDialog(Workspace ws, Window parentWindow) {
         super();
 
         window = new JDialog(ws.getFrame(), true);
         window.setModalityType(ModalityType.DOCUMENT_MODAL);
-        
+
 //        window.setGlassPane(lockPanel);
 //        lockPanel.setVisible(false);
         setWorkSpace(ws);
@@ -181,11 +169,10 @@ public class ModalDocumentDialog extends DocumentContainer implements Runnable {
         });
     }
 
-	@Override
-	public void setMenuBar(JMenuBar menu) {
-		window.setJMenuBar(menu);
-	}
-	
-	
+    @Override
+    public void setMenuBar(JMenuBar menu) {
+        window.setJMenuBar(menu);
+    }
+
 
 }

@@ -12,19 +12,19 @@
 package action.calc.objects;
 
 public interface iterator {
-    public Double first() throws Exception;
+    Double first() throws Exception;
 
-    public Double last() throws Exception;
+    Double last() throws Exception;
 
-    public Double next() throws Exception;
+    Double next() throws Exception;
 
-    public Double offset(Double x) throws Exception;
+    Double offset(Double x) throws Exception;
 
-    public Double prev() throws Exception;
+    Double prev() throws Exception;
 
-    public Object set_value(Object value) throws Exception;
+    Object set_value(Object value) throws Exception;
 
-    public Double size() throws Exception;
+    Double size() throws Exception;
 
-    public Object value() throws Exception;
+    Object value() throws Exception;
 }

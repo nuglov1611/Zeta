@@ -1,34 +1,31 @@
 package views.grid.editor;
 
-import java.awt.Component;
-
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-
 import views.grid.GridColumn;
 import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class GridCellEditor extends DefaultCellEditor {
 
     private GridSwing parentGrid;
     private CommonField currField;
-    
+
     public GridCellEditor(GridSwing parentGrid) {
         super(new JTextField());
         this.parentGrid = parentGrid;
     }
 
     public Object getCellEditorValue() {
-        if(currField == null)
+        if (currField == null)
             return super.stopCellEditing();
         return currField.getValue();
     }
 
     public boolean stopCellEditing() {
-        if(currField == null)
+        if (currField == null)
             return super.stopCellEditing();
-        
+
         currField.stopEditing();
         String newText = currField.getText();
         if (!currField.isValid(newText)) {
@@ -49,10 +46,10 @@ public class GridCellEditor extends DefaultCellEditor {
         columnIndex = parentGrid.convertColumnIndexToModel(columnIndex);
 
         GridColumn currColumn = parentGrid.getVColumn(columnIndex);
-        
+
         currField = GridFieldFactory.getInstance().
                 createField(parentGrid, currColumn, value, parentGrid.isEditable());
-        
+
         parentGrid.toDSSaved = false;
         return currField;
     }

@@ -1,35 +1,29 @@
 package views.grid.editor;
 
-import java.awt.Component;
+import core.rml.RmlConstants;
+import views.grid.GridColumn;
+import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.JCheckBox;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-
-import views.grid.GridColumn;
-import views.grid.GridSwing;
-import core.rml.RmlConstants;
-
-public class BooleanCellEditor extends DefaultCellEditor implements KeyListener  {
+public class BooleanCellEditor extends DefaultCellEditor implements KeyListener {
 
     private GridSwing parentGrid;
-    private GridColumn currColumn;
     private JCheckBox currField;
-    
-    
+
+
     public BooleanCellEditor(GridSwing parentGrid) {
         super(new JCheckBox());
         this.parentGrid = parentGrid;
         this.setClickCountToStart(1);
     }
 
-    
-    
+
     public Object getCellEditorValue() {
-        if(currField == null)
+        if (currField == null)
             return super.getCellEditorValue();
 
         return currField.isSelected();
@@ -38,8 +32,8 @@ public class BooleanCellEditor extends DefaultCellEditor implements KeyListener 
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int rowIndex, int columnIndex) {
         columnIndex = parentGrid.convertColumnIndexToModel(columnIndex);
-        currColumn = parentGrid.getVColumn(columnIndex);
-        if(value == null){
+        GridColumn currColumn = parentGrid.getVColumn(columnIndex);
+        if (value == null) {
             value = true;
         }
 
@@ -55,9 +49,8 @@ public class BooleanCellEditor extends DefaultCellEditor implements KeyListener 
 
         currField.addKeyListener(this);
         parentGrid.toDSSaved = false;
-        return (Component) currField;
+        return currField;
     }
-
 
 
     @Override
@@ -68,11 +61,9 @@ public class BooleanCellEditor extends DefaultCellEditor implements KeyListener 
     }
 
 
-
     @Override
     public void keyReleased(KeyEvent e) {
     }
-
 
 
     @Override

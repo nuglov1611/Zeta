@@ -8,29 +8,30 @@ import java.text.SimpleDateFormat;
  */
 public class StringToDateConverter extends DataConverter {
 
-  /** SimpleDateFormat converter */
-  private SimpleDateFormat sdf = null;
+    /**
+     * SimpleDateFormat converter
+     */
+    private SimpleDateFormat sdf = null;
 
 
-  public StringToDateConverter(SimpleDateFormat sdf) {
-    this.sdf = sdf;
-  }
-
-
-  /**
-   * @param value data to convert
-   * @return converted value
-   */
-  public final Object decodeValue(Object value) throws Exception {
-    if (value==null)
-      return null;
-    try {
-      return sdf.parse(value.toString());
+    public StringToDateConverter(SimpleDateFormat sdf) {
+        this.sdf = sdf;
     }
-    catch (Exception ex) {
-      throw new Exception(ex);
+
+
+    /**
+     * @param value data to convert
+     * @return converted value
+     */
+    public final Object decodeValue(Object value) throws Exception {
+        if (value == null)
+            return null;
+        try {
+            return sdf.parse(value.toString());
+        } catch (Exception ex) {
+            throw new Exception(ex);
+        }
     }
-  }
 
 
 }

@@ -1,10 +1,10 @@
 package views.grid.listener;
 
+import core.rml.RmlConstants;
+import views.grid.GridSwing;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-import views.grid.GridSwing;
-import core.rml.RmlConstants;
 
 public class GridKeyListener extends KeyAdapter {
 
@@ -53,13 +53,13 @@ public class GridKeyListener extends KeyAdapter {
             grid.getActionManager().processRightAction();
         } else if (e.getKeyCode() == KeyEvent.VK_UP) {
             boolean extend = false;
-            if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0)  {
+            if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
                 extend = true;
             }
             grid.getActionManager().switchToPrevRow(extend);
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             boolean extend = false;
-            if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0)  {
+            if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
                 extend = true;
             }
             grid.getActionManager().switchToNextRow(extend);

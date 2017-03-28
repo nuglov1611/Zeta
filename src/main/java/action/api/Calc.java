@@ -10,11 +10,10 @@
 
 package action.api;
 
-import java.util.Hashtable;
-
+import action.calc.CalcLan;
 import org.apache.log4j.Logger;
 
-import action.calc.CalcLan;
+import java.util.Hashtable;
 
 
 /*
@@ -25,13 +24,13 @@ import action.calc.CalcLan;
  * ~~~~ calc.language=zscript
  */
 
-public class Calc extends ScriptApi{
+public class Calc extends ScriptApi {
     private static final Logger log = Logger.getLogger(Calc.class);
 
 
-    String  code = null;
+    String code = null;
 
-    CalcLan cl   = null;
+    CalcLan cl = null;
 
     protected Calc(String s) {
         code = s;
@@ -39,16 +38,14 @@ public class Calc extends ScriptApi{
 
     public Object eval(Hashtable<String, Object> aliases) throws Exception {
         parse(aliases);
-        Object o = cl.eval(aliases);
-        return o;
+        return cl.eval(aliases);
     }
 
     public String[] getAliases() throws Exception {
         if (cl == null) {
             try {
                 cl = new CalcLan();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("cant load language", e);
                 throw new Exception("cant load language :\n\t" + e.getMessage());
             }

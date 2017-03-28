@@ -23,8 +23,7 @@ public class P2S extends BaseExternFunction {
         Object obj = OP.doHardOP(super.expr);
         if (!(obj instanceof Double)) {
             throw new RTException("CastException", "D2S");
-        }
-        else {
+        } else {
             return p2s((Double) obj);
         }
     }
@@ -35,8 +34,7 @@ public class P2S extends BaseExternFunction {
         }
         if (l % 100L >= 10L && l % 100L < 20L) {
             return 0;
-        }
-        else {
+        } else {
             return (int) (l % 10L);
         }
     }
@@ -73,8 +71,7 @@ public class P2S extends BaseExternFunction {
 
         if (s.trim().length() > 0) {
             s = s + rub + rubs[getend(l)];
-        }
-        else {
+        } else {
             s = "\u043D\u043E\u043B\u044C \u043F\u043E\u0437\u0438\u0446\u0438\u0439";
         }
         return s1
@@ -96,11 +93,9 @@ public class P2S extends BaseExternFunction {
         if (k == 0) {
             if (j == 0) {
                 s = s + " " + rs[j];
-            }
-            else if (j == 1) {
+            } else if (j == 1) {
                 s = s + " " + rs[j] + fokon[0];
-            }
-            else {
+            } else {
                 s = s + " " + rs[j] + mokon[0];
             }
             return s.trim();
@@ -109,39 +104,31 @@ public class P2S extends BaseExternFunction {
         if (k < 20) {
             if (k > 9) {
                 l = 0;
-            }
-            else {
+            } else {
                 l = k;
             }
             if (j != 1) {
                 if (flag || k > 2) {
                     s = s + " " + mnum[k];
-                }
-                else {
+                } else {
                     s = s + " " + fnum[k];
                 }
-            }
-            else if (k < 3) {
+            } else if (k < 3) {
                 s = s + " " + fnum[k];
-            }
-            else {
+            } else {
                 s = s + " " + mnum[k];
             }
-        }
-        else {
+        } else {
             s = s + " " + decs[k / 10];
             if (j == 1) {
                 if (k % 10 < 3) {
                     s = s + " " + fnum[k % 10];
-                }
-                else {
+                } else {
                     s = s + " " + mnum[k % 10];
                 }
-            }
-            else if (!flag && k % 10 < 3) {
+            } else if (!flag && k % 10 < 3) {
                 s = s + " " + fnum[k % 10];
-            }
-            else {
+            } else {
                 s = s + " " + mnum[k % 10];
             }
             l = k % 10;
@@ -149,17 +136,15 @@ public class P2S extends BaseExternFunction {
         s = s.trim();
         if (j == 0) {
             s = s + " " + rs[j];
-        }
-        else if (j == 1) {
+        } else if (j == 1) {
             s = s + " " + rs[j] + fokon[l];
-        }
-        else {
+        } else {
             s = s + " " + rs[j] + mokon[l];
         }
         return s.trim();
     }
 
-    static String mnum[]  = {
+    static String mnum[] = {
             "",
             "\u043E\u0434\u043D\u0430",
             "\u0434\u0432\u0435",
@@ -179,12 +164,12 @@ public class P2S extends BaseExternFunction {
             "\u0448\u0435\u0441\u0442\u043D\u0430\u0434\u0446\u0430\u0442\u044C",
             "\u0441\u0435\u043C\u043D\u0430\u0434\u0446\u0430\u0442\u044C",
             "\u0432\u043E\u0441\u0435\u043C\u043D\u0430\u0434\u0446\u0430\u0442\u044C",
-            "\u0434\u0435\u0432\u044F\u0442\u043D\u0430\u0434\u0446\u0430\u0442\u044C" };
+            "\u0434\u0435\u0432\u044F\u0442\u043D\u0430\u0434\u0446\u0430\u0442\u044C"};
 
-    static String fnum[]  = { "", "\u043E\u0434\u043D\u0430",
-            "\u0434\u0432\u0435" };
+    static String fnum[] = {"", "\u043E\u0434\u043D\u0430",
+            "\u0434\u0432\u0435"};
 
-    static String decs[]  = {
+    static String decs[] = {
             "",
             "",
             "\u0434\u0432\u0430\u0434\u0446\u0430\u0442\u044C",
@@ -194,9 +179,9 @@ public class P2S extends BaseExternFunction {
             "\u0448\u0435\u0441\u0442\u044C\u0434\u0435\u0441\u044F\u0442",
             "\u0441\u0435\u043C\u044C\u0434\u0435\u0441\u044F\u0442",
             "\u0432\u043E\u0441\u0435\u043C\u044C\u0434\u0435\u0441\u044F\u0442",
-            "\u0434\u0435\u0432\u044F\u043D\u043E\u0441\u0442\u043E" };
+            "\u0434\u0435\u0432\u044F\u043D\u043E\u0441\u0442\u043E"};
 
-    static String sotni[] = { "", "\u0441\u0442\u043E",
+    static String sotni[] = {"", "\u0441\u0442\u043E",
             "\u0434\u0432\u0435\u0441\u0442\u0438",
             "\u0442\u0440\u0438\u0441\u0442\u0430",
             "\u0447\u0435\u0442\u044B\u0440\u0435\u0441\u0442\u0430",
@@ -204,28 +189,28 @@ public class P2S extends BaseExternFunction {
             "\u0448\u0435\u0441\u0442\u044C\u0441\u043E\u0442",
             "\u0441\u0435\u043C\u044C\u0441\u043E\u0442",
             "\u0432\u043E\u0441\u0435\u043C\u044C\u0441\u043E\u0442",
-            "\u0434\u0435\u0432\u044F\u0442\u044C\u0441\u043E\u0442" };
+            "\u0434\u0435\u0432\u044F\u0442\u044C\u0441\u043E\u0442"};
 
-    static String rs[]    = {
+    static String rs[] = {
             "",
             "\u0442\u044B\u0441\u044F\u0447",
             "\u043C\u0438\u043B\u043B\u0438\u043E\u043D",
             "\u043C\u0438\u043B\u043B\u0438\u0430\u0440\u0434",
             "\u0442\u0440\u0438\u043B\u043B\u0438\u043E\u043D",
             "\u043A\u0432\u0430\u0434\u0440\u0438\u043B\u043B\u0438\u043E\u043D",
-            "10^18", "10^21" };
+            "10^18", "10^21"};
 
-    static String mokon[] = { "\u043E\u0432", "", "\u0430", "\u0430", "\u0430",
+    static String mokon[] = {"\u043E\u0432", "", "\u0430", "\u0430", "\u0430",
             "\u043E\u0432", "\u043E\u0432", "\u043E\u0432", "\u043E\u0432",
-            "\u043E\u0432" };
+            "\u043E\u0432"};
 
-    static String fokon[] = { "", "\u0430", "\u0438", "\u0438", "\u0438", "",
-            "", "", "", "" };
+    static String fokon[] = {"", "\u0430", "\u0438", "\u0438", "\u0438", "",
+            "", "", "", ""};
 
-    static String rubs[]  = { "\u0438\u0439", "\u0438\u044F", "\u0438\u0438",
+    static String rubs[] = {"\u0438\u0439", "\u0438\u044F", "\u0438\u0438",
             "\u0438\u0438", "\u0438\u0438", "\u0438\u0439", "\u0438\u0439",
-            "\u0438\u0439", "\u0438\u0439", "\u0438\u0439" };
+            "\u0438\u0439", "\u0438\u0439", "\u0438\u0439"};
 
-    static String rub     = "\u043F\u043E\u0437\u0438\u0446";
+    static String rub = "\u043F\u043E\u0437\u0438\u0446";
 
 }

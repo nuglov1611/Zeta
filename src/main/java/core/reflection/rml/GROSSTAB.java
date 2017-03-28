@@ -9,7 +9,7 @@ import core.rml.dbi.GrossTab;
  */
 public class GROSSTAB extends GrossTab {
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         String query = (String) prop.get("QUERY");
         setSql(query);
         setParameters(prop.get("ROWCONDITION"), prop.get("COLUMNCONDITION"),

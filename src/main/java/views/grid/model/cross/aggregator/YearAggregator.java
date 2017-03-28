@@ -19,7 +19,7 @@ public class YearAggregator extends GenericAggregator implements Serializable {
     public Object decodeValue(Object value) {
         if (value != null && value instanceof java.util.Date) {
             cal.setTimeInMillis(((java.util.Date) value).getTime());
-            return new Double(cal.get(cal.YEAR));
+            return new Double(cal.get(Calendar.YEAR));
         }
         return value;
     }

@@ -10,27 +10,25 @@ package loader;
 
 import loader.protocols.FILE;
 import loader.protocols.HTTP;
-
 import org.apache.log4j.Logger;
-
 import properties.PropertyConstants;
 import properties.Session;
 import properties.SessionManager;
 
 public class Loader {
 
-    private static final Logger log                 = Logger
-                                                            .getLogger(Loader.class);
+    private static final Logger log = Logger
+            .getLogger(Loader.class);
 
-    private static final int    RML_LOADER_TYPE     = 0;
+    private static final int RML_LOADER_TYPE = 0;
 
-    private static final int    CLASS_LOADER_TYPE   = 1;
+    private static final int CLASS_LOADER_TYPE = 1;
 
-    private static Loader       LoaderInstance      = null;
+    private static Loader LoaderInstance = null;
 
-    private static Loader       ClassLoaderInstance = null;
+    private static Loader ClassLoaderInstance = null;
 
-    Protocol                    protocol;
+    Protocol protocol;
 
     private Loader(int type) throws Exception {
         String link = "";
@@ -43,8 +41,8 @@ public class Loader {
             p = currentSession.getProperty(PropertyConstants.RML_SERVER_TYPE);
             link = currentSession.getProperty(PropertyConstants.CLASS_SERVER);
         }
-        
-        if(p.equalsIgnoreCase(PropertyConstants.FILE_PROTO)){
+
+        if (p.equalsIgnoreCase(PropertyConstants.FILE_PROTO)) {
             protocol = new FILE(link);
         } else if (p.equalsIgnoreCase(PropertyConstants.HTTP_PROTO)) {
             String login = "";
@@ -76,8 +74,7 @@ public class Loader {
 
     public synchronized byte[] loadByName_bytes(String name) throws Exception {
         try {
-            byte[] b = protocol.getByName_bytes(name);
-            return b;
+            return protocol.getByName_bytes(name);
         } catch (Exception e) {
             if (ZetaProperties.loader_exception) {
                 log.error("Shit happens", e);
@@ -88,8 +85,7 @@ public class Loader {
 
     public synchronized char[] loadByName_chars(String name, boolean enc) throws Exception {
         try {
-            char[] text = protocol.getByName_chars(name, enc);
-            return text;
+            return protocol.getByName_chars(name, enc);
         } catch (Exception e) {
             if (ZetaProperties.loader_exception) {
                 log.error("Shit happens", e);
@@ -97,8 +93,8 @@ public class Loader {
             throw new Exception("~loader.Loader::loadByName_chars loading");
         }
     }
-    
-    public static void Reset(){
+
+    public static void Reset() {
         ClassLoaderInstance = null;
         LoaderInstance = null;
     }

@@ -1,23 +1,5 @@
 package views.grid;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Toolkit;
-import java.io.ByteArrayInputStream;
-import java.sql.Types;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import javax.swing.table.TableColumn;
-
-import loader.Loader;
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
-import publicapi.GridColumnAPI;
-import views.util.RmlPropertyContainer;
 import action.api.RTException;
 import action.calc.Nil;
 import core.document.Document;
@@ -28,19 +10,30 @@ import core.rml.RmlConstants;
 import core.rml.RmlObject;
 import core.rml.dbi.Datastore;
 import core.rml.dbi.Handler;
+import loader.Loader;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+import publicapi.GridColumnAPI;
+import views.util.RmlPropertyContainer;
+
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.sql.Types;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
- * Визуальный Rml-объект "столбец" используется при описании таблицы.  
- *
+ * Визуальный Rml-объект "столбец" используется при описании таблицы.
  */
 public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     private static final Logger log = Logger.getLogger(GridColumn.class);
-    
+
     private Container container = new Container(this);
-    
-    private TableColumn column = new TableColumn(); 
-    
+
+    private TableColumn column = new TableColumn();
+
     public int dw = 2;
 
     public int dh = 2;
@@ -64,22 +57,22 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
     private Vector<Object> items = new Vector<Object>();
 
     private boolean isArray = false;
-    
+
     private RmlPropertyContainer rmlPropertyContainer;
-    
+
     public GridColumn() {
         this("");
     }
 
     public GridColumn(String title) {
-    	column.setWidth(50);
+        column.setWidth(50);
         rmlPropertyContainer = new RmlPropertyContainer();
         rmlPropertyContainer.put(RmlConstants.TITLE, title);
     }
 
     public void calc() {
         try {
-        	document.executeScript(rmlPropertyContainer.getStringProperty(RmlConstants.EXP), true);
+            document.executeScript(rmlPropertyContainer.getStringProperty(RmlConstants.EXP), true);
         } catch (Exception e) {
             log.error("Shit happens", e);
         }
@@ -161,14 +154,14 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
         } else {
             o = null;
         }
-    	if(type == Types.BOOLEAN){
-    		try {
-				o = validator.toString(o);
-			} catch (Exception e) {
-				log.error("!", e);
-			} 
-    	}
-    	return o;
+        if (type == Types.BOOLEAN) {
+            try {
+                o = validator.toString(o);
+            } catch (Exception e) {
+                log.error("!", e);
+            }
+        }
+        return o;
     }
 
     public Object getValueByName(String name) {
@@ -178,16 +171,16 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
     public void setValue(Object o) {
         Datastore ds;
         if ((ds = getParentDS()) != null) {
-        	if(target == null){
-        		log.error("Столбец "+alias+" имеет target == NULL!!!!");
-        	}
-        	if(type == Types.BOOLEAN && o != null && o instanceof String){
-        		try {
-					o = validator.toObject((String) o);
-				} catch (Exception e) {
-					log.error("!", e);
-				} 
-        	}
+            if (target == null) {
+                log.error("Столбец " + alias + " имеет target == NULL!!!!");
+            }
+            if (type == Types.BOOLEAN && o != null && o instanceof String) {
+                try {
+                    o = validator.toObject((String) o);
+                } catch (Exception e) {
+                    log.error("!", e);
+                }
+            }
             ds.setValue(target, o);
             if (depends != null) {
                 calcDep();
@@ -199,7 +192,7 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
     }
 
     public void init(Proper prop, Document doc) {
-    	super.init(prop, doc);
+        super.init(prop, doc);
         if (prop == null) {
             return;
         }
@@ -311,12 +304,13 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     /**
      * задает связанные столбцы (столбцы, котрые будут пересчитываться при изменении значения в этом столбце)
+     *
      * @param dep - список зависымых столбцов через запятую
      */
     public void setDep(String dep) {
 
         rmlPropertyContainer.put(RmlConstants.DEP, dep);
-        
+
         dep = dep.toUpperCase();
         dep = dep.trim();
         StringTokenizer st = new StringTokenizer(dep, ",");
@@ -344,11 +338,12 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     /**
      * задает тип данных столбца
+     *
      * @param type - тип данных java.sql.Types, поддерживаются следующие типы:
-     * java.sql.Types.NUMERIC
-     * java.sql.Types.VARCHAR
-     * java.sql.Types.DATE
-     * java.sql.Types.BOOLEAN;
+     *             java.sql.Types.NUMERIC
+     *             java.sql.Types.VARCHAR
+     *             java.sql.Types.DATE
+     *             java.sql.Types.BOOLEAN;
      */
     public void setType(int type) {
         this.type = type;
@@ -361,6 +356,7 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     /**
      * задает тип данных столбца
+     *
      * @param t - тип ("number", "string", "date", "boolean")
      */
     public void setType(String t) {
@@ -372,8 +368,9 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     /**
      * преобразует тип из string в java.sql.Types
+     *
      * @param t - тип данных
-     * @return соответвующий тип java.sql.Types 
+     * @return соответвующий тип java.sql.Types
      */
     public static int generateType(String t) {
         int type = Integer.MIN_VALUE;
@@ -411,10 +408,10 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
         return rmlPropertyContainer.getBooleanProperty(RmlConstants.PASSWORD);
     }
 
-    public String getCalc(){
-    	return rmlPropertyContainer.getStringProperty(RmlConstants.EXP);
+    public String getCalc() {
+        return rmlPropertyContainer.getStringProperty(RmlConstants.EXP);
     }
-    
+
     public String getEdit() {
         return rmlPropertyContainer.getStringProperty(RmlConstants.EDIT);
     }
@@ -478,7 +475,7 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
 
     public void setAlias(String alias) {
         rmlPropertyContainer.put(RmlConstants.ALIAS, alias);
-    	super.setAlias(alias);
+        super.setAlias(alias);
     }
 
     public void setEditStyle(String editStyle) {
@@ -571,14 +568,15 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
     }
 
     /**
-     * 
+     *
      */
     public void setMask() {
         validator.setMask(rmlPropertyContainer.getStringProperty(RmlConstants.EDITMASK));
     }
 
     /**
-     * Задать Datastore для данного столбца 
+     * Задать Datastore для данного столбца
+     *
      * @param datastore - Datastore
      */
     public void setDS(Object datastore) {
@@ -597,38 +595,38 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
         rmlPropertyContainer.put(RmlConstants.BG_COLOR, color);
     }
 
-	@Override
-	public void addChild(RmlObject child) {
+    @Override
+    public void addChild(RmlObject child) {
         container.addChildToCollection(child);
-	    
+
         if (child instanceof Datastore) {
             ds = (Datastore) child;
             ds.addHandler(this);
         }
-	}
+    }
 
-	public TableColumn getColumn(){
-		return column;
-	}
+    public TableColumn getColumn() {
+        return column;
+    }
 
-	@Override
-	public RmlObject[] getChildren() {
-		return container.getChildren();
-	}
+    @Override
+    public RmlObject[] getChildren() {
+        return container.getChildren();
+    }
 
-	@Override
-	public void initChildren() {
-	}
+    @Override
+    public void initChildren() {
+    }
 
-	@Override
-	public Container getContainer() {
-		return container;
-	}
+    @Override
+    public Container getContainer() {
+        return container;
+    }
 
-	@Override
-	public boolean addChildrenAutomaticly() {
-		return true;
-	}
+    @Override
+    public boolean addChildrenAutomaticly() {
+        return true;
+    }
 
     public void setTitleBgColor(Color color) {
         rmlPropertyContainer.put(RmlConstants.TITLEBAR_BG_COLOR, color);
@@ -641,10 +639,10 @@ public class GridColumn extends RmlObject implements Handler, GridColumnAPI {
     public void setVisible(boolean visible) {
         rmlPropertyContainer.put(RmlConstants.VISIBLE, visible ? "YES" : "NO");
     }
-    
+
     //TODO Удалить к ебеням когда станет не нужно и никому не показывать и не рассказывать.
-    public void runDropHook(){
-        if (getDropExp() != null){
+    public void runDropHook() {
+        if (getDropExp() != null) {
             try {
                 document.executeScript(getDropExp(), false);
             } catch (Exception e) {

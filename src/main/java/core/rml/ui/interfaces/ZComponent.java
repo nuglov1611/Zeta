@@ -1,96 +1,82 @@
 package core.rml.ui.interfaces;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import core.rml.ui.RequiresEDT;
+import core.rml.ui.RequiresEDTPolicy;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
-import javax.swing.JComponent;
-import javax.swing.border.Border;
-
-import core.rml.ui.RequiresEDT;
-import core.rml.ui.RequiresEDTPolicy;
-
 public interface ZComponent {
 
-	
-	public void addComponentListener(ComponentListener listener);
 
-	public void addFocusListener(FocusListener listener);
+    void addComponentListener(ComponentListener listener);
 
-	public void addKeyListener(KeyListener listener);
+    void addFocusListener(FocusListener listener);
 
-	public void addMouseListener(MouseListener listener);
+    void addKeyListener(KeyListener listener);
 
-	public Color getBackground() ;
-	
-	public Color getForeground();
+    void addMouseListener(MouseListener listener);
 
-	
-	public Container getParent();
+    Color getBackground();
 
-	public Rectangle getBounds();
+    Color getForeground();
 
-	public Font getFont();
 
-	public FontMetrics getFontMetrics(Font font);
+    Container getParent();
 
-	public int getHeight();
+    Rectangle getBounds();
 
-	public Insets getInsets();
+    Font getFont();
 
-	public JComponent getJComponent();
+    FontMetrics getFontMetrics(Font font);
 
-	public LayoutManager getLayout();
+    int getHeight();
 
-	public Point getLocation();
+    Insets getInsets();
 
-	public Point getLocationOnScreen();
+    JComponent getJComponent();
 
-	public Dimension getPreferredSize();
+    LayoutManager getLayout();
 
-	public Toolkit getToolkit();
+    Point getLocation();
 
-	public Component getTopLevelAncestor();
+    Point getLocationOnScreen();
 
-	public int getWidth();
+    Dimension getPreferredSize();
 
-	public int getX();
+    Toolkit getToolkit();
 
-	public int getY();
+    Component getTopLevelAncestor();
 
-	public boolean isEnabled();
+    int getWidth();
 
-	public boolean isFocusOwner();
+    int getX();
 
-	public boolean isFocusable();
+    int getY();
 
-	public boolean isVisible();
+    boolean isEnabled();
 
-	public void repaint();
+    boolean isFocusOwner();
 
-	public void setToolTipText(String text);	
-	
-	
-	Graphics getGraphics();
+    boolean isFocusable();
 
-	
-	
+    boolean isVisible();
+
+    void repaint();
+
+    void setToolTipText(String text);
+
+
+    Graphics getGraphics();
+
+
 //Methods which must execute in EDT context 	
-	
+
     @RequiresEDT
     void setFont(Font font);
 
@@ -105,89 +91,90 @@ public interface ZComponent {
 
     @RequiresEDT
     void setSize(int width, int height);
-    
+
     //@RequiresEDT(RequiresEDTPolicy.SYNC)
     @RequiresEDT
     void setVisible(boolean visible);
 
     @RequiresEDT
-	void setBorder(Border border);
-    
+    void setBorder(Border border);
+
     @RequiresEDT
-	void setEnabled(boolean b);
-    
+    void setEnabled(boolean b);
+
     @RequiresEDT
-	void setFocusable(boolean focusable);
-    
+    void setFocusable(boolean focusable);
+
     @RequiresEDT(RequiresEDTPolicy.SYNC)
-	void requestFocus();
-    
+    void requestFocus();
+
     @RequiresEDT
-	void setSize(Dimension size);
-    
+    void setSize(Dimension size);
+
     @RequiresEDT
-	void setPreferredSize(Dimension dimension);
-    
-	@RequiresEDT//(RequiresEDTPolicy.SYNC)
-	void revalidate();
+    void setPreferredSize(Dimension dimension);
 
-	@RequiresEDT
-	void setAlignmentX(float alignment);
+    @RequiresEDT
+//(RequiresEDTPolicy.SYNC)
+    void revalidate();
 
-	@RequiresEDT
-	void setAlignmentY(float alignment);
-	
-	@RequiresEDT
-	void setMinimumSize(Dimension d);
-	
-	@RequiresEDT
-	public void setMaximumSize(Dimension dimension);
+    @RequiresEDT
+    void setAlignmentX(float alignment);
+
+    @RequiresEDT
+    void setAlignmentY(float alignment);
+
+    @RequiresEDT
+    void setMinimumSize(Dimension d);
+
+    @RequiresEDT
+    void setMaximumSize(Dimension dimension);
 
 
-	@RequiresEDT
-	void setCursor(Cursor predefinedCursor);
-	
-	@RequiresEDT
-	void validate();
+    @RequiresEDT
+    void setCursor(Cursor predefinedCursor);
 
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	Component add(ZComponent component);
+    @RequiresEDT
+    void validate();
 
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	Component add(String positionForBorder, ZComponent component);
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    Component add(ZComponent component);
 
-	@RequiresEDT
-	void add(ZComponent component, Object constraints);
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    Component add(String positionForBorder, ZComponent component);
 
-	@RequiresEDT
-	public void remove(ZComponent component);
-	
-	@RequiresEDT
-	public void remove(int index); 
+    @RequiresEDT
+    void add(ZComponent component, Object constraints);
 
-	@RequiresEDT
-	public void removeAll();
-	
-	public Component getComponent(int i);
+    @RequiresEDT
+    void remove(ZComponent component);
 
-	@RequiresEDT
-	public void doLayout();
-	
-	
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	void transferFocus();
-	
-	@RequiresEDT(RequiresEDTPolicy.SYNC)
-	boolean requestFocusInWindow();
-	
-	@RequiresEDT
-	public void setBounds(int left, int top, int width, int height);
+    @RequiresEDT
+    void remove(int index);
 
-	@RequiresEDT
-	public void setLayout(LayoutManager layout);
-	
-	@RequiresEDT
-	void paint(Graphics graphics);
+    @RequiresEDT
+    void removeAll();
 
-	
+    Component getComponent(int i);
+
+    @RequiresEDT
+    void doLayout();
+
+
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    void transferFocus();
+
+    @RequiresEDT(RequiresEDTPolicy.SYNC)
+    boolean requestFocusInWindow();
+
+    @RequiresEDT
+    void setBounds(int left, int top, int width, int height);
+
+    @RequiresEDT
+    void setLayout(LayoutManager layout);
+
+    @RequiresEDT
+    void paint(Graphics graphics);
+
+
 }

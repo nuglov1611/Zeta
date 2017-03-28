@@ -1,17 +1,13 @@
 package views.grid.renderer.cross;
 
-import java.awt.LayoutManager;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-
-import org.apache.log4j.Logger;
-
 import core.rml.ui.EDTInvocationHandler;
 import core.rml.ui.impl.ZPanelImpl;
 import core.rml.ui.interfaces.ZPanel;
 import core.rml.ui.interfaces.ZScrollPane;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author: vagapova.m
@@ -19,50 +15,48 @@ import core.rml.ui.interfaces.ZScrollPane;
  */
 public class CrossTablePanel extends ZPanelImpl {
 
-	private static final Logger log = Logger.getLogger(CrossTablePanel.class);
+    private static final Logger log = Logger.getLogger(CrossTablePanel.class);
 
-	public static CrossTablePanel create(){
-		return create(new JPanel());
-	}
+    public static CrossTablePanel create() {
+        return create(new JPanel());
+    }
 
 
-	public static CrossTablePanel create(JPanel panel){
-		try {
-			return (CrossTablePanel) java.lang.reflect.Proxy.newProxyInstance(CrossTablePanel.class.getClassLoader(),
-	                new Class[]{ZPanel.class}, new EDTInvocationHandler(new CrossTablePanel(panel)));
-			
-		} catch (SecurityException e) {
-			log.error("!", e);
-		} 
-		return null;
-	}
-	
-	
-	public static CrossTablePanel create(ZPanelImpl panel){
-		try {
-			return (CrossTablePanel) java.lang.reflect.Proxy.newProxyInstance(CrossTablePanel.class.getClassLoader(),
-	                new Class[]{ZPanel.class}, new EDTInvocationHandler(panel));
-			
-		} catch (SecurityException e) {
-			log.error("!", e);
-		} 
-		return null;
-	}
-	
-	
-	public static CrossTablePanel create(LayoutManager layout) {
-		return create(new JPanel(layout));
-	}
+    public static CrossTablePanel create(JPanel panel) {
+        try {
+            return (CrossTablePanel) java.lang.reflect.Proxy.newProxyInstance(CrossTablePanel.class.getClassLoader(),
+                    new Class[]{ZPanel.class}, new EDTInvocationHandler(new CrossTablePanel(panel)));
 
-	
-	
-	protected CrossTablePanel(JComponent comp){
-		super(comp);
-	}
+        } catch (SecurityException e) {
+            log.error("!", e);
+        }
+        return null;
+    }
 
-    
 
-	private JTable dataTable = new JTable();
+    public static CrossTablePanel create(ZPanelImpl panel) {
+        try {
+            return (CrossTablePanel) java.lang.reflect.Proxy.newProxyInstance(CrossTablePanel.class.getClassLoader(),
+                    new Class[]{ZPanel.class}, new EDTInvocationHandler(panel));
+
+        } catch (SecurityException e) {
+            log.error("!", e);
+        }
+        return null;
+    }
+
+
+    public static CrossTablePanel create(LayoutManager layout) {
+        return create(new JPanel(layout));
+    }
+
+
+    protected CrossTablePanel(JComponent comp) {
+        super(comp);
+    }
+
+
+    private JTable dataTable = new JTable();
 
     private CellSpanTable rowsTable = new CellSpanTable();
 

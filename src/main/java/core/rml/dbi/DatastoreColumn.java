@@ -1,15 +1,15 @@
 package core.rml.dbi;
 
 /**
-* @author: vagapova.m
-* @since: 14.10.2010
-*/
-public class DatastoreColumn {  
-
-/**
- * имена полей полученного из базы набора(получены при разборе sql
- * выражения) String
+ * @author: vagapova.m
+ * @since: 14.10.2010
  */
+public class DatastoreColumn {
+
+    /**
+     * имена полей полученного из базы набора(получены при разборе sql
+     * выражения) String
+     */
     private String columnName;
 
     /**
@@ -17,9 +17,9 @@ public class DatastoreColumn {
      */
     private String columnLabel;
 
-/**
- * Типы столбцов int
- */
+    /**
+     * Типы столбцов int
+     */
     private Integer columnType;
 
     private Integer columnIndex;

@@ -1,10 +1,9 @@
 package views.grid.action;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import views.grid.GridSwing;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class PasteAction extends AbstractAction {
 

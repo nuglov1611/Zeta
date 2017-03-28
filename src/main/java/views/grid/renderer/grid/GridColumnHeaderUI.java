@@ -1,21 +1,17 @@
 package views.grid.renderer.grid;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import views.grid.GridColumnSet;
+import views.grid.GridSwing;
+import views.grid.model.GridMetadataModel;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.basic.BasicTableHeaderUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-import views.grid.GridColumnSet;
-import views.grid.GridSwing;
-import views.grid.model.GridMetadataModel;
+import java.awt.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * @author vagapova.m

@@ -11,14 +11,12 @@
 
 package core.reflection.functions;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
 import action.api.GlobalValuesObject;
 import action.calc.CalcException;
 import action.calc.OP;
 import action.calc.functions.BaseExternFunction;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
 
 public class FINALLY extends BaseExternFunction {
     protected final static Logger log = Logger.getLogger(FINALLY.class);
@@ -33,11 +31,9 @@ public class FINALLY extends BaseExternFunction {
         }
         Object o = OP.getAliases().get("##return_exception##");
         if (o != null) {
-            CalcException exception = (CalcException) ((GlobalValuesObject) o)
+            throw (CalcException) ((GlobalValuesObject) o)
                     .getValue();
-            throw exception;
-        }
-        else {
+        } else {
             GlobalValuesObject ob = ((GlobalValuesObject) OP.getAliases()
                     .get("##return_value##"));
             if (ob == null) {

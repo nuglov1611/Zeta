@@ -1,11 +1,10 @@
 package views.grid.listener;
 
+import views.grid.GridSwing;
+
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.JList;
-
-import views.grid.GridSwing;
 
 /**
  * @author: vagapova.m
@@ -37,7 +36,7 @@ public class GridHeaderPopupMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent me) {
         if (me.getButton() == MouseEvent.BUTTON1 && me.getSource() instanceof JList) {
-                grid.getActionManager().filterRow(me.getPoint(), (JList) me.getSource());
-            }
+            grid.getActionManager().filterRow(me.getPoint(), (JList) me.getSource());
         }
     }
+}

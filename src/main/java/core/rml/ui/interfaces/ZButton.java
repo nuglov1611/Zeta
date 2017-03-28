@@ -1,18 +1,17 @@
 package core.rml.ui.interfaces;
 
-import java.awt.event.ActionListener;
-
-import javax.swing.Icon;
-
 import core.rml.ui.RequiresEDT;
 
+import javax.swing.*;
+import java.awt.event.ActionListener;
+
 public interface ZButton extends ZComponent {
-	
-	@RequiresEDT
-	public void setText(String s);
 
-	@RequiresEDT
-	public void setIcon(Icon im);
+    @RequiresEDT
+    void setText(String s);
 
-	public void addActionListener(ActionListener field);
+    @RequiresEDT
+    void setIcon(Icon im);
+
+    void addActionListener(ActionListener field);
 }

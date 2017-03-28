@@ -1,12 +1,11 @@
 package views.grid.listener;
 
-import javax.swing.ListSelectionModel;
+import org.apache.log4j.Logger;
+import views.grid.manager.GridTableManager;
+
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import org.apache.log4j.Logger;
-
-import views.grid.manager.GridTableManager;
 
 /**
  * User: marina.vagapova
@@ -27,7 +26,7 @@ public class GridRowSelectionListener implements ListSelectionListener {
         //Ignore extra messages.
         if (e.getValueIsAdjusting()) {
             return;
-    }
+        }
 
         ListSelectionModel lsm = (ListSelectionModel) e.getSource();
         if (!lsm.isSelectionEmpty()) {

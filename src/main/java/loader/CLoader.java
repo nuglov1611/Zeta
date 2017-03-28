@@ -8,9 +8,9 @@
 
 package loader;
 
-import java.util.Hashtable;
-
 import org.apache.log4j.Logger;
+
+import java.util.Hashtable;
 
 public class CLoader extends ClassLoader {
 
@@ -20,11 +20,11 @@ public class CLoader extends ClassLoader {
         return s.replace('.', '/') + ".class";
     }
 
-    private static CLoader    instance = null;
+    private static CLoader instance = null;
 
-    Hashtable<String, Class>  cache    = new Hashtable<String, Class>();
+    Hashtable<String, Class> cache = new Hashtable<String, Class>();
 
-    Hashtable<String, String> nafing   = new Hashtable<String, String>();
+    Hashtable<String, String> nafing = new Hashtable<String, String>();
 
     private CLoader() {
     }
@@ -50,14 +50,12 @@ public class CLoader extends ClassLoader {
                 try {
                     //c = findSystemClass(name);
                     c = getClass().getClassLoader().loadClass(name);
-                }
-                catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException e) {
                     log.error("Shit happens", e);
                     byte data[];
                     try {
                         data = loadClassData(name);
-                    }
-                    catch (Exception ecc) {
+                    } catch (Exception ecc) {
                         log.error("Shit happens", ecc);
                         nafing.put(name, "");
                         throw ecc;
@@ -68,8 +66,7 @@ public class CLoader extends ClassLoader {
                             log
                                     .debug("~loader.CLoader::loadclass success compiling class "
                                             + name);
-                    }
-                    else if (ZetaProperties.loader_debug > 1)
+                    } else if (ZetaProperties.loader_debug > 1)
                         log
                                 .debug("~loader.CLoader::loadclass error compiling class "
                                         + name);
@@ -80,12 +77,10 @@ public class CLoader extends ClassLoader {
             if (resolve)
                 resolveClass(c);
             return c;
-        }
-        catch (Exception ec) {
+        } catch (Exception ec) {
             log.error("Shit happens", ec);
             throw new ClassNotFoundException("class " + name);
-        }
-        catch (Error err) {
+        } catch (Error err) {
             log.error("Error with loading class: \n\t" + name, err);
             throw err;
         }

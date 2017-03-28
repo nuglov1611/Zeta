@@ -1,10 +1,10 @@
 package views.grid.renderer.grid;
 
-import javax.swing.JTable;
+import views.grid.GridSwing;
+
+import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
-
-import views.grid.GridSwing;
 
 /**
  * @author: vagapova.m

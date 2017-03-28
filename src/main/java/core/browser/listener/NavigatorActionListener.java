@@ -1,20 +1,17 @@
 package core.browser.listener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.SwingUtilities;
-
-import loader.ZetaProperties;
-import loader.ZetaUtility;
-
-import org.apache.log4j.Logger;
-
 import core.browser.AboutDialog;
 import core.browser.Workspace;
 import core.connection.BadPasswordException;
 import core.connection.ConnectException;
 import core.document.exception.LoadDocumentException;
+import loader.ZetaProperties;
+import loader.ZetaUtility;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class NavigatorActionListener implements ActionListener {
 
@@ -81,15 +78,15 @@ public class NavigatorActionListener implements ActionListener {
             }
         } else if (e.getActionCommand().equals(Workspace.ABOUT_PROGRAM)) {
             final AboutDialog ad = new AboutDialog("О программе", parent.getFrame());
-            if(SwingUtilities.isEventDispatchThread())
-            ad.setVisible(true);
-            else{
-            	SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						ad.setVisible(true);
-					}
-				});
+            if (SwingUtilities.isEventDispatchThread())
+                ad.setVisible(true);
+            else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ad.setVisible(true);
+                    }
+                });
             }
         }
     }

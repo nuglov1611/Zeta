@@ -22,29 +22,22 @@ public class Z extends BaseExternFunction {
         boolean flag = true;
         String label = null;
         Object result = new Double(0);
-        try {
-            while (flag) {
-                flag = false;
-                try {
-                    if (label != null) {
-                        expr.evalLabel(label);
-                    }
-                    else {
-                        expr.eval();
-                    }
+        while (flag) {
+            flag = false;
+            try {
+                if (label != null) {
+                    expr.evalLabel(label);
+                } else {
+                    expr.eval();
                 }
-                catch (ReturnException e) {
-                    // e.printStackTrace();
-                    result = e.result;
-                }
-                catch (GotoException e) {
-                    // e.printStackTrace();
-                    label = e.label;
-                    flag = true;
-                }
+            } catch (ReturnException e) {
+                // e.printStackTrace();
+                result = e.result;
+            } catch (GotoException e) {
+                // e.printStackTrace();
+                label = e.label;
+                flag = true;
             }
-        }
-        finally {
         }
         return result;
     }

@@ -1,10 +1,9 @@
 package views.grid.model.cross;
 
-import java.util.ArrayList;
+import views.grid.GridSwing;
 
 import javax.swing.table.AbstractTableModel;
-
-import views.grid.GridSwing;
+import java.util.ArrayList;
 
 /**
  * Inner class used to define row fields content.
@@ -15,9 +14,9 @@ import views.grid.GridSwing;
 public class CrossRowModel extends AbstractTableModel {
 
     private ArrayList<Object[]> rowFields;
-                                                                        
+
     private GridSwing parent;
-    
+
     public CrossRowModel(GridSwing parent) {
         this.parent = parent;
         rowFields = new ArrayList<Object[]>();

@@ -1,18 +1,14 @@
 package views.grid.editor;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import views.field.DateCalendar;
+import views.grid.GridColumn;
+
+import javax.swing.*;
+import javax.swing.text.MaskFormatter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.text.ParseException;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.text.MaskFormatter;
-
-import views.field.DateCalendar;
-import views.grid.GridColumn;
 
 public class DateField extends CommonField {
 
@@ -39,13 +35,12 @@ public class DateField extends CommonField {
             editField = new JFormattedTextField(mf);
             editField.addKeyListener(this);
             editField.addFocusListener(this);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
+
+
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
 
@@ -54,14 +49,14 @@ public class DateField extends CommonField {
                         .addComponent(editField, 0,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(selectButton, GroupLayout.PREFERRED_SIZE,
-                        BUTTON_WIDTH, GroupLayout.PREFERRED_SIZE)
+                                BUTTON_WIDTH, GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(editField, 0,
                                 GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(selectButton, 0,
-                        GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         setValue(value);
@@ -80,7 +75,7 @@ public class DateField extends CommonField {
     @Override
     public boolean willLostFocus(FocusEvent e) {
         Component oComp = e.getOppositeComponent();
-        if(oComp != null && (oComp.equals(cld) || oComp.equals(selectButton)))
+        if (oComp != null && (oComp.equals(cld) || oComp.equals(selectButton)))
             return false;
         else
             return super.willLostFocus(e);

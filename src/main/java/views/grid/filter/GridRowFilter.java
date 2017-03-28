@@ -1,13 +1,7 @@
 package views.grid.filter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.RowFilter;
+import javax.swing.*;
+import java.util.*;
 
 /**
  * Row filter used to skip rows from original data model
@@ -33,7 +27,7 @@ public class GridRowFilter extends RowFilter {
     public GridRowFilter(RowFilter rowFilter) {
         filterRules = new HashMap<Integer, List<FilterRule>>();
         if (rowFilter != null && rowFilter instanceof GridRowFilter) {
-            Map<Integer, List<FilterRule>> customFilterRules = ((GridRowFilter)rowFilter).getFilterRules();
+            Map<Integer, List<FilterRule>> customFilterRules = ((GridRowFilter) rowFilter).getFilterRules();
             filterRules.putAll(customFilterRules);
         }
     }
@@ -256,7 +250,7 @@ public class GridRowFilter extends RowFilter {
         return filterRules.keySet();
     }
 
-    public Map<Integer,List<FilterRule>> getFilterRules() {
+    public Map<Integer, List<FilterRule>> getFilterRules() {
         return filterRules;
     }
 }

@@ -1,11 +1,6 @@
 package core.rml.dbi;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * @author mvagapova
@@ -281,7 +276,7 @@ public class DatastoreModel {
     public void deleteRow(int rowIndex) {
         int rowDeleteIndex = getRowIndex(rowIndex);
         if (rowIndexes.contains(rowDeleteIndex)) { //rowDeleteIndex >= 0 && rowDeleteIndex < getRowCount()) {
-            rowIndexes.remove((Integer)rowDeleteIndex);
+            rowIndexes.remove((Integer) rowDeleteIndex);
         }
     }
 
@@ -369,11 +364,11 @@ public class DatastoreModel {
         if (columnIndexes.containsKey(columnTarget)) {
             deletedColumnIndex = columnIndexes.remove(columnTarget);
             columns.remove(deletedColumnIndex);
-            for(int i = 0; i<getRowCount(); i++){
-            	Map<Integer, Object> columns = getRow(i);
-            	columns.remove(deletedColumnIndex);
+            for (int i = 0; i < getRowCount(); i++) {
+                Map<Integer, Object> columns = getRow(i);
+                columns.remove(deletedColumnIndex);
             }
-            
+
             //data.remove(deletedColumnIndex);
         }
         return deletedColumnIndex;

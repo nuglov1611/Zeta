@@ -14,7 +14,7 @@ package action.calc;
 public class ContinueException extends CalcException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 }

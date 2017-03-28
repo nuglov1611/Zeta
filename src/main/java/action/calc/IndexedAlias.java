@@ -11,22 +11,20 @@
 
 package action.calc;
 
+import action.api.RTException;
+import loader.ZetaProperties;
+import org.apache.log4j.Logger;
+
 import java.util.Enumeration;
 import java.util.Vector;
 
-import loader.ZetaProperties;
-
-import org.apache.log4j.Logger;
-
-import action.api.RTException;
-
 public class IndexedAlias extends Alias implements Const {
-    protected final static Logger log     = Logger
-                                                  .getLogger(IndexedAlias.class);
+    protected final static Logger log = Logger
+            .getLogger(IndexedAlias.class);
 
-    int                           index;
+    int index;
 
-    Vector<Double>                indexes = null;
+    Vector<Double> indexes = null;
 
     public IndexedAlias(IndexedAlias alias, int index) {
         super(alias.name());
@@ -49,7 +47,7 @@ public class IndexedAlias extends Alias implements Const {
             indexes = new Vector<Double>();
             indexes.addElement(new Double(alias.index));
         }
-        for (Enumeration<Double> e = index.elements(); e.hasMoreElements();) {
+        for (Enumeration<Double> e = index.elements(); e.hasMoreElements(); ) {
             indexes.addElement(e.nextElement());
         }
         if (ZetaProperties.calc_debug > 2) {
@@ -78,8 +76,7 @@ public class IndexedAlias extends Alias implements Const {
     }
 
     @Override
-    public Object eval() throws Exception, NullPointerException,
-            ClassCastException {
+    public Object eval() throws Exception {
         return getValue();
     }
 
@@ -95,31 +92,27 @@ public class IndexedAlias extends Alias implements Const {
             try {
                 if (indexes == null) {
                     return ((Object[]) o)[index];
-                }
-                else {
+                } else {
                     try {
                         Object result = o;
                         for (Enumeration<Double> e = indexes.elements(); e
-                                .hasMoreElements();) {
+                                .hasMoreElements(); ) {
                             result = ((Object[]) result)[e.nextElement()
                                     .intValue()];
                         }
                         return result;
-                    }
-                    catch (ClassCastException e) {
-                    	log.error("", e);
+                    } catch (ClassCastException e) {
+                        log.error("", e);
                         throw new RTException("CastException",
                                 "Element is not ARRAY or index is not NUMBER");
                     }
                 }
-            }
-            catch (IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 log.error("", e);
                 throw new RTException("IndexException", "max index "
                         + (((Object[]) o).length - 1) + " but index=" + index);
             }
-        }
-        else {
+        } else {
             throw new ResonException(
                     "~calc.IndexedAlias::getValue type not Object[] \n\t"
                             + "reson: alias value is " + o + "\n\t"
@@ -128,45 +121,39 @@ public class IndexedAlias extends Alias implements Const {
     }
 
     @Override
-    public Object setValue(Object a) throws Exception, NullPointerException,
-            ClassCastException {
+    public Object setValue(Object a) throws Exception {
         Object o = super.getValue();
         if (o instanceof Object[]) {
             try {
                 if (indexes == null) {
                     ((Object[]) o)[index] = a;
-                }
-                else {
+                } else {
                     try {
                         Object result = o;
                         for (Enumeration<Double> e = indexes.elements(); e
-                                .hasMoreElements();) {
+                                .hasMoreElements(); ) {
                             if (e.hasMoreElements()) {
                                 result = ((Object[]) result)[e.nextElement()
                                         .intValue()];
-                            }
-                            else {
+                            } else {
                                 ((Object[]) result)[e.nextElement().intValue()] = a;
                             }
                         }
-                    }
-                    catch (ClassCastException e) {
-                    	log.error("", e);
+                    } catch (ClassCastException e) {
+                        log.error("", e);
                         throw new RTException("CastException",
                                 "Element is not ARRAY or index is not NUMBER");
                     }
                 }
-            }
-            catch (IndexOutOfBoundsException e) {
-            	log.error("", e);
+            } catch (IndexOutOfBoundsException e) {
+                log.error("", e);
                 throw new ResonException(
                         "~calc.IndexedAlias::setValue index exception \n\t"
                                 + "reson: array.length="
                                 + ((Object[]) o).length + "but index=" + index
                                 + "\n\t" + "Object: " + toString());
             }
-        }
-        else {
+        } else {
             throw new ResonException(
                     "~calc.IndexedAlias::setValue type not Object[] \n\t"
                             + "reson: alias value is " + o + "\n\t"

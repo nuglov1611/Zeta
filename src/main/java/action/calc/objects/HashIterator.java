@@ -11,14 +11,14 @@
 
 package action.calc.objects;
 
+import action.api.RTException;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import action.api.RTException;
-
 
 public class HashIterator extends base_iterator {
-    Object[]                  keys = null;
+    Object[] keys = null;
 
     Hashtable<String, Object> hash = null;
 
@@ -45,8 +45,7 @@ public class HashIterator extends base_iterator {
     public Object value() throws Exception {
         if (cursor != -1) {
             return keys[cursor];
-        }
-        else {
+        } else {
             throw new RTException("IteratorException",
                     "iterator must be posited on any element");
         }

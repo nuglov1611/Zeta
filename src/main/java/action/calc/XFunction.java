@@ -14,5 +14,5 @@ package action.calc;
 import action.api.ARGV;
 
 public interface XFunction {
-    public Object call(ARGV _V) throws Exception;
+    Object call(ARGV _V) throws Exception;
 }
